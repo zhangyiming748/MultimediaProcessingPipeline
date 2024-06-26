@@ -4,3 +4,7 @@ vendor
 *.mp4
 *.pt
 *.log
+*.list
+*.ytdl
+*.part
+*.webm
