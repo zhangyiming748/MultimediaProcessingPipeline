@@ -1,6 +1,7 @@
 package util
 
 import (
+	"Multimedia_Processing_Pipeline/replace"
 	"errors"
 	"fmt"
 	"log"
@@ -69,9 +70,11 @@ func ExecCommand4YtdlpDestination(c *exec.Cmd, msg string) (Destination string, 
 		if strings.Contains(t, "Destination") {
 			sp := strings.Split(t, " Destination: ")
 			Destination = sp[1]
+			log.Printf("Destination捕获到视频标题:%s", Destination)
 		} else if strings.Contains(t, "container of") {
 			content, _ := getQuotedContent(t)
 			Destination = content
+			log.Printf("container of捕获到视频标题:%s", Destination)
 		}
 		if err != nil {
 			break
@@ -87,7 +90,8 @@ func ExecCommand4YtdlpDestination(c *exec.Cmd, msg string) (Destination string, 
 	if GetExitStatus() {
 		log.Fatalf("命令端获取到退出状态,命令结束后退出:%v\n", c.String())
 	}
-	return Destination, nil
+	RealName := replace.RealName(Destination)
+	return RealName, nil
 }
 
 /*
