@@ -1,0 +1,12 @@
+vendor
+.idea
+*.mkv
+*.mp4
+*.pt
+*.log
+*.list
+*.ytdl
+*.part
+*.webm
+stdout.txt
+stderr.txt
