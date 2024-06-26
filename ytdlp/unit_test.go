@@ -14,11 +14,11 @@ func init() {
 // go test -v -run TestYTdlp
 func TestYTdlp(t *testing.T) {
 	p := &constant.Param{
-		Root:     "/mnt/c/Users/zen/Github",
+		Root:     "/mnt/c/Users/zen/Github/Multimedia_Processing_Pipeline/ytdlp",
 		Language: "English",
 		Pattern:  "mp4",
 		Model:    "base",
-		Location: "/mnt/c/Users/zen/Github",
+		Location: "/mnt/c/Users/zen/Github/Multimedia_Processing_Pipeline/ytdlp",
 		Proxy:    "192.168.1.5:8889",
 	}
 	log.SetLog(p)

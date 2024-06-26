@@ -4,11 +4,13 @@ import (
 	"Multimedia_Processing_Pipeline/constant"
 	"Multimedia_Processing_Pipeline/log"
 	"Multimedia_Processing_Pipeline/sql"
+	"Multimedia_Processing_Pipeline/util"
 )
 
 func initConfig(p *constant.Param) {
 	log.SetLog(p)
 	sql.SetDatabase(p)
+	util.ExitAfterRun()
 }
 func main() {
 	p := &constant.Param{
