@@ -3,5 +3,5 @@
 
 # TODO
 - [ ] 以一个文件为单位分别写好`yt-dlp` `whisper` `trans` `merge` 部分 唯一标识符为文件的绝对路径
-- [ ] 新建环境变量`$merge=true|false`判断 是否同时进行字母嵌入并转码
+- [x] 新建环境变量`$merge=true|false`判断 是否同时进行字幕嵌入并转码
 - [x] 如果在容器中运行需要提前结束 可以`touch /exit`

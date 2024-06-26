@@ -20,6 +20,7 @@ func main() {
 		Model:    "base",
 		Location: "/mnt/c/Users/zen/Github/FastYt-dlp/joi2",
 		Proxy:    "127.0.0.1:8889",
+		Merge:    false,
 	}
 	initConfig(p)
 }
