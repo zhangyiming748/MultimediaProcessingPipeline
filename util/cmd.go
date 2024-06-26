@@ -1,10 +1,12 @@
 package util
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
+	"regexp"
 	"strings"
 )
 
@@ -65,7 +67,11 @@ func ExecCommand4YtdlpDestination(c *exec.Cmd, msg string) (Destination string, 
 		t = strings.Replace(t, "\u0000", "", -1)
 		fmt.Printf("\r%v\n%v\n", t, msg)
 		if strings.Contains(t, "Destination") {
-			strings.Split(t, " Destination: ")
+			sp := strings.Split(t, " Destination: ")
+			Destination = sp[1]
+		} else if strings.Contains(t, "container of") {
+			content, _ := getQuotedContent(t)
+			Destination = content
 		}
 		if err != nil {
 			break
@@ -96,5 +102,19 @@ func isExitLabel() bool {
 	} else {
 		fmt.Println("古希腊掌管退出信号的文件存在")
 		return true
+	}
+}
+
+/*
+获取引号部分中的内容
+*/
+func getQuotedContent(input string) (title string, err error) {
+	re := regexp.MustCompile(`"(.*?)"`)
+	matches := re.FindStringSubmatch(input)
+	if len(matches) > 1 {
+		log.Printf("捕获到引号中可能是视频标题的内容:%s\n", matches[1])
+		return matches[1], nil
+	} else {
+		return "", errors.New("未找到匹配项")
 	}
 }
