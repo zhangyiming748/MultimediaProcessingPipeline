@@ -9,3 +9,4 @@ vendor
 *.part
 *.webm
 stdout.txt
+stderr.txt

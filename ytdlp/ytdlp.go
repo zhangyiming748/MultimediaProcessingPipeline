@@ -15,7 +15,7 @@ func DownloadVideo(uri string, p constant.Param) (fp string, err error) {
 			fmt.Println(err)
 		}
 	}()
-	cmd := exec.Command("yt-dlp", "--proxy", p.GetProxy(), "-f", "bestvideo[height<=?1080]+bestaudio/best[height<=?1080]", "--no-playlist", uri)
+	cmd := exec.Command("yt-dlp", "--proxy", p.GetProxy(), "-f", "bestvideo[height<=?1080]+bestaudio/best[height<=?1080]", "--no-playlist", "--paths", p.GetRoot(), uri)
 	msg := fmt.Sprintf("正在运行命令:%s", cmd.String())
 	destination, err := util.ExecCommand4YtdlpDestination(cmd, msg)
 	if err != nil {
