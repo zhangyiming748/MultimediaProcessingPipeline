@@ -6,7 +6,9 @@ import (
 	"Multimedia_Processing_Pipeline/util"
 	"fmt"
 	"log"
+	"os"
 	"os/exec"
+	"strings"
 )
 
 func DownloadVideo(uri string, p constant.Param) (fp string, err error) {
@@ -25,6 +27,7 @@ func DownloadVideo(uri string, p constant.Param) (fp string, err error) {
 	} else {
 		log.Printf("当前下载成功的文件标题:%s", destination)
 	}
+	destination = strings.Join([]string{p.GetRoot(), destination}, string(os.PathSeparator))
 	destination, err = replace.Rename(destination)
 	return destination, nil
 }
