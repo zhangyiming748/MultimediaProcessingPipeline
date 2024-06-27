@@ -4,7 +4,7 @@
 
 # TODO
 
--[x] 以一个文件为单位分别写好`yt-dlp``whisper``trans``merge`部分唯一标识符为文件的绝对路径
+-[x] 以一个文件为单位分别写好`yt-dlp`，`whisper`，`trans`，`merge`部分唯一标识符为文件的绝对路径
 -[x] 新建环境变量`$merge=true|false`判断是否同时进行字幕嵌入并转码
 -[x] 如果在容器中运行需要提前结束可以`touch/exit`
 -[ ] 想办法整合成流水线模式
