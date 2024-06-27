@@ -29,7 +29,7 @@ func MkvWithAss(file string, p *constant.Param) {
 		//cmd := exec.Command("ffmpeg", "-i", file, "-itsoffset", "1", "-i", srt, "-c:v", "libvpx-vp9", "-crf", crf, "-c:a", "libvorbis", "-ac", "1", "-c:s", "ass", output)
 		cmd := exec.Command("ffmpeg", "-i", file, "-i", srt, "-c:v", "libvpx-vp9", "-crf", crf, "-c:a", "libvorbis", "-ac", "1", "-c:s", "ass", output)
 		fmt.Printf("生成的命令: %s\n", cmd.String())
-		msg := fmt.Sprintf("正在合成的视频:%s", file)
+		msg := fmt.Sprintf("正在合成的视频:%s帧数%s", file, par.Video.FrameCount)
 		err := util.ExecCommand(cmd, msg)
 		if err != nil {
 			log.Fatalf("合成视频%v命令执行失败:%v 退出", output, err)
