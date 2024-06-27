@@ -50,7 +50,6 @@ func ExecCommand(c *exec.Cmd, msg string) (e error) {
 }
 func ExecCommand4YtdlpDestination(c *exec.Cmd, msg string) (Destination string, e error) {
 	log.Printf("开始执行命令:%v\n", c.String())
-
 	stdout, err := c.StdoutPipe()
 	c.Stderr = c.Stdout
 	if err != nil {

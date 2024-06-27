@@ -17,6 +17,7 @@ func MkvWithAss(file string, p *constant.Param) {
 	srt := strings.Replace(file, p.Pattern, "srt", 1)
 	if isExist(srt) {
 		output := strings.Replace(file, p.GetPattern(), "_with_subtitle.mkv", 1)
+		output = strings.Replace(output, ".", "", 1)
 		par := FastMediaInfo.GetStandMediaInfo(file)
 		width, _ := strconv.Atoi(par.Video.Width)
 		height, _ := strconv.Atoi(par.Video.Height)
@@ -31,7 +32,7 @@ func MkvWithAss(file string, p *constant.Param) {
 		msg := fmt.Sprintf("正在合成的视频:%s", file)
 		err := util.ExecCommand(cmd, msg)
 		if err != nil {
-			log.Fatalf("合成视频命令执行失败:%v 退出:%v", err)
+			log.Fatalf("合成视频%v命令执行失败:%v 退出", output, err)
 		} else {
 			os.Remove(file)
 		}

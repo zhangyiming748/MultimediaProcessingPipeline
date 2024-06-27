@@ -1,4 +1,4 @@
-package whisper
+package merge
 
 import (
 	"Multimedia_Processing_Pipeline/constant"
@@ -10,16 +10,16 @@ func init() {
 
 }
 
-// go test -v -run TestWhisper
-func TestWhisper(t *testing.T) {
+// go test -v -run TestMerge
+func TestMerge(t *testing.T) {
 	p := &constant.Param{
 		Root:     "/home/zen/git/MultimediaProcessingPipeline/ytdlp",
-		Language: "Russian",
+		Language: "English",
 		Pattern:  "mp4",
 		Model:    "base",
 		Location: "/home/zen/git/MultimediaProcessingPipeline/ytdlp",
 		Proxy:    "192.168.1.20:8889",
 	}
 	log.SetLog(p)
-	GetSubtitle("/home/zen/git/MultimediaProcessingPipeline/ytdlp/1.mp4", p)
+	MkvWithAss("/home/zen/git/MultimediaProcessingPipeline/ytdlp/1.mp4", p)
 }

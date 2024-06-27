@@ -75,5 +75,5 @@ func TestTrans(t *testing.T) {
 	sql.SetDatabase(p)
 	log.SetLog(p)
 	c := new(constant.Count)
-	Trans("/home/zen/git/MultimediaProcessingPipeline/ytdlp/Дрочу на порно-историю из интернета [645dc2da8e6a3].mp4", p, c)
+	Trans("/home/zen/git/MultimediaProcessingPipeline/ytdlp/1.mp4", p, c)
 }
