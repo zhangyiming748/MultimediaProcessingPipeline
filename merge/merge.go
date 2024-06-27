@@ -1,6 +1,7 @@
 package merge
 
 import (
+	"Multimedia_Processing_Pipeline/constant"
 	"Multimedia_Processing_Pipeline/util"
 	"fmt"
 	"github.com/zhangyiming748/FastMediaInfo"
@@ -12,13 +13,13 @@ import (
 	"strings"
 )
 
-func MkvWithAss(file string, pattern string) {
-	srt := strings.Replace(file, pattern, ".srt", 1)
+func MkvWithAss(file string, p *constant.Param) {
+	srt := strings.Replace(file, p.Pattern, "srt", 1)
 	if isExist(srt) {
-		output := strings.Replace(file, pattern, "_with_subtitle.mkv", 1)
-		p := FastMediaInfo.GetStandMediaInfo(file)
-		width, _ := strconv.Atoi(p.Video.Width)
-		height, _ := strconv.Atoi(p.Video.Height)
+		output := strings.Replace(file, p.GetPattern(), "_with_subtitle.mkv", 1)
+		par := FastMediaInfo.GetStandMediaInfo(file)
+		width, _ := strconv.Atoi(par.Video.Width)
+		height, _ := strconv.Atoi(par.Video.Height)
 		log.Printf("获取到的分辨率:%vx%v\t", width, height)
 		crf := FastMediaInfo.GetCRF("vp9", width, height)
 		if crf == "" {
