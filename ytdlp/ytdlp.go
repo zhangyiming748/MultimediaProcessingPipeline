@@ -2,7 +2,6 @@ package ytdlp
 
 import (
 	"Multimedia_Processing_Pipeline/constant"
-	"Multimedia_Processing_Pipeline/replace"
 	"Multimedia_Processing_Pipeline/util"
 	"fmt"
 	"log"
@@ -28,6 +27,5 @@ func DownloadVideo(uri string, p constant.Param) (fp string, err error) {
 		log.Printf("当前下载成功的文件标题:%s", destination)
 	}
 	destination = strings.Join([]string{p.GetRoot(), destination}, string(os.PathSeparator))
-	destination, err = replace.Rename(destination)
 	return destination, nil
 }

@@ -126,9 +126,9 @@ func Success(dst string) bool {
 	if strings.Contains(dst, "[WARNING]") {
 		return false
 	}
-	if strings.Contains(dst, "Didyoumean") {
-		return false
-	}
+	//if strings.Contains(dst, "Didyoumean") {
+	//	return false
+	//}
 	if strings.Contains(dst, "[22m") {
 		return false
 	}

@@ -6,6 +6,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.22
 	github.com/nalgeon/redka v0.5.1
 	github.com/zhangyiming748/DeepLX v0.0.1
+	github.com/zhangyiming748/FastMediaInfo v0.0.3
 	github.com/zhangyiming748/lumberjack v0.0.1
 )
 

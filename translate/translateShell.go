@@ -37,7 +37,7 @@ func Translate(src string, p *constant.Param, c *constant.Count) (dst string) {
 	var once sync.Once
 	proxy := p.GetProxy()
 	language := ":zh-CN"
-	retry := 0
+
 	if p.GetProxy() == "" {
 		fmt.Println("富强|民主|文明|和谐")
 		fmt.Println("自由|平等|公正|法治")
@@ -62,14 +62,13 @@ func Translate(src string, p *constant.Param, c *constant.Count) (dst string) {
 				log.Printf("trans超时,使用本地deepXL翻译结果:%v\n", dst)
 				c.SetDeeplx()
 			}
+			dst = replace.DoYouMean(dst)
 			if dst != "" {
 				break
 			} else {
-				retry++
-				log.Printf("查询结果为空retry:%v\n", retry)
-			}
-			if retry >= RETRY {
-				log.Fatalln("达到重试次数后依旧失败,需要检查网络")
+				log.Println("临时使用deeplx翻译")
+				dst, _ = DeepLx.TranslateByDeepLX("auto", "zh", src, "")
+				break
 			}
 		}
 	}
@@ -103,16 +102,17 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 			c.SetCache()
 		} else {
 			dst = Translate(afterSrc, p, c)
-			var count int
-			for !replace.Success(dst) {
-				if count > RETRY {
-					log.Fatalf("达到重试次数后依旧失败,需要检查网络,srt=%v\tdst=%v\n", afterSrc, dst)
-				}
-				log.Printf("查询失败\t重试%v\n", count)
-				time.Sleep(1 * time.Second)
-				dst = Translate(afterSrc, p, c)
-				count++
-			}
+
+			//var count int
+			//for !replace.Success(dst) {
+			//	if count > RETRY {
+			//		log.Fatalf("达到重试次数后依旧失败,需要检查网络,srt=%v\tdst=%v\n", afterSrc, dst)
+			//	}
+			//	log.Printf("查询失败\t重试%v\n", count)
+			//	time.Sleep(1 * time.Second)
+			//	dst = Translate(afterSrc, p, c)
+			//	count++
+			//}
 		}
 		dst = replace.GetSensitive(dst)
 		sql.GetDatabase().Hash().Set("translations", src, dst)

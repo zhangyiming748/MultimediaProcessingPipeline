@@ -1,6 +1,9 @@
 package translateShell
 
 import (
+	"Multimedia_Processing_Pipeline/constant"
+	"Multimedia_Processing_Pipeline/log"
+	"Multimedia_Processing_Pipeline/sql"
 	"fmt"
 	"github.com/zhangyiming748/DeepLX"
 	"io/ioutil"
@@ -57,4 +60,20 @@ func TestDeepLX(t *testing.T) {
 	} else {
 		t.Log(lx)
 	}
+}
+
+// go test -v -run TestWhisper
+func TestTrans(t *testing.T) {
+	p := &constant.Param{
+		Root:     "/home/zen/git/MultimediaProcessingPipeline/ytdlp",
+		Language: "Russian",
+		Pattern:  "mp4",
+		Model:    "base",
+		Location: "/home/zen/git/MultimediaProcessingPipeline/ytdlp",
+		Proxy:    "192.168.1.20:8889",
+	}
+	sql.SetDatabase(p)
+	log.SetLog(p)
+	c := new(constant.Count)
+	Trans("/home/zen/git/MultimediaProcessingPipeline/ytdlp/Дрочу на порно-историю из интернета [645dc2da8e6a3].mp4", p, c)
 }

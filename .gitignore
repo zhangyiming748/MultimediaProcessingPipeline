@@ -10,3 +10,7 @@ vendor
 *.webm
 stdout.txt
 stderr.txt
+*.db-wal
+*.db-shm
+*.db
+*.srt
