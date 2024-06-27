@@ -1,0 +1,14 @@
+name: Get Regions
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: curl
+        run: |
+          curl cip.cc
+          cat /etc/apt/sources.list
+          ls /etc/apt/sources.list.d
