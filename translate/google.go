@@ -5,22 +5,18 @@ import (
 	"log"
 	"os/exec"
 	"strings"
-	"sync"
 )
 
-func TransByGoogle(proxy, language, src string, ans chan Result, c *constant.Count, once *sync.Once) {
-	cmd := exec.Command("trans", "-brief", "-engine", "google", "-proxy", proxy, language, src)
-	output, err := cmd.CombinedOutput()
-	if err != nil || strings.Contains(string(output), "u001b") || strings.Contains(string(output), "Didyoumean") || strings.Contains(string(output), "Connectiontimedout") {
+func TransByGoogle(src string, c *constant.Count, p *constant.Param) (dst string, err error) {
+	cmd := exec.Command("trans", "-brief", "-engine", "google", "-proxy", p.GetProxy(), ":zh-CN", src)
+	out, err := cmd.CombinedOutput()
+	if err != nil || strings.Contains(string(out), "Didyoumean") {
 		log.Printf("google查询命令执行出错\t命令原文:%v\t错误原文:%v\n", cmd.String(), err.Error())
-		return
+		return "", err
+	} else {
+		log.Println(dst)
 	}
-	r := Result{
-		From: "Google",
-		Dst:  string(output),
-	}
-	once.Do(func() {
-		ans <- r
-		c.SetGoogle()
-	})
+	dst = string(out)
+	c.SetGoogle()
+	return dst, nil
 }

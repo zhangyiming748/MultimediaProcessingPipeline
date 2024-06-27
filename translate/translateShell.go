@@ -13,7 +13,6 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 )
 
@@ -26,53 +25,32 @@ const (
 	RETRY   = 3
 )
 
-type Result struct {
-	From string // 来源
-	Dst  string // 翻译内容
-}
-
-func Translate(src string, p *constant.Param, c *constant.Count) (dst string) {
+func Translate(src string, p *constant.Param, c *constant.Count) string {
 	//trans -brief ja:zh "私の手の動きに合わせて|そう"
-	ch := make(chan Result)
-	var once sync.Once
-	proxy := p.GetProxy()
-	language := ":zh-CN"
-
-	if p.GetProxy() == "" {
-		fmt.Println("富强|民主|文明|和谐")
-		fmt.Println("自由|平等|公正|法治")
-		fmt.Println("爱国|敬业|诚信|友善")
-		dst, _ = DeepLx.TranslateByDeepLX("auto", "zh", src, "")
-	} else {
-		for {
-			go TransByGoogle(proxy, language, src, ch, c, &once)
-			go TransByBing(proxy, language, src, ch, c, &once)
-			//使用同一个通道 传递结构体 标明来源
-			var result Result
-			select {
-			case result = <-ch:
-				if result.From == "google" {
-					c.SetGoogle()
-				} else if result.From == "bing" {
-					c.SetBing()
-				}
-				dst = result.Dst
-			case <-time.After(TIMEOUT * time.Second):
-				dst, _ = DeepLx.TranslateByDeepLX("auto", "zh", src, "")
-				log.Printf("trans超时,使用本地deepXL翻译结果:%v\n", dst)
-				c.SetDeeplx()
-			}
-			dst = replace.DoYouMean(dst)
-			if dst != "" {
-				break
-			} else {
-				log.Println("临时使用deeplx翻译")
-				dst, _ = DeepLx.TranslateByDeepLX("auto", "zh", src, "")
-				break
-			}
+	var dst string
+	fmt.Println("富强|民主|文明|和谐")
+	fmt.Println("自由|平等|公正|法治")
+	fmt.Println("爱国|敬业|诚信|友善")
+TRANS:
+	result, fail := DeepLx.TranslateByDeepLX("auto", "zh", src, "")
+	if fail != nil {
+		time.Sleep(time.Duration(seed.Intn(5)+1) * time.Second)
+		log.Println("等待重试")
+		Translate(src, p, c)
+	} else if result == "" {
+		time.Sleep(time.Duration(seed.Intn(5)+1) * time.Second)
+		log.Println("等待重试")
+		google, err := TransByGoogle(src, c, p)
+		if err != nil {
+			goto TRANS
+		} else {
+			dst = google
 		}
+	} else {
+		log.Printf("DeepLx直接查询的结果是:%s\n", result)
+		dst = result
+		c.SetDeeplx()
 	}
-	dst = replace.ChinesePunctuation(dst)
 	return dst
 }
 
@@ -102,19 +80,10 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 			c.SetCache()
 		} else {
 			dst = Translate(afterSrc, p, c)
-
-			//var count int
-			//for !replace.Success(dst) {
-			//	if count > RETRY {
-			//		log.Fatalf("达到重试次数后依旧失败,需要检查网络,srt=%v\tdst=%v\n", afterSrc, dst)
-			//	}
-			//	log.Printf("查询失败\t重试%v\n", count)
-			//	time.Sleep(1 * time.Second)
-			//	dst = Translate(afterSrc, p, c)
-			//	count++
-			//}
 		}
 		dst = replace.GetSensitive(dst)
+		log.Printf("最终写入数据库的结果是%s\n", dst)
+
 		sql.GetDatabase().Hash().Set("translations", src, dst)
 		log.Printf("文件名:%v\n原文:%v\n译文:%v\n", tmpname, src, dst)
 		after.WriteString(fmt.Sprintf("%s\n", src))
