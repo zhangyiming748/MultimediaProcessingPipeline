@@ -23,7 +23,7 @@ func ExecCommand(c *exec.Cmd, msg string) (e error) {
 		return err
 	}
 	if err = c.Start(); err != nil {
-		log.Printf("启动cmd命令产生错误:%V\n", err)
+		log.Printf("启动cmd命令产生错误:%v\n", err)
 		return err
 	}
 	for {
@@ -31,7 +31,7 @@ func ExecCommand(c *exec.Cmd, msg string) (e error) {
 		_, err := stdout.Read(tmp)
 		t := string(tmp)
 		t = strings.Replace(t, "\u0000", "", -1)
-		fmt.Printf("\r%v\n%v\n", t, msg)
+		fmt.Printf("\r%v\n%v", t, msg)
 		if err != nil {
 			break
 		}
@@ -58,7 +58,7 @@ func ExecCommand4YtdlpDestination(c *exec.Cmd, msg string) (Destination string, 
 		return "", err
 	}
 	if err = c.Start(); err != nil {
-		log.Printf("启动cmd命令产生错误:%V\n", err)
+		log.Printf("启动cmd命令产生错误:%v\n", err)
 		return "", err
 	}
 	for {
@@ -66,7 +66,7 @@ func ExecCommand4YtdlpDestination(c *exec.Cmd, msg string) (Destination string, 
 		_, err := stdout.Read(tmp)
 		t := string(tmp)
 		t = strings.Replace(t, "\u0000", "", -1)
-		fmt.Printf("\r%v\n%v\n", t, msg)
+		fmt.Printf("\r%v\n%v", t, msg)
 		if strings.Contains(t, "Destination") {
 			sp := strings.Split(t, " Destination: ")
 			Destination = sp[1]
