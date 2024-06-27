@@ -11,6 +11,9 @@ import (
 )
 
 func initConfig(p *constant.Param) {
+	if !util.IsExistCmd("ffmpeg") {
+		log.Fatalln("ffmpeg未安装")
+	}
 	if !util.IsExistCmd("whisper") {
 		log.Fatalln("whisper未安装")
 	}

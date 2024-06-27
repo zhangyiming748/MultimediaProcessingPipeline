@@ -47,7 +47,6 @@ TRANS:
 			dst = google
 		}
 	} else {
-		log.Printf("DeepLx直接查询的结果是:%s\n", result)
 		dst = result
 		c.SetDeeplx()
 	}
@@ -82,8 +81,6 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 			dst = Translate(afterSrc, p, c)
 		}
 		dst = replace.GetSensitive(dst)
-		log.Printf("最终写入数据库的结果是%s\n", dst)
-
 		sql.GetDatabase().Hash().Set("translations", src, dst)
 		log.Printf("文件名:%v\n原文:%v\n译文:%v\n", tmpname, src, dst)
 		after.WriteString(fmt.Sprintf("%s\n", src))

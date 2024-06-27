@@ -21,5 +21,5 @@ func TestMerge(t *testing.T) {
 		Proxy:    "192.168.1.20:8889",
 	}
 	log.SetLog(p)
-	MkvWithAss("/home/zen/git/MultimediaProcessingPipeline/ytdlp/1.mp4", p)
+	MkvWithAss("/home/zen/git/MultimediaProcessingPipeline/ytdlp/EDGE FOR ME -JOI [656dc0089a6eb].mp4", p)
 }

@@ -14,9 +14,9 @@ func init() {
 func TestWhisper(t *testing.T) {
 	p := &constant.Param{
 		Root:     "/home/zen/git/MultimediaProcessingPipeline/ytdlp",
-		Language: "Russian",
+		Language: "English",
 		Pattern:  "mp4",
-		Model:    "large",
+		Model:    "base.en",
 		Location: "/home/zen/git/MultimediaProcessingPipeline/ytdlp",
 		Proxy:    "192.168.1.20:8889",
 	}
