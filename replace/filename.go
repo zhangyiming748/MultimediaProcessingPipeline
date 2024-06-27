@@ -7,45 +7,49 @@ import (
 	"strings"
 )
 
-//func ForFileName(str string) string {
-//	str = strings.Replace(str, "。", ".", -1)
-//	str = strings.Replace(str, "，", ",", -1)
-//	str = strings.Replace(str, "《", "(", -1)
-//	str = strings.Replace(str, "》", ")", -1)
-//	str = strings.Replace(str, "【", "(", -1)
-//	str = strings.Replace(str, "】", ")", -1)
-//	str = strings.Replace(str, "（", "(", -1)
-//	str = strings.Replace(str, "）", ")", -1)
-//	str = strings.Replace(str, "「", "(", -1)
-//	str = strings.Replace(str, "」", ")", -1)
-//	str = strings.Replace(str, "+", "_", -1)
-//	str = strings.Replace(str, "`", "", -1)
-//	str = strings.Replace(str, " ", "", -1)
-//	str = strings.Replace(str, "\u00A0", "", -1)
-//	str = strings.Replace(str, "\u0000", "", -1)
-//	str = strings.Replace(str, "·", "", -1)
-//	str = strings.Replace(str, "\uE000", "", -1)
-//	str = strings.Replace(str, "\u000D", "", -1)
-//	str = strings.Replace(str, "、", "", -1)
-//	//str = strings.Replace(str, "/", "", -1)
-//	str = strings.Replace(str, "！", "", -1)
-//	str = strings.Replace(str, "|", "", -1)
-//	str = strings.Replace(str, "｜", "", -1)
-//	str = strings.Replace(str, ":", "", -1)
-//	str = strings.Replace(str, " ", "", -1)
-//	str = strings.Replace(str, "&", "", -1)
-//	str = strings.Replace(str, "？", "", -1)
-//	str = strings.Replace(str, "(", "", -1)
-//	str = strings.Replace(str, ")", "", -1)
-//	str = strings.Replace(str, "-", "", -1)
-//	str = strings.Replace(str, " ", "", -1)
-//	str = strings.Replace(str, "“", "", -1)
-//	str = strings.Replace(str, "”", "", -1)
-//	str = strings.Replace(str, "--", "", -1)
-//	str = strings.Replace(str, "_", "", -1)
-//	str = strings.Replace(str, "：", "", -1)
-//	return str
-//}
+func ChinesePunctuation(str string) string {
+	str = strings.Replace(str, "。", ".", -1)
+	str = strings.Replace(str, "，", ",", -1)
+	str = strings.Replace(str, "《", "(", -1)
+	str = strings.Replace(str, "》", ")", -1)
+	str = strings.Replace(str, "【", "(", -1)
+	str = strings.Replace(str, "】", ")", -1)
+	str = strings.Replace(str, "（", "(", -1)
+	str = strings.Replace(str, "）", ")", -1)
+	str = strings.Replace(str, "「", "(", -1)
+	str = strings.Replace(str, "」", ")", -1)
+	str = strings.Replace(str, "+", "_", -1)
+	str = strings.Replace(str, "`", "", -1)
+	str = strings.Replace(str, " ", "", -1)
+	str = strings.Replace(str, "\u00A0", "", -1)
+	str = strings.Replace(str, "\u0000", "", -1)
+	str = strings.Replace(str, "·", "", -1)
+	str = strings.Replace(str, "\uE000", "", -1)
+	str = strings.Replace(str, "\u000D", "", -1)
+	str = strings.Replace(str, "、", "", -1)
+	//str = strings.Replace(str, "/", "", -1)
+	str = strings.Replace(str, "！", "", -1)
+	str = strings.Replace(str, "|", "", -1)
+	str = strings.Replace(str, "｜", "", -1)
+	str = strings.Replace(str, ":", "", -1)
+	str = strings.Replace(str, " ", "", -1)
+	str = strings.Replace(str, "&", "", -1)
+	str = strings.Replace(str, "？", "", -1)
+	str = strings.Replace(str, "(", "", -1)
+	str = strings.Replace(str, ")", "", -1)
+	str = strings.Replace(str, "-", "", -1)
+	str = strings.Replace(str, " ", "", -1)
+	str = strings.Replace(str, "“", "", -1)
+	str = strings.Replace(str, "”", "", -1)
+	str = strings.Replace(str, "--", "", -1)
+	str = strings.Replace(str, "_", "", -1)
+	str = strings.Replace(str, "：", "", -1)
+	str = strings.Replace(str, "\ufeff", "", -1)
+	str = strings.Replace(str, "\n", "", 1)
+	str = strings.Replace(str, "33 40  ", "", 1)
+	str = strings.Replace(str, "33 40", "", 1)
+	return str
+}
 
 /*
 仅保留文件名中的 数字 字母 和 中文
@@ -104,4 +108,32 @@ func RealName(input string) string {
 	output := re.ReplaceAllString(input, "")
 	fmt.Println(output)
 	return output
+}
+
+/*
+判断查询是否成功
+*/
+func Success(dst string) bool {
+	if strings.Contains(dst, "\u001B") {
+		return false
+	}
+	if strings.Contains(dst, "Showingtranslation") {
+		return false
+	}
+	if strings.Contains(dst, "Connectiontimedout.RetryingIPv4connection") {
+		return false
+	}
+	if strings.Contains(dst, "[WARNING]") {
+		return false
+	}
+	if strings.Contains(dst, "Didyoumean") {
+		return false
+	}
+	if strings.Contains(dst, "[22m") {
+		return false
+	}
+	if strings.Contains(dst, "[33mm") {
+		return false
+	}
+	return false
 }
