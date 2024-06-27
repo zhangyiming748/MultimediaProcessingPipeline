@@ -3,7 +3,6 @@ package replace
 import (
 	"Multimedia_Processing_Pipeline/constant"
 	"Multimedia_Processing_Pipeline/sql"
-	"Multimedia_Processing_Pipeline/util"
 	"bufio"
 	"fmt"
 	"io"
@@ -28,11 +27,11 @@ func SetSensitive(p *constant.Param) {
 	fp1 := strings.Join([]string{p.GetRoot(), "sensitive.txt"}, string(os.PathSeparator))
 	fp2 := "sensitive.txt"
 	lines := []string{}
-	if util.IsExist(fp1) {
+	if IsExist(fp1) {
 		log.Printf("从视频目录%v中加载敏感词\n", fp1)
 		lines = readByLine(fp1)
 	}
-	if util.IsExist(fp2) {
+	if IsExist(fp2) {
 		log.Printf("从程序目录%v中加载敏感词\n", fp2)
 		lines = readByLine(fp1)
 	} else {
@@ -71,4 +70,14 @@ func readByLine(fp string) []string {
 		lines = append(lines, string(a))
 	}
 	return lines
+}
+func IsExist(folderPath string) bool {
+	_, err := os.Stat(folderPath)
+	if os.IsNotExist(err) {
+		log.Printf("文件夹:%v不存在\n", folderPath)
+		return false
+	} else {
+		log.Printf("文件夹:%v存在\n", folderPath)
+		return true
+	}
 }
