@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func DownloadVideo(uri string, p constant.Param) (fp string, err error) {
+func DownloadVideo(uri string, p *constant.Param) (fp string, err error) {
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Println(err)

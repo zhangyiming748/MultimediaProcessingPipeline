@@ -3,11 +3,16 @@ package main
 import (
 	"Multimedia_Processing_Pipeline/constant"
 	mylog "Multimedia_Processing_Pipeline/log"
+	"Multimedia_Processing_Pipeline/merge"
 	"Multimedia_Processing_Pipeline/replace"
 	"Multimedia_Processing_Pipeline/sql"
+	translateShell "Multimedia_Processing_Pipeline/translate"
 	"Multimedia_Processing_Pipeline/util"
+	"Multimedia_Processing_Pipeline/whisper"
+	"Multimedia_Processing_Pipeline/ytdlp"
 	"log"
 	"os"
+	"strings"
 )
 
 func initConfig(p *constant.Param) {
@@ -30,11 +35,11 @@ func initConfig(p *constant.Param) {
 }
 func main() {
 	p := &constant.Param{
-		Root:     "/mnt/c/Users/zen/Github/FastYt-dlp/joi2",
+		Root:     "/mnt/c/Users/zen",
 		Language: "English",
 		Pattern:  "mp4",
 		Model:    "base",
-		Location: "/mnt/c/Users/zen/Github/FastYt-dlp/joi2",
+		Location: "/mnt/c/Users/zen",
 		Proxy:    "127.0.0.1:8889",
 		Merge:    false,
 	}
@@ -57,7 +62,20 @@ func main() {
 	if proxy := os.Getenv("proxy"); proxy != "" {
 		p.SetProxy(proxy)
 	}
-	if merge := os.Getenv("merge"); merge == "1" {
+	if combination := os.Getenv("merge"); combination == "1" {
 		p.Merge = true
 	}
+	var c constant.Count
+	uris := strings.Join([]string{p.GetRoot(), "urls.list"}, string(os.PathSeparator))
+	lines := util.ReadByLine(uris)
+	for _, line := range lines {
+		video, err := ytdlp.DownloadVideo(line, p)
+		if err != nil {
+			continue
+		}
+		whisper.GetSubtitle(video, p)
+		translateShell.Trans(video, p, &c)
+		merge.MkvWithAss(video, p)
+	}
+	//replace.Replace(p)
 }
