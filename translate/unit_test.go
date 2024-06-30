@@ -65,15 +65,25 @@ func TestDeepLX(t *testing.T) {
 // go test -v -run TestWhisper
 func TestTrans(t *testing.T) {
 	p := &constant.Param{
-		Root:     "/home/zen/git/MultimediaProcessingPipeline/ytdlp",
+		Root:     "/Users/zen/Downloads",
 		Language: "Japanese",
-		Pattern:  "mp4",
+		Pattern:  "mp3",
 		Model:    "base",
-		Location: "/home/zen/git/MultimediaProcessingPipeline/ytdlp",
+		Location: "/Users/zen/Downloads",
 		Proxy:    "192.168.1.20:8889",
 	}
 	sql.SetDatabase(p)
 	log.SetLog(p)
 	c := new(constant.Count)
-	Trans("/home/zen/git/MultimediaProcessingPipeline/ytdlp/NieR：Automata Fan Festival 12022 koncert [wX_SAi_ZcFQ].webm", p, c)
+	fps := []string{
+		"/Users/zen/Downloads/[ReinForce] Spy x Family (BDRip 1920x1080 x264 FLAC)/Extra/CD/CD1/01 - アーニャとベッキーのびっくり大作戦！.mp3",
+		"/Users/zen/Downloads/[ReinForce] Spy x Family (BDRip 1920x1080 x264 FLAC)/Extra/CD/CD1/02 - アーニャとベッキーのびっくり大作戦！ Cast Commentary.mp3",
+		"/Users/zen/Downloads/[ReinForce] Spy x Family (BDRip 1920x1080 x264 FLAC)/Extra/CD/CD2/01 - ブライア姉弟のスペシャルクッキング.mp3",
+		"/Users/zen/Downloads/[ReinForce] Spy x Family (BDRip 1920x1080 x264 FLAC)/Extra/CD/CD2/02 - ブライア姉弟のスペシャルクッキング Cast Commentary.mp3",
+		"/Users/zen/Downloads/[ReinForce] Spy x Family (BDRip 1920x1080 x264 FLAC)/Extra/CD/CD3/01 - ケーキを選んで世界平和⁉.mp3",
+		"/Users/zen/Downloads/[ReinForce] Spy x Family (BDRip 1920x1080 x264 FLAC)/Extra/CD/CD3/02 - ケーキを選んで世界平和⁉ Cast Commentary.mp3",
+	}
+	for _, fp := range fps {
+		Trans(fp, p, c)
+	}
 }
