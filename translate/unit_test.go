@@ -2,7 +2,8 @@ package translateShell
 
 import (
 	"Multimedia_Processing_Pipeline/constant"
-	"Multimedia_Processing_Pipeline/log"
+	mylog "Multimedia_Processing_Pipeline/log"
+	"Multimedia_Processing_Pipeline/replace"
 	"Multimedia_Processing_Pipeline/sql"
 	"fmt"
 	"github.com/zhangyiming748/DeepLX"
@@ -73,7 +74,7 @@ func TestTrans(t *testing.T) {
 		Proxy:    "192.168.1.20:8889",
 	}
 	sql.SetDatabase(p)
-	log.SetLog(p)
+	mylog.SetLog(p)
 	c := new(constant.Count)
 	fps := []string{
 		"/Users/zen/Downloads/[ReinForce] Spy x Family (BDRip 1920x1080 x264 FLAC)/Extra/CD/CD1/01 - アーニャとベッキーのびっくり大作戦！.mp3",
@@ -86,4 +87,24 @@ func TestTrans(t *testing.T) {
 	for _, fp := range fps {
 		Trans(fp, p, c)
 	}
+}
+
+// go test -v -run TestTransJapanese
+func TestTransJapanese(t *testing.T) {
+	p := new(constant.Param)
+	p.Root = "/Users/zen/Github/MultimediaProcessingPipeline/ytdlp"
+	p.Language = "Japanese"
+	p.Pattern = "mp4"
+	p.Model = "base"
+	p.Location = "/Users/zen/Github/MultimediaProcessingPipeline/ytdlp"
+	p.Proxy = "192.168.1.20:8889"
+	p.Merge = false
+
+	mylog.SetLog(p)
+	sql.SetDatabase(p)
+	//util.ExitAfterRun()
+	replace.SetSensitive(p)
+
+	c := new(constant.Count)
+	Trans("/Users/zen/Github/MultimediaProcessingPipeline/test/NieR：Automata Fan Festival 12022 koncert [wX_SAi_ZcFQ].mp4", p, c)
 }
