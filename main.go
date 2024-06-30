@@ -5,7 +5,10 @@ import (
 	mylog "Multimedia_Processing_Pipeline/log"
 	"Multimedia_Processing_Pipeline/replace"
 	"Multimedia_Processing_Pipeline/sql"
+	translateShell "Multimedia_Processing_Pipeline/translate"
 	"Multimedia_Processing_Pipeline/util"
+	"Multimedia_Processing_Pipeline/whisper"
+	"Multimedia_Processing_Pipeline/ytdlp"
 	"log"
 	"os"
 )
@@ -29,15 +32,14 @@ func initConfig(p *constant.Param) {
 	replace.SetSensitive(p)
 }
 func main() {
-	p := &constant.Param{
-		Root:     "/mnt/c/Users/zen/Github/FastYt-dlp/joi2",
-		Language: "English",
-		Pattern:  "mp4",
-		Model:    "base",
-		Location: "/mnt/c/Users/zen/Github/FastYt-dlp/joi2",
-		Proxy:    "127.0.0.1:8889",
-		Merge:    false,
-	}
+	p := new(constant.Param)
+	p.Root = "/home/zen/git/MultimediaProcessingPipeline/ytdlp"
+	p.Language = "japanese"
+	p.Pattern = "webm"
+	p.Model = "base"
+	p.Location = "/home/zen/git/MultimediaProcessingPipeline/ytdlp"
+	p.Proxy = "192.168.1.20:8889"
+	p.Merge = false
 	initConfig(p)
 	if root := os.Getenv("root"); root != "" {
 		p.SetRoot(root)
@@ -60,4 +62,11 @@ func main() {
 	if merge := os.Getenv("merge"); merge == "1" {
 		p.Merge = true
 	}
+	video, err := ytdlp.DownloadVideo("https://youtu.be/wX_SAi_ZcFQ", p)
+	if err != nil {
+		return
+	}
+	whisper.GetSubtitle(video, p)
+	c := new(constant.Count)
+	translateShell.Trans(video, p, c)
 }

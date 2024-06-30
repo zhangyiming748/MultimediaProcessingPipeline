@@ -68,7 +68,7 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 		after.WriteString(fmt.Sprintf("%s\n", before[i]))
 		after.WriteString(fmt.Sprintf("%s\n", before[i+1]))
 		src := before[i+2]
-
+		log.Printf("读取到的日文原始字符串:%s\n", src)
 		afterSrc := replace.GetSensitive(src)
 
 		var dst string

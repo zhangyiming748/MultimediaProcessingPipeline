@@ -66,7 +66,7 @@ func TestDeepLX(t *testing.T) {
 func TestTrans(t *testing.T) {
 	p := &constant.Param{
 		Root:     "/home/zen/git/MultimediaProcessingPipeline/ytdlp",
-		Language: "English",
+		Language: "Japanese",
 		Pattern:  "mp4",
 		Model:    "base",
 		Location: "/home/zen/git/MultimediaProcessingPipeline/ytdlp",
@@ -75,5 +75,5 @@ func TestTrans(t *testing.T) {
 	sql.SetDatabase(p)
 	log.SetLog(p)
 	c := new(constant.Count)
-	Trans("/home/zen/git/MultimediaProcessingPipeline/ytdlp/EDGE FOR ME -JOI [656dc0089a6eb].mp4", p, c)
+	Trans("/home/zen/git/MultimediaProcessingPipeline/ytdlp/NieR：Automata Fan Festival 12022 koncert [wX_SAi_ZcFQ].webm", p, c)
 }
