@@ -30,11 +30,22 @@ func MkvWithAss(file string, p *constant.Param) {
 		cmd := exec.Command("ffmpeg", "-i", file, "-i", srt, "-c:v", "libvpx-vp9", "-crf", crf, "-c:a", "libvorbis", "-ac", "1", "-c:s", "ass", output)
 		fmt.Printf("生成的命令: %s\n", cmd.String())
 		msg := fmt.Sprintf("正在合成的视频:%s帧数%s", file, par.Video.FrameCount)
-		err := util.ExecCommand(cmd, msg)
-		if err != nil {
-			log.Fatalf("合成视频%v命令执行失败:%v 退出", output, err)
+		if p.GetMerge() {
+			err := util.ExecCommand(cmd, msg)
+			if err != nil {
+				log.Fatalf("合成视频%v命令执行失败:%v 退出", output, err)
+			} else {
+				os.Remove(file)
+			}
 		} else {
-			os.Remove(file)
+			fp := strings.Join([]string{p.GetRoot(), "merge.sh"}, string(os.PathSeparator))
+			openFile, _ := os.OpenFile(fp, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0777)
+			file = strings.Join([]string{"\"", file, "\""}, "")
+			output = strings.Join([]string{"\"", output, "\""}, "")
+			cmd = exec.Command("ffmpeg", "-i", file, "-i", srt, "-c:v", "libvpx-vp9", "-crf", crf, "-c:a", "libvorbis", "-ac", "1", "-c:s", "ass", output)
+			openFile.WriteString(cmd.String())
+			openFile.WriteString("\n")
+			openFile.Sync()
 		}
 	}
 }

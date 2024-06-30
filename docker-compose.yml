@@ -13,6 +13,7 @@ services:
       - model=large # whisper 模型等级 可选 tiny base small medium large
       - location=/data # 模型保存位置 下载了可以直接用 如果没下载可以保存在这里
       - proxy=192.168.1.20:8889 # 翻译引擎所使用的代理 如果为空则全程使用deeplx翻译
+      - merge=0 # 同时执行编码操作禁用时只生成命令 0禁用 1启用
     build:
       context: .  # 指定Dockerfile所在目录的路径
       dockerfile: Dockerfile  # 指定Dockerfile的名称
