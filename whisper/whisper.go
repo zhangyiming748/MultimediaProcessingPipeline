@@ -2,10 +2,12 @@ package whisper
 
 import (
 	"Multimedia_Processing_Pipeline/constant"
+	"Multimedia_Processing_Pipeline/replace"
 	"Multimedia_Processing_Pipeline/util"
 	"fmt"
 	"log"
 	"os/exec"
+	"strings"
 )
 
 func GetSubtitle(fp string, p *constant.Param) string {
@@ -15,5 +17,7 @@ func GetSubtitle(fp string, p *constant.Param) string {
 	if err != nil {
 		log.Printf("当前字幕生成错误\t命令原文:%v\t错误原文:%v\n", cmd.String(), err.Error())
 	}
+	fp = strings.Replace(fp, p.GetPattern(), "srt", 1)
+	replace.RemoveTrailingNewlines(fp)
 	return fp
 }
