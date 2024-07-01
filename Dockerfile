@@ -19,5 +19,6 @@ COPY . .
 RUN go env -w GO111MODULE=on
 RUN go env -w GOPROXY=https://goproxy.cn,direct
 RUN go env -w GOBIN=/go/bin
+RUN go mod vendor
 # 启动程序
 ENTRYPOINT ["go", "run","/app/main.go"]
