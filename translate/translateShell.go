@@ -54,15 +54,21 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 	r := seed.Intn(2000)
 	//中间文件名
 	srt := strings.Replace(fp, p.GetPattern(), "srt", 1)
+	log.Printf("根据文件名:%s\t替换的字幕名:%s\n", fp, srt)
 	tmpname := strings.Join([]string{strings.Replace(srt, ".srt", "", 1), strconv.Itoa(r), ".srt"}, "")
-	before := util.ReadInSlice(srt)
+	var before []string
+	if p.GetLanguage() == "English" {
+		before = util.ReadByLine(srt)
+	} else {
+		before = util.ReadInSlice(srt)
+	}
 	after, _ := os.OpenFile(tmpname, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0777)
 	for i := 0; i < len(before); i += 4 {
 		if i+3 > len(before) {
 			continue
 		}
-		after.WriteString(fmt.Sprintf("%s", before[i]))
-		after.WriteString(fmt.Sprintf("%s", before[i+1]))
+		after.WriteString(fmt.Sprintf("%s\n", before[i]))
+		after.WriteString(fmt.Sprintf("%s\n", before[i+1]))
 		src := before[i+2]
 		afterSrc := replace.GetSensitive(src)
 		var dst string
@@ -78,9 +84,9 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 		log.Printf("\r文件名:%v", tmpname)
 		log.Printf("\r原文:%v", src)
 		log.Printf("\r译文:%v", dst)
-		after.WriteString(fmt.Sprintf("%s", src))
-		after.WriteString(fmt.Sprintf("%s", dst))
-		after.WriteString(fmt.Sprintf("%s", before[i+3]))
+		after.WriteString(fmt.Sprintf("%s\n", src))
+		after.WriteString(fmt.Sprintf("%s\n", dst))
+		after.WriteString(fmt.Sprintf("%s\n", before[i+3]))
 		after.Sync()
 	}
 	origin := strings.Join([]string{strings.Replace(srt, ".srt", "", 1), "_origin", ".srt"}, "")
