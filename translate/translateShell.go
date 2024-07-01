@@ -50,11 +50,22 @@ TRANS:
 }
 
 func Trans(fp string, p *constant.Param, c *constant.Count) {
+	defer func() {
+		if err := recover(); err != nil {
+			log.Printf("Trans函数出现未捕获的错误:%v\n", err)
+			return
+		}
+	}()
 	// todo 翻译字幕
 	r := seed.Intn(2000)
 	//中间文件名
+	//srt := strings.Replace(fp, p.GetPattern(), "srt", 1)
+	log.Printf("trans接受到的fp=%s\n", fp)
+	log.Printf("此时的p=%+v\n", p)
+
 	srt := strings.Replace(fp, p.GetPattern(), "srt", 1)
-	log.Printf("根据文件名:%s\t替换的字幕名:%s\n", fp, srt)
+	log.Printf("%v根据文件名:%s\t替换的字幕名:%s\n", p.GetPattern(), fp, srt)
+	//log.Fatalf("%v根据文件名:%s\t替换的字幕名:%s\n", p.GetPattern(), fp, srt)
 	tmpname := strings.Join([]string{strings.Replace(srt, ".srt", "", 1), strconv.Itoa(r), ".srt"}, "")
 	var before []string
 	if p.GetLanguage() == "English" {

@@ -3,6 +3,7 @@ package main
 import (
 	"Multimedia_Processing_Pipeline/constant"
 	mylog "Multimedia_Processing_Pipeline/log"
+	"Multimedia_Processing_Pipeline/merge"
 	"Multimedia_Processing_Pipeline/replace"
 	"Multimedia_Processing_Pipeline/sql"
 	translateShell "Multimedia_Processing_Pipeline/translate"
@@ -11,6 +12,8 @@ import (
 	"Multimedia_Processing_Pipeline/ytdlp"
 	"log"
 	"os"
+	"path"
+	"strings"
 )
 
 func initConfig(p *constant.Param) {
@@ -34,8 +37,8 @@ func initConfig(p *constant.Param) {
 func main() {
 	p := new(constant.Param)
 	p.Root = "/home/zen/git/MultimediaProcessingPipeline/ytdlp"
-	p.Language = "japanese"
-	p.Pattern = "webm"
+	p.Language = "English"
+	p.Pattern = "mp4"
 	p.Model = "base"
 	p.Location = "/home/zen/git/MultimediaProcessingPipeline/ytdlp"
 	p.Proxy = "192.168.1.20:8889"
@@ -59,14 +62,21 @@ func main() {
 	if proxy := os.Getenv("proxy"); proxy != "" {
 		p.SetProxy(proxy)
 	}
-	if merge := os.Getenv("merge"); merge == "1" {
+	if mux := os.Getenv("merge"); mux == "1" {
 		p.Merge = true
 	}
-	video, err := ytdlp.DownloadVideo("https://youtu.be/wX_SAi_ZcFQ", p)
-	if err != nil {
-		return
-	}
-	whisper.GetSubtitle(video, p)
 	c := new(constant.Count)
-	translateShell.Trans(video, p, c)
+	lines := util.ReadByLine("/home/zen/git/MultimediaProcessingPipeline/ytdlp/test.list")
+	for _, line := range lines {
+		video, err := ytdlp.DownloadVideo(line, p)
+		if err != nil {
+			return
+		}
+		ext := strings.Replace(path.Ext(video), ".", "", 1)
+		p.SetPattern(ext)
+		log.Printf("下载后的文件名为:%s\n", video)
+		whisper.GetSubtitle(video, p)
+		translateShell.Trans(video, p, c)
+		merge.MkvWithAss(video, p)
+	}
 }

@@ -9,6 +9,8 @@ import (
 	"github.com/zhangyiming748/DeepLX"
 	"io/ioutil"
 	"net/http"
+	"path"
+	"path/filepath"
 	"strings"
 	"testing"
 )
@@ -65,24 +67,27 @@ func TestDeepLX(t *testing.T) {
 
 // go test -v -run TestWhisper
 func TestTrans(t *testing.T) {
-	p := &constant.Param{
-		Root:     "/Users/zen/Downloads",
-		Language: "Japanese",
-		Pattern:  "mp3",
-		Model:    "base",
-		Location: "/Users/zen/Downloads",
-		Proxy:    "192.168.1.20:8889",
-	}
-	sql.SetDatabase(p)
+	p := new(constant.Param)
+	p.Root = "/home/zen/git/MultimediaProcessingPipeline/ytdlp"
+	p.Language = "English"
+	p.Pattern = "mp4"
+	p.Model = "base"
+	p.Location = "/home/zen/git/MultimediaProcessingPipeline/ytdlp"
+	p.Proxy = "192.168.1.20:8889"
+	p.Merge = false
+
 	mylog.SetLog(p)
+	sql.SetDatabase(p)
+	//util.ExitAfterRun()
+	replace.SetSensitive(p)
 	c := new(constant.Count)
 	fps := []string{
-		"/Users/zen/Downloads/[ReinForce] Spy x Family (BDRip 1920x1080 x264 FLAC)/Extra/CD/CD1/01 - アーニャとベッキーのびっくり大作戦！.mp3",
-		"/Users/zen/Downloads/[ReinForce] Spy x Family (BDRip 1920x1080 x264 FLAC)/Extra/CD/CD1/02 - アーニャとベッキーのびっくり大作戦！ Cast Commentary.mp3",
-		"/Users/zen/Downloads/[ReinForce] Spy x Family (BDRip 1920x1080 x264 FLAC)/Extra/CD/CD2/01 - ブライア姉弟のスペシャルクッキング.mp3",
-		"/Users/zen/Downloads/[ReinForce] Spy x Family (BDRip 1920x1080 x264 FLAC)/Extra/CD/CD2/02 - ブライア姉弟のスペシャルクッキング Cast Commentary.mp3",
-		"/Users/zen/Downloads/[ReinForce] Spy x Family (BDRip 1920x1080 x264 FLAC)/Extra/CD/CD3/01 - ケーキを選んで世界平和⁉.mp3",
-		"/Users/zen/Downloads/[ReinForce] Spy x Family (BDRip 1920x1080 x264 FLAC)/Extra/CD/CD3/02 - ケーキを選んで世界平和⁉ Cast Commentary.mp3",
+		"/home/zen/git/MultimediaProcessingPipeline/ytdlp/Anastasia Doll： Bubbles, Boobs & Beyond.mp4",
+		"/home/zen/git/MultimediaProcessingPipeline/ytdlp/CATALINA CRUZ - Huge Dildo Plunges Deep Into Wet Pussy.mp4",
+		"/home/zen/git/MultimediaProcessingPipeline/ytdlp/Danielle Derek： Hot Stack.mp4",
+		"/home/zen/git/MultimediaProcessingPipeline/ytdlp/Huge tits Ricki Raxxx bra changing show .mp4",
+		"/home/zen/git/MultimediaProcessingPipeline/ytdlp/Tanya Virago Cums Clean.mp4",
+		"/home/zen/git/MultimediaProcessingPipeline/ytdlp/Tanya Virago： Huge Tits, Gaping Pussy.mp4",
 	}
 	for _, fp := range fps {
 		Trans(fp, p, c)
@@ -92,11 +97,11 @@ func TestTrans(t *testing.T) {
 // go test -v -run TestTransJapanese
 func TestTransJapanese(t *testing.T) {
 	p := new(constant.Param)
-	p.Root = "/Users/zen/Github/MultimediaProcessingPipeline/ytdlp"
-	p.Language = "Japanese"
+	p.Root = "/home/zen/git/MultimediaProcessingPipeline/ytdlp"
+	p.Language = "English"
 	p.Pattern = "mp4"
 	p.Model = "base"
-	p.Location = "/Users/zen/Github/MultimediaProcessingPipeline/ytdlp"
+	p.Location = "/home/zen/git/MultimediaProcessingPipeline/ytdlp"
 	p.Proxy = "192.168.1.20:8889"
 	p.Merge = false
 
@@ -106,5 +111,11 @@ func TestTransJapanese(t *testing.T) {
 	replace.SetSensitive(p)
 
 	c := new(constant.Count)
-	Trans("/Users/zen/Github/MultimediaProcessingPipeline/test/NieR：Automata Fan Festival 12022 koncert [wX_SAi_ZcFQ].mp4", p, c)
+	Trans("/home/zen/git/MultimediaProcessingPipeline/ytdlp/Bigger is Better Says Barbie Nicole.mp4", p, c)
+}
+func TestSplitExt(t *testing.T) {
+	name := "1111.cap"
+	ext := filepath.Ext(name)
+	ext2 := path.Ext(name)
+	t.Log(ext, ext2)
 }

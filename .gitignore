@@ -15,3 +15,5 @@ stderr.txt
 *.db
 *.srt
 .DS_Store
+merge.sh
+sensitive.txt
