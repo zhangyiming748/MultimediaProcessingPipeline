@@ -22,7 +22,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: zhangyiming748/convert_images
+          images: zhangyiming748/multimedia_processing_pipeline
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
