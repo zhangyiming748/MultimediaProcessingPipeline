@@ -17,3 +17,4 @@ stderr.txt
 .DS_Store
 merge.sh
 sensitive.txt
+/sql/leveldb/
