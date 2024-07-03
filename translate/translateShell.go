@@ -5,7 +5,9 @@ import (
 	"Multimedia_Processing_Pipeline/replace"
 	"Multimedia_Processing_Pipeline/sql"
 	"Multimedia_Processing_Pipeline/util"
+	"errors"
 	"fmt"
+	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/zhangyiming748/DeepLX"
 	"log"
 	"math/rand"
@@ -83,15 +85,20 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 		src := before[i+2]
 		afterSrc := replace.GetSensitive(src)
 		var dst string
-		if get, err := sql.GetDatabase().Hash().Get("translations", src); err == nil {
-			dst = get.String()
-			fmt.Println("find in cache")
+		if val, err := sql.GetLevelDB().Get([]byte(src), nil); err == nil {
+			dst = string(val)
+			log.Println("在缓存中找到")
 			c.SetCache()
 		} else {
+			if errors.Is(err, leveldb.ErrNotFound) {
+				log.Println("未在缓存中找到")
+			}
 			dst = Translate(afterSrc, p, c)
 		}
 		dst = replace.GetSensitive(dst)
-		sql.GetDatabase().Hash().Set("translations", src, dst)
+		if err := sql.GetLevelDB().Put([]byte(src), []byte(dst), nil); err != nil {
+			log.Printf("缓存写入数据库错误:%v\n", err)
+		}
 		log.Printf("\r文件名:%v", tmpname)
 		log.Printf("\r原文:%v", src)
 		log.Printf("\r译文:%v", dst)

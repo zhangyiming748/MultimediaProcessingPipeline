@@ -30,23 +30,32 @@ func SetSensitive(p *constant.Param) {
 	if IsExist(fp1) {
 		log.Printf("从视频目录%v中加载敏感词\n", fp1)
 		lines = readByLine(fp1)
-	}
-	if IsExist(fp2) {
+	} else if IsExist(fp2) {
 		log.Printf("从程序目录%v中加载敏感词\n", fp2)
 		lines = readByLine(fp1)
 	} else {
 		log.Println("没有找到敏感词文件")
 	}
+	//batch := new(leveldb.Batch)
+	//for _, line := range lines {
+	//	key := strings.Split(line, ":")[0]
+	//	value := strings.Split(line, ":")[1]
+	//	batch.Put([]byte(key), []byte(value))
+	//}
+	//err := sql.GetLevelDB().Write(batch, nil)
+	//if err !=nil{
+	//	log.Fatalf("敏感词写入数据库失败:%v\n",err)
+	//}
 	for _, line := range lines {
 		before := strings.Split(line, ":")[0]
 		after := strings.Split(line, ":")[1]
 		log.Printf("写入敏感词:\tbefore:%v\tafter:%v\n", before, after)
 		Sensitive[before] = after
-		set, err := sql.GetDatabase().Hash().Set("sensitive", before, after)
+		err := sql.GetLevelDB().Put([]byte(before), []byte(after), nil)
 		if err != nil {
-			log.Printf("敏感词%v写入数据库失败%v\n", set, err)
+			log.Printf("敏感词%v写入数据库失败%v\n", err)
 		} else {
-			log.Printf("敏感词%v写入数据库成功\n", set)
+			log.Printf("敏感词%v:%v写入数据库成功\n", before, after)
 		}
 	}
 }

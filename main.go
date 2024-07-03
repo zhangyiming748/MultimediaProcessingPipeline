@@ -30,19 +30,20 @@ func initConfig(p *constant.Param) {
 		log.Fatalln("yt-dlp")
 	}
 	mylog.SetLog(p)
-	sql.SetDatabase(p)
-	util.ExitAfterRun()
+	sql.SetLevelDB(p)
+	//util.ExitAfterRun()
 	replace.SetSensitive(p)
 }
 func main() {
 	p := new(constant.Param)
-	p.Root = "/home/zen/git/MultimediaProcessingPipeline/ytdlp"
+	p.Root = "/data"
 	p.Language = "English"
 	p.Pattern = "mp4"
 	p.Model = "base"
-	p.Location = "/home/zen/git/MultimediaProcessingPipeline/ytdlp"
+	p.Location = "/data"
 	p.Proxy = "192.168.1.20:8889"
 	p.Merge = false
+	p.Lines = strings.Join([]string{p.GetRoot(), "link.list"}, string(os.PathSeparator))
 	initConfig(p)
 	if root := os.Getenv("root"); root != "" {
 		p.SetRoot(root)
@@ -65,8 +66,11 @@ func main() {
 	if mux := os.Getenv("merge"); mux == "1" {
 		p.Merge = true
 	}
+	if lines := os.Getenv("lines"); lines != "" {
+		p.SetLines(strings.Join([]string{p.GetRoot(), lines}, string(os.PathSeparator)))
+	}
 	c := new(constant.Count)
-	lines := util.ReadByLine("/home/zen/git/MultimediaProcessingPipeline/ytdlp/test.list")
+	lines := util.ReadByLine(p.GetLines())
 	for _, line := range lines {
 		video, err := ytdlp.DownloadVideo(line, p)
 		if err != nil {
