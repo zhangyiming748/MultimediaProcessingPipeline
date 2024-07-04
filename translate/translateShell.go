@@ -30,7 +30,7 @@ const (
 func Translate(src string, p *constant.Param, c *constant.Count) string {
 	//trans -brief ja:zh "私の手の動きに合わせて|そう"
 	var dst string
-	fmt.Printf("\r富强|民主|文明|和谐|自由|平等|公正|法治|爱国|敬业|诚信|友善")
+	fmt.Printf("富强|民主|文明|和谐|自由|平等|公正|法治|爱国|敬业|诚信|友善\n")
 TRANS:
 	result, fail := DeepLx.TranslateByDeepLX("auto", "zh", src, "")
 	if fail != nil { //查询失败
@@ -52,12 +52,7 @@ TRANS:
 }
 
 func Trans(fp string, p *constant.Param, c *constant.Count) {
-	defer func() {
-		if err := recover(); err != nil {
-			log.Printf("Trans函数出现未捕获的错误:%v\n", err)
-			return
-		}
-	}()
+
 	// todo 翻译字幕
 	r := seed.Intn(2000)
 	//中间文件名
@@ -70,18 +65,19 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 	//log.Fatalf("%v根据文件名:%s\t替换的字幕名:%s\n", p.GetPattern(), fp, srt)
 	tmpname := strings.Join([]string{strings.Replace(srt, ".srt", "", 1), strconv.Itoa(r), ".srt"}, "")
 	var before []string
-	if p.GetLanguage() == "English" {
-		before = util.ReadByLine(srt)
-	} else {
-		before = util.ReadInSlice(srt)
-	}
+	before = util.ReadInSlice(srt)
 	after, _ := os.OpenFile(tmpname, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0777)
 	for i := 0; i < len(before); i += 4 {
+		defer func() {
+			if err := recover(); err != nil {
+				fmt.Println(err) // 处理错误
+			}
+		}()
 		if i+3 > len(before) {
 			continue
 		}
-		after.WriteString(fmt.Sprintf("%s\n", before[i]))
-		after.WriteString(fmt.Sprintf("%s\n", before[i+1]))
+		after.WriteString(fmt.Sprintf("%s", before[i]))
+		after.WriteString(fmt.Sprintf("%s", before[i+1]))
 		src := before[i+2]
 		afterSrc := replace.GetSensitive(src)
 		var dst string
@@ -99,12 +95,12 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 		if err := sql.GetLevelDB().Put([]byte(src), []byte(dst), nil); err != nil {
 			log.Printf("缓存写入数据库错误:%v\n", err)
 		}
-		log.Printf("\r文件名:%v", tmpname)
-		log.Printf("\r原文:%v", src)
-		log.Printf("\r译文:%v", dst)
-		after.WriteString(fmt.Sprintf("%s\n", src))
-		after.WriteString(fmt.Sprintf("%s\n", dst))
-		after.WriteString(fmt.Sprintf("%s\n", before[i+3]))
+		log.Printf("文件名:%v\n", tmpname)
+		log.Printf("原文:%v\n", src)
+		log.Printf("译文:%v\n", dst)
+		after.WriteString(fmt.Sprintf("%s", src))
+		after.WriteString(fmt.Sprintf("%s", dst))
+		after.WriteString(fmt.Sprintf("%s", before[i+3]))
 		after.Sync()
 	}
 	origin := strings.Join([]string{strings.Replace(srt, ".srt", "", 1), "_origin", ".srt"}, "")

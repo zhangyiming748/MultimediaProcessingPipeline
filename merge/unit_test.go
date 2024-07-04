@@ -2,7 +2,7 @@ package merge
 
 import (
 	"Multimedia_Processing_Pipeline/constant"
-	"Multimedia_Processing_Pipeline/log"
+	mylog "Multimedia_Processing_Pipeline/log"
 	"testing"
 )
 
@@ -12,14 +12,14 @@ func init() {
 
 // go test -v -run TestMerge
 func TestMerge(t *testing.T) {
-	p := &constant.Param{
-		Root:     "/home/zen/git/MultimediaProcessingPipeline/ytdlp",
-		Language: "English",
-		Pattern:  "mp4",
-		Model:    "base",
-		Location: "/home/zen/git/MultimediaProcessingPipeline/ytdlp",
-		Proxy:    "192.168.1.20:8889",
-	}
-	log.SetLog(p)
-	MkvWithAss("/home/zen/git/MultimediaProcessingPipeline/ytdlp/EDGE FOR ME -JOI [656dc0089a6eb].mp4", p)
+	p := new(constant.Param)
+	p.Root = "/mnt/c/Users/zen/Downloads"
+	p.Language = "Japanese"
+	p.Pattern = "mp4"
+	p.Model = "small"
+	p.Location = "/mnt/c/Users/zen/Downloads"
+	p.Proxy = "192.168.1.20:8889"
+	p.Merge = false
+	mylog.SetLog(p)
+	MkvWithAss("/mnt/d/merge/sdde-712.mp4", p)
 }

@@ -3,6 +3,7 @@ package whisper
 import (
 	"Multimedia_Processing_Pipeline/constant"
 	"Multimedia_Processing_Pipeline/log"
+	translateShell "Multimedia_Processing_Pipeline/translate"
 	"testing"
 )
 
@@ -31,5 +32,25 @@ func TestWhisper(t *testing.T) {
 	}
 	for _, fp := range fps {
 		GetSubtitle(fp, p)
+	}
+}
+
+// go test -v -run TestWhisperAndTrans
+func TestWhisperAndTrans(t *testing.T) {
+	p := &constant.Param{
+		Root:     "C:\\Users\\zen\\Downloads",
+		Language: "Japanese",
+		Pattern:  "mp4",
+		Model:    "large-v3",
+		Location: "C:\\Users\\zen\\Downloads",
+		Proxy:    "192.168.1.20:8889",
+	}
+	log.SetLog(p)
+	fps := []string{
+		"C:\\Users\\zen\\Downloads\\sdde-712.mp4",
+	}
+	for _, fp := range fps {
+		GetSubtitle(fp, p)
+		translateShell.Trans(fp, p, &constant.Count{})
 	}
 }

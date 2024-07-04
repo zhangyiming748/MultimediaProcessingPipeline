@@ -77,7 +77,7 @@ func TestTrans(t *testing.T) {
 	p.Merge = false
 
 	mylog.SetLog(p)
-	sql.SetDatabase(p)
+	sql.SetLevelDB(p)
 	//util.ExitAfterRun()
 	replace.SetSensitive(p)
 	c := new(constant.Count)
@@ -97,21 +97,19 @@ func TestTrans(t *testing.T) {
 // go test -v -run TestTransJapanese
 func TestTransJapanese(t *testing.T) {
 	p := new(constant.Param)
-	p.Root = "/home/zen/git/MultimediaProcessingPipeline/ytdlp"
-	p.Language = "English"
+	p.Root = "/mnt/c/Users/zen/Downloads"
+	p.Language = "Japanese"
 	p.Pattern = "mp4"
-	p.Model = "base"
-	p.Location = "/home/zen/git/MultimediaProcessingPipeline/ytdlp"
+	p.Model = "small"
+	p.Location = "/mnt/c/Users/zen/Downloads"
 	p.Proxy = "192.168.1.20:8889"
 	p.Merge = false
-
 	mylog.SetLog(p)
-	sql.SetDatabase(p)
+	sql.SetLevelDB(p)
 	//util.ExitAfterRun()
 	replace.SetSensitive(p)
-
 	c := new(constant.Count)
-	Trans("/home/zen/git/MultimediaProcessingPipeline/ytdlp/Bigger is Better Says Barbie Nicole.mp4", p, c)
+	Trans("/mnt/c/Users/zen/Downloads/712.srt", p, c)
 }
 func TestSplitExt(t *testing.T) {
 	name := "1111.cap"
