@@ -30,7 +30,7 @@ const (
 func Translate(src string, p *constant.Param, c *constant.Count) string {
 	//trans -brief ja:zh "私の手の動きに合わせて|そう"
 	var dst string
-	fmt.Printf("富强|民主|文明|和谐|自由|平等|公正|法治|爱国|敬业|诚信|友善\n")
+	fmt.Println("富强|民主|文明|和谐|自由|平等|公正|法治|爱国|敬业|诚信|友善")
 TRANS:
 	result, fail := DeepLx.TranslateByDeepLX("auto", "zh", src, "")
 	if fail != nil { //查询失败
@@ -83,11 +83,11 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 		var dst string
 		if val, err := sql.GetLevelDB().Get([]byte(src), nil); err == nil {
 			dst = string(val)
-			log.Println("在缓存中找到")
+			fmt.Println("在缓存中找到")
 			c.SetCache()
 		} else {
 			if errors.Is(err, leveldb.ErrNotFound) {
-				log.Println("未在缓存中找到")
+				fmt.Println("未在缓存中找到")
 			}
 			dst = Translate(afterSrc, p, c)
 		}
@@ -95,9 +95,7 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 		if err := sql.GetLevelDB().Put([]byte(src), []byte(dst), nil); err != nil {
 			log.Printf("缓存写入数据库错误:%v\n", err)
 		}
-		log.Printf("文件名:%v\n", tmpname)
-		log.Printf("原文:%v\n", src)
-		log.Printf("译文:%v\n", dst)
+		fmt.Printf("文件名:%v\t原文:%v\t译文:%v\n", tmpname, src, dst)
 		after.WriteString(fmt.Sprintf("%s", src))
 		after.WriteString(fmt.Sprintf("%s", dst))
 		after.WriteString(fmt.Sprintf("%s", before[i+3]))
