@@ -9,7 +9,6 @@ import (
 	"github.com/zhangyiming748/DeepLX"
 	"io/ioutil"
 	"net/http"
-	"path"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -114,6 +113,6 @@ func TestTransJapanese(t *testing.T) {
 func TestSplitExt(t *testing.T) {
 	name := "1111.cap"
 	ext := filepath.Ext(name)
-	ext2 := path.Ext(name)
+	ext2 := filepath.Ext(name)
 	t.Log(ext, ext2)
 }

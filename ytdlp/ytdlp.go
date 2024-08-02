@@ -7,7 +7,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"path"
+	"path/filepath"
 	"regexp"
 	"strings"
 )
@@ -26,7 +26,7 @@ func DownloadVideo(uri string, p *constant.Param) (fp string, err error) {
 	} else if destination == "" {
 		log.Fatalf("视频下载后找不到标题信息,命令原文:%s\n", cmd.String())
 	} else {
-		destination = strings.Replace(destination, path.Ext(destination), ".mp4", 1)
+		destination = strings.Replace(destination, filepath.Ext(destination), ".mp4", 1)
 		log.Printf("当前下载成功的文件标题:%s", destination)
 	}
 	//destination = strings.Join([]string{p.GetRoot(), destination}, string(os.PathSeparator))

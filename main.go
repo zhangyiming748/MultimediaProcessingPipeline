@@ -12,7 +12,7 @@ import (
 	"Multimedia_Processing_Pipeline/ytdlp"
 	"log"
 	"os"
-	"path"
+	"path/filepath"
 	"strings"
 )
 
@@ -76,7 +76,7 @@ func main() {
 		if err != nil {
 			return
 		}
-		ext := strings.Replace(path.Ext(video), ".", "", 1)
+		ext := strings.Replace(filepath.Ext(video), ".", "", 1)
 		p.SetPattern(ext)
 		log.Printf("下载后的文件名为:%s\n", video)
 		whisper.GetSubtitle(video, p)

@@ -14,10 +14,9 @@ import (
 )
 
 func MkvWithAss(file string, p *constant.Param) {
-	srt := strings.Replace(file, p.Pattern, "srt", 1)
+	srt := strings.Replace(file, filepath.Ext(file), ".srt", 1)
 	if isExist(srt) {
-		output := strings.Replace(file, p.GetPattern(), "_with_subtitle.mkv", 1)
-		output = strings.Replace(output, ".", "", 1)
+		output := strings.Replace(file, filepath.Ext(file), "_with_subtitle.mkv", 1)
 		par := FastMediaInfo.GetStandMediaInfo(file)
 		width, _ := strconv.Atoi(par.Video.Width)
 		height, _ := strconv.Atoi(par.Video.Height)
@@ -27,7 +26,7 @@ func MkvWithAss(file string, p *constant.Param) {
 			crf = "31"
 		}
 		//cmd := exec.Command("ffmpeg", "-i", file, "-itsoffset", "1", "-i", srt, "-c:v", "libvpx-vp9", "-crf", crf, "-c:a", "libvorbis", "-ac", "1", "-c:s", "ass", output)
-		cmd := exec.Command("ffmpeg", "-i", file, "-i", srt, "-c:v", "libvpx-vp9", "-crf", crf, "-c:a", "libopus", "-b:a", "128k", "-vbr", "0", "-map_chapters", "-1", "-ac", "1", "-c:s", "ass", output)
+		cmd := exec.Command("ffmpeg", "-i", file, "-i", srt, "-c:v", "libx265", "-c:a", "libopus", "-b:a", "128k", "-vbr", "0", "-map_chapters", "-1", "-ac", "1", "-c:s", "ass", output)
 		fmt.Printf("生成的命令: %s\n", cmd.String())
 		msg := fmt.Sprintf("正在合成的视频:%s帧数%s", file, par.Video.FrameCount)
 		if p.GetMerge() {

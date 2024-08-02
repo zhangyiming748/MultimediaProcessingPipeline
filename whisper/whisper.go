@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os/exec"
+	"path/filepath"
 	"strings"
 )
 
@@ -19,7 +20,7 @@ func GetSubtitle(fp string, p *constant.Param) string {
 	if err != nil {
 		log.Printf("当前字幕生成错误\t命令原文:%v\t错误原文:%v\n", cmd.String(), err.Error())
 	}
-	fp = strings.Replace(fp, p.GetPattern(), "srt", 1)
+	fp = strings.Replace(fp, filepath.Ext(fp), ".srt", 1)
 	//replace.RemoveTrailingNewlines(fp)
 	return fp
 }
