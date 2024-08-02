@@ -36,10 +36,10 @@ func initConfig(p *constant.Param) {
 }
 func main() {
 	p := new(constant.Param)
-	p.Root = "/data"
+	p.Root = "/mnt/c/Users/zen/Github/Multimedia_Processing_Pipeline"
 	p.Language = "English"
 	p.Pattern = "mp4"
-	p.Model = "base"
+	p.Model = "medium"
 	p.Location = "/data"
 	p.Proxy = "192.168.1.20:8889"
 	p.Merge = false
