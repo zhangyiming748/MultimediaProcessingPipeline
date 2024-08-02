@@ -109,7 +109,7 @@ func TestTransJapanese(t *testing.T) {
 	//util.ExitAfterRun()
 	replace.SetSensitive(p)
 	c := new(constant.Count)
-	Trans("/mnt/c/Users/zen/Downloads/712.srt", p, c)
+	Trans("/mnt/c/Users/zen/Github/Multimedia_Processing_Pipeline/Tom Cruise Terrifies James in 'Top Gun' Fighter Jet! [v1iZtBM23bY].srt", p, c)
 }
 func TestSplitExt(t *testing.T) {
 	name := "1111.cap"
