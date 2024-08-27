@@ -17,7 +17,8 @@ WORKDIR /app
 COPY . .
 # 配置env
 RUN go env -w GO111MODULE=on
-RUN go env -w GOPROXY=https://goproxy.cn,direct
-RUN go env -w GOBIN=/go/bin
+#RUN go env -w GOPROXY=https://goproxy.cn,direct
+#RUN go env -w GOBIN=/go/bin
+RUN go mod vendor
 # 启动程序
 ENTRYPOINT ["go", "run","/app/main.go"]

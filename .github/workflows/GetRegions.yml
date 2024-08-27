@@ -2,11 +2,10 @@ name: Get Regions
 on:
   push:
     branches:
-      - master
-    tags:
-      - "v*"
+      - dev
+  workflow_dispatch:
 jobs:
-  build-and-push:
+  GetRegions:
     runs-on: ubuntu-latest
     steps:
       - name: curl

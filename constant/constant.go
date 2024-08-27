@@ -8,8 +8,15 @@ type Param struct {
 	Location string //whisper 模型保存的位置 如果为空保存在视频文件夹
 	Proxy    string // 翻译所需要的网络环境
 	Merge    bool   //是否合并字幕 false 不合并 true 合并
+	Lines    string // 保存下载url的文档 默认放在root下 文件名为 link.list
 }
 
+func (p *Param) GetLines() string {
+	return p.Lines
+}
+func (p *Param) SetLines(s string) {
+	p.Lines = s
+}
 func (p *Param) SetMerge() {
 	p.Merge = true
 }

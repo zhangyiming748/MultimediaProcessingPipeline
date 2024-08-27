@@ -9,13 +9,13 @@ import (
 )
 
 var (
-	db *redka.DB
+	red *redka.DB
 )
 
-func GetDatabase() *redka.DB {
-	return db
+func GetRedka() *redka.DB {
+	return red
 }
-func SetDatabase(p *constant.Param) {
+func SetRedka(p *constant.Param) {
 	location := strings.Join([]string{p.GetRoot(), "trans.db"}, string(os.PathSeparator))
-	db, _ = redka.Open(location, nil)
+	red, _ = redka.Open(location, nil)
 }

@@ -1,4 +1,4 @@
-name: DownloadAndWhisperAndTrans
+name: download_whisper_trans
 services:
   whisperandtrans:
     stdin_open: true
@@ -8,10 +8,11 @@ services:
       - /path/to/save/videos:/data # 你的视频所在文件夹
     environment:
       - root=/data # 容器中指定处理视频的文件夹 不用修改
-      - language=en # 视频语言 如English German Russian Japanese Korean Spanish French
+      - language=English # 视频语言 如English German Russian Japanese Korean Spanish French
       - pattern=mp4 # 要处理视频的扩展名
-      - model=large # whisper 模型等级 可选 tiny base small medium large
+      - model=medium # whisper 模型等级 可选 tiny base small medium large
       - location=/data # 模型保存位置 下载了可以直接用 如果没下载可以保存在这里
       - proxy=192.168.1.20:8889 # 翻译引擎所使用的代理 如果为空则全程使用deeplx翻译
       - merge=0 # 同时执行编码操作 禁用时只生成命令 0禁用 1启用
+      - lines=link.list # 保存下载url的文档 默认放在$root下 文件名为 link.list
     image: zhangyiming748/multimedia_processing_pipeline:latest # 指定生成的镜像名称和标签
