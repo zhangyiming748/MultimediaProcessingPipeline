@@ -15,15 +15,15 @@ import (
 
 func TestTransAll(t *testing.T) {
 	p := &constant.Param{
-		Root:     "/data",
+		Root:     "/App/ytdlp",
 		Language: "English",
 		Pattern:  "mp4",
-		Model:    "base",
-		Location: "/data",
+		Model:    "small",
+		Location: "/App/ytdlp",
 		Proxy:    "192.168.1.20:8889",
 	}
 	mylog.SetLog(p)
-	sql.SetDatabase(p)
+	sql.SetLevelDB(p)
 	//util.ExitAfterRun()
 	fps := getFiles(p.GetRoot())
 
