@@ -3,108 +3,69 @@ package translateShell
 import (
 	"Multimedia_Processing_Pipeline/constant"
 	mylog "Multimedia_Processing_Pipeline/log"
-	"Multimedia_Processing_Pipeline/replace"
 	"Multimedia_Processing_Pipeline/sql"
 	"fmt"
-	"github.com/zhangyiming748/DeepLX"
-	"io/ioutil"
-	"net/http"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 )
 
-// go test -v -run TestTranslate
-//func TestDeepXl(t *testing.T) {
-//	ret := DeepXl("hello,world")
-//	t.Log(ret)
-//}
+// go test -timeout 2000m -v -run TestTransAll
 
-func TestMaster(t *testing.T) {
-
-	url := "http://192.168.1.6:1188/translate"
-	method := "POST"
-
-	payload := strings.NewReader(`{
-    "text": "Hello, world!",
-    "source_lang": "auto",
-    "target_lang": "ZH"
-}`)
-
-	client := &http.Client{}
-	req, err := http.NewRequest(method, url, payload)
-
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	req.Header.Add("User-Agent", "Apifox/1.0.0 (https://apifox.com)")
-	req.Header.Add("Content-Type", "application/json")
-
-	res, err := client.Do(req)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	defer res.Body.Close()
-
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(string(body))
-}
-func TestDeepLX(t *testing.T) {
-	lx, err := DeepLx.TranslateByDeepLX("auto", "zh", "hello world", "")
-	if err != nil {
-		return
-	} else {
-		t.Log(lx)
-	}
-}
-
-// go test -v -run TestWhisper
-func TestTrans(t *testing.T) {
+func TestTransAll(t *testing.T) {
 	p := &constant.Param{
-		Root:     "/Users/zen/Downloads",
-		Language: "Japanese",
-		Pattern:  "mp3",
+		Root:     "/data",
+		Language: "English",
+		Pattern:  "mp4",
 		Model:    "base",
-		Location: "/Users/zen/Downloads",
+		Location: "/data",
 		Proxy:    "192.168.1.20:8889",
 	}
-	sql.SetDatabase(p)
-	mylog.SetLog(p)
-	c := new(constant.Count)
-	fps := []string{
-		"/Users/zen/Downloads/[ReinForce] Spy x Family (BDRip 1920x1080 x264 FLAC)/Extra/CD/CD1/01 - アーニャとベッキーのびっくり大作戦！.mp3",
-		"/Users/zen/Downloads/[ReinForce] Spy x Family (BDRip 1920x1080 x264 FLAC)/Extra/CD/CD1/02 - アーニャとベッキーのびっくり大作戦！ Cast Commentary.mp3",
-		"/Users/zen/Downloads/[ReinForce] Spy x Family (BDRip 1920x1080 x264 FLAC)/Extra/CD/CD2/01 - ブライア姉弟のスペシャルクッキング.mp3",
-		"/Users/zen/Downloads/[ReinForce] Spy x Family (BDRip 1920x1080 x264 FLAC)/Extra/CD/CD2/02 - ブライア姉弟のスペシャルクッキング Cast Commentary.mp3",
-		"/Users/zen/Downloads/[ReinForce] Spy x Family (BDRip 1920x1080 x264 FLAC)/Extra/CD/CD3/01 - ケーキを選んで世界平和⁉.mp3",
-		"/Users/zen/Downloads/[ReinForce] Spy x Family (BDRip 1920x1080 x264 FLAC)/Extra/CD/CD3/02 - ケーキを選んで世界平和⁉ Cast Commentary.mp3",
-	}
-	for _, fp := range fps {
-		Trans(fp, p, c)
-	}
-}
-
-// go test -v -run TestTransJapanese
-func TestTransJapanese(t *testing.T) {
-	p := new(constant.Param)
-	p.Root = "/Users/zen/Github/MultimediaProcessingPipeline/ytdlp"
-	p.Language = "Japanese"
-	p.Pattern = "mp4"
-	p.Model = "base"
-	p.Location = "/Users/zen/Github/MultimediaProcessingPipeline/ytdlp"
-	p.Proxy = "192.168.1.20:8889"
-	p.Merge = false
-
 	mylog.SetLog(p)
 	sql.SetDatabase(p)
 	//util.ExitAfterRun()
-	replace.SetSensitive(p)
+	fps := getFiles(p.GetRoot())
 
 	c := new(constant.Count)
-	Trans("/Users/zen/Github/MultimediaProcessingPipeline/test/NieR：Automata Fan Festival 12022 koncert [wX_SAi_ZcFQ].mp4", p, c)
+	for _, fp := range fps {
+		if strings.HasSuffix(fp, ".mp4") {
+			Trans(fp, p, c)
+		}
+	}
+}
+
+func getFiles(currentDir string) (filePaths []string) {
+	// 获取当前工作目录
+	//currentDir, err := os.Getwd()
+	//if err != nil {
+	//	fmt.Println("获取当前目录失败:", err)
+	//	return []string{}
+	//}
+
+	// 创建一个切片来保存文件的绝对路径
+	//var filePaths []string
+
+	// 使用 Walk 函数遍历当前目录
+	err := filepath.Walk(currentDir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		// 检查是否是文件
+		if !info.IsDir() {
+			filePaths = append(filePaths, path) // 将文件的绝对路径添加到切片
+		}
+		return nil
+	})
+
+	if err != nil {
+		fmt.Println("遍历目录失败:", err)
+		return
+	}
+
+	// 打印所有文件的绝对路径
+	for _, filePath := range filePaths {
+		fmt.Println(filePath)
+	}
+	return filePaths
 }

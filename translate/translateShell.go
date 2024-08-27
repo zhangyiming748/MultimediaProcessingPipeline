@@ -42,6 +42,7 @@ TRANS:
 	} else {
 		c.SetDeeplx()
 		dst = result
+		time.Sleep(1 * time.Second)
 	}
 	if dst == "" {
 		Translate(src, p, c)
