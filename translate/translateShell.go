@@ -8,13 +8,13 @@ import (
 	"errors"
 	"fmt"
 	"github.com/syndtr/goleveldb/leveldb"
-	"github.com/zhangyiming748/DeepLX"
 	"log"
 	"math/rand"
 	"os"
 	"os/exec"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -31,22 +31,23 @@ func Translate(src string, p *constant.Param, c *constant.Count) string {
 	//trans -brief ja:zh "私の手の動きに合わせて|そう"
 	var dst string
 	fmt.Println("富强|民主|文明|和谐|自由|平等|公正|法治|爱国|敬业|诚信|友善")
-TRANS:
-	result, fail := DeepLx.TranslateByDeepLX("auto", "zh", src, "")
-	if fail != nil { //查询失败
-		google, err := TransByGoogle(src, c, p)
-		if err != nil {
-			goto TRANS
-		} else {
-			c.SetGoogle()
-			dst = google
-		}
-	} else {
-		c.SetDeeplx()
-		dst = result
-		time.Sleep(1 * time.Second)
+	once := new(sync.Once)
+	wg := new(sync.WaitGroup)
+	defer wg.Wait()
+	ack := make(chan string, 1)
+	wg.Add(1)
+	go TransByDeeplx(src, once, wg, ack)
+	go TransByGoogle(src, p.GetProxy(), once, wg, ack)
+	go TransByBing(src, p.GetProxy(), once, wg, ack)
+	select {
+	case dst = <-ack:
+		fmt.Println("收到翻译结果:", dst)
+	case <-time.After(5 * time.Second): // 设置超时时间为5秒
+		fmt.Println("翻译超时,重试")
+		Translate(src, p, c)
 	}
 	if dst == "" {
+		fmt.Println("翻译结果为空,重试")
 		Translate(src, p, c)
 	}
 	return dst
@@ -91,6 +92,8 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 				fmt.Println("未在缓存中找到")
 			}
 			dst = Translate(afterSrc, p, c)
+			randomNumber := util.GetSeed().Intn(401) + 100
+			time.Sleep(time.Duration(randomNumber) * time.Millisecond) // 暂停 100 毫秒
 		}
 		dst = replace.GetSensitive(dst)
 		if err := sql.GetLevelDB().Put([]byte(src), []byte(dst), nil); err != nil {

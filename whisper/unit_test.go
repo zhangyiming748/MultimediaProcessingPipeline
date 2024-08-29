@@ -18,16 +18,16 @@ func init() {
 func TestWhisper(t *testing.T) {
 	p := &constant.Param{
 		Root:     "/data",
-		Language: "English",
-		Pattern:  "mp4",
-		Model:    "medium.en",
+		Language: "Chinese",
+		Pattern:  "aac",
+		Model:    "medium",
 		Location: "/app",
 		Proxy:    "192.168.1.20:8889",
 	}
 	log.SetLog(p)
 	fps := getFiles(p.GetRoot())
 	for _, fp := range fps {
-		if strings.HasSuffix(fp, ".mp4") {
+		if strings.HasSuffix(fp, ".aac") {
 			GetSubtitle(fp, p)
 		}
 	}

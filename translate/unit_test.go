@@ -29,7 +29,7 @@ func TestTransAll(t *testing.T) {
 
 	c := new(constant.Count)
 	for _, fp := range fps {
-		if strings.HasSuffix(fp, ".mp4") {
+		if strings.HasSuffix(fp, ".srt") {
 			Trans(fp, p, c)
 		}
 	}
