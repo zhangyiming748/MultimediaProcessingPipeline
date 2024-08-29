@@ -1,0 +1,13 @@
+name: mmp
+services:
+    stand:
+        stdin_open: true
+        tty: true
+        container_name: mmp
+        volumes:
+            # - /c/Users/zen/Github/Multimedia_Processing_Pipeline/ytdlp:/data
+            - /home/zen/Windows/Users/zen/Github/Multimedia_Processing_Pipeline/ytdlp:/data
+            # - /c/Users/zen/Github/Multimedia_Processing_Pipeline:/app
+            - /home/zen/Windows/Users/zen/Github/Multimedia_Processing_Pipeline:/app
+        image: zhangyiming748/stand:latest
+        command: bash

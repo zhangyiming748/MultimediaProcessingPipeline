@@ -20,8 +20,8 @@ func TestWhisper(t *testing.T) {
 		Root:     "/data",
 		Language: "English",
 		Pattern:  "mp4",
-		Model:    "small.en",
-		Location: "/data",
+		Model:    "medium.en",
+		Location: "/app",
 		Proxy:    "192.168.1.20:8889",
 	}
 	log.SetLog(p)

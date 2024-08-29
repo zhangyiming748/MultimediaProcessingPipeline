@@ -23,7 +23,7 @@ func TestTransAll(t *testing.T) {
 		Proxy:    "192.168.1.20:8889",
 	}
 	mylog.SetLog(p)
-	sql.SetDatabase(p)
+	sql.SetLevelDB(p)
 	//util.ExitAfterRun()
 	fps := getFiles(p.GetRoot())
 
