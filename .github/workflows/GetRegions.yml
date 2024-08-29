@@ -13,3 +13,7 @@ jobs:
           curl cip.cc
           cat /etc/apt/sources.list
           ls /etc/apt/sources.list.d
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
