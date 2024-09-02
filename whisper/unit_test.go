@@ -18,10 +18,10 @@ func init() {
 func TestWhisper(t *testing.T) {
 	p := &constant.Param{
 		Root:     "/data",
-		Language: "Chinese",
-		Pattern:  "aac",
+		Language: "English",
+		Pattern:  "mp4",
 		Model:    "medium",
-		Location: "/app",
+		Location: "/data",
 		Proxy:    "192.168.1.20:8889",
 	}
 	log.SetLog(p)

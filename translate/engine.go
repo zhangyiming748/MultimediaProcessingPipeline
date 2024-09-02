@@ -47,3 +47,13 @@ func TransByBing(src, proxy string, once *sync.Once, wg *sync.WaitGroup, dst cha
 		})
 	}
 }
+func TransOnce(src, proxy string) (string, error) {
+	cmd := exec.Command("trans", "-brief", "-engine", "bing", "-proxy", proxy, ":zh-CN", src)
+	output, err := cmd.CombinedOutput()
+	result := string(output)
+	if err != nil || strings.Contains(string(output), "u001b") || strings.Contains(string(output), "Didyoumean") || strings.Contains(string(output), "Connectiontimedout") {
+		log.Printf("bing查询命令执行出错\t命令原文:%v\t错误原文:%v\n", cmd.String(), err.Error())
+		return "", err
+	}
+	return result, nil
+}

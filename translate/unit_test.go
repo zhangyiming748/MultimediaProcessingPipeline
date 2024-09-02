@@ -69,3 +69,9 @@ func getFiles(currentDir string) (filePaths []string) {
 	}
 	return filePaths
 }
+
+// go test -timeout 2000m -v -run TestRename
+func TestRename(t *testing.T) {
+	ret := TransName("/mnt/c/Users/zen/Github/Multimedia_Processing_Pipeline/")
+	fmt.Println(ret)
+}
