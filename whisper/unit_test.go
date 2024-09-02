@@ -27,7 +27,7 @@ func TestWhisper(t *testing.T) {
 	log.SetLog(p)
 	fps := getFiles(p.GetRoot())
 	for _, fp := range fps {
-		if strings.HasSuffix(fp, ".aac") {
+		if strings.HasSuffix(fp, ".mp4") {
 			GetSubtitle(fp, p)
 		}
 	}

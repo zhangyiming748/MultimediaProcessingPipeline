@@ -4,6 +4,7 @@ import (
 	"Multimedia_Processing_Pipeline/constant"
 	mylog "Multimedia_Processing_Pipeline/log"
 	"Multimedia_Processing_Pipeline/sql"
+	"bufio"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -18,7 +19,7 @@ func TestTransAll(t *testing.T) {
 		Root:     "/data",
 		Language: "English",
 		Pattern:  "mp4",
-		Model:    "base",
+		Model:    "medium",
 		Location: "/data",
 		Proxy:    "192.168.1.20:8889",
 	}
@@ -72,6 +73,21 @@ func getFiles(currentDir string) (filePaths []string) {
 
 // go test -timeout 2000m -v -run TestRename
 func TestRename(t *testing.T) {
-	ret := TransName("/mnt/c/Users/zen/Github/Multimedia_Processing_Pipeline/")
-	fmt.Println(ret)
+	//ret := TransName("/mnt/c/Users/zen/Github/Multimedia_Processing_Pipeline/ytdlp")
+	//fmt.Println(ret)
+	fps := getFiles("/mnt/c/Users/zen/Github/Multimedia_Processing_Pipeline/ytdlp")
+	for _, fp := range fps {
+		if exp := filepath.Ext(fp); exp == ".mp4" {
+			ret := TransName(fp)
+			fmt.Printf("before = %s\nafter = %s\n", fp, ret)
+			// 提示用户按下任意键继续
+			fmt.Println("按下任意键继续...")
+
+			// 创建一个读取器
+			reader := bufio.NewReader(os.Stdin)
+			// 等待用户输入
+			_, _ = reader.ReadString('\n')
+			os.Rename(fp, ret)
+		}
+	}
 }
