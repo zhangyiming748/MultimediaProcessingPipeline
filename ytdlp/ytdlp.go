@@ -24,7 +24,8 @@ func DownloadVideo(uri string, p *constant.Param) (fp string, err error) {
 	if err != nil {
 		log.Fatalf("命令运行产生错误:%v\n", err)
 	} else if destination == "" {
-		log.Fatalf("视频下载后找不到标题信息,命令原文:%s\n", cmd.String())
+		log.Printf("视频下载后找不到标题信息,命令原文:%s\n", cmd.String())
+		return "", nil
 	} else {
 		destination = strings.Replace(destination, filepath.Ext(destination), ".mp4", 1)
 		log.Printf("当前下载成功的文件标题:%s", destination)
