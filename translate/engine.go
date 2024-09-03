@@ -1,6 +1,7 @@
 package translateShell
 
 import (
+	"fmt"
 	DeepLx "github.com/zhangyiming748/DeepLX"
 	"log"
 	"os/exec"
@@ -14,8 +15,9 @@ func TransByDeeplx(src string, once *sync.Once, wg *sync.WaitGroup, dst chan str
 		return
 	} else {
 		once.Do(func() {
-			wg.Done()
+			fmt.Println("DeepLx返回翻译结果")
 			dst <- result
+			wg.Done()
 		})
 	}
 }
@@ -28,8 +30,9 @@ func TransByGoogle(src, proxy string, once *sync.Once, wg *sync.WaitGroup, dst c
 		return
 	} else {
 		once.Do(func() {
-			wg.Done()
+			fmt.Println("Google返回翻译结果")
 			dst <- result
+			wg.Done()
 		})
 	}
 }
@@ -42,8 +45,9 @@ func TransByBing(src, proxy string, once *sync.Once, wg *sync.WaitGroup, dst cha
 		return
 	} else {
 		once.Do(func() {
-			wg.Done()
+			fmt.Println("Bing返回翻译结果")
 			dst <- result
+			wg.Done()
 		})
 	}
 }
