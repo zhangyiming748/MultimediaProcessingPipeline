@@ -20,7 +20,7 @@ func TestWhisper(t *testing.T) {
 		Root:     "/data",
 		Language: "English",
 		Pattern:  "mp4",
-		Model:    "medium",
+		Model:    "large-v3",
 		Location: "/data",
 		Proxy:    "192.168.1.20:8889",
 	}

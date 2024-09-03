@@ -111,8 +111,8 @@ func ReadInSlice(fp string) []string {
 	}
 
 	// 打印结果
-	for i, line := range lines {
-		fmt.Printf("第%d行: %s\n", i+1, line)
-	}
+	//for i, line := range lines {
+	//	fmt.Printf("第%d行: %s\n", i+1, line)
+	//}
 	return lines
 }
