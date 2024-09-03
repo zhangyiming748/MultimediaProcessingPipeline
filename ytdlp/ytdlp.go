@@ -22,10 +22,9 @@ func DownloadVideo(uri string, p *constant.Param) (fp string, err error) {
 	msg := fmt.Sprintf("正在运行命令:%s", cmd.String())
 	destination, err := util.ExecCommand4YtdlpDestination(cmd, msg)
 	if err != nil {
-		log.Fatalf("命令运行产生错误:%v\n", err)
+		return uri, err
 	} else if destination == "" {
 		log.Printf("视频下载后找不到标题信息,命令原文:%s\n", cmd.String())
-		return "", nil
 	} else {
 		destination = strings.Replace(destination, filepath.Ext(destination), ".mp4", 1)
 		log.Printf("当前下载成功的文件标题:%s", destination)
@@ -46,7 +45,6 @@ func DownloadVideo(uri string, p *constant.Param) (fp string, err error) {
 	} else {
 		log.Printf("重命名成功")
 	}
-
 	return destination, nil
 }
 

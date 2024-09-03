@@ -4,7 +4,6 @@ import (
 	"Multimedia_Processing_Pipeline/constant"
 	mylog "Multimedia_Processing_Pipeline/log"
 	"Multimedia_Processing_Pipeline/sql"
-	"bufio"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -16,11 +15,11 @@ import (
 
 func TestTransAll(t *testing.T) {
 	p := &constant.Param{
-		Root:     "/data",
+		Root:     "/App/ytdlp",
 		Language: "English",
 		Pattern:  "mp4",
-		Model:    "medium",
-		Location: "/data",
+		Model:    "small",
+		Location: "/App/ytdlp",
 		Proxy:    "192.168.1.20:8889",
 	}
 	mylog.SetLog(p)
@@ -30,7 +29,7 @@ func TestTransAll(t *testing.T) {
 
 	c := new(constant.Count)
 	for _, fp := range fps {
-		if strings.HasSuffix(fp, ".srt") {
+		if strings.HasSuffix(fp, ".mp4") {
 			Trans(fp, p, c)
 		}
 	}
@@ -69,25 +68,4 @@ func getFiles(currentDir string) (filePaths []string) {
 		fmt.Println(filePath)
 	}
 	return filePaths
-}
-
-// go test -timeout 2000m -v -run TestRename
-func TestRename(t *testing.T) {
-	//ret := TransName("/mnt/c/Users/zen/Github/Multimedia_Processing_Pipeline/ytdlp")
-	//fmt.Println(ret)
-	fps := getFiles("/mnt/c/Users/zen/Github/Multimedia_Processing_Pipeline/ytdlp")
-	for _, fp := range fps {
-		if exp := filepath.Ext(fp); exp == ".mp4" {
-			ret := TransName(fp)
-			fmt.Printf("before = %s\nafter = %s\n", fp, ret)
-			// 提示用户按下任意键继续
-			fmt.Println("按下任意键继续...")
-
-			// 创建一个读取器
-			reader := bufio.NewReader(os.Stdin)
-			// 等待用户输入
-			_, _ = reader.ReadString('\n')
-			os.Rename(fp, ret)
-		}
-	}
 }

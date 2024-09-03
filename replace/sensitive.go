@@ -25,14 +25,18 @@ func GetSensitive(str string) string {
 
 func SetSensitive(p *constant.Param) {
 	fp1 := strings.Join([]string{p.GetRoot(), "sensitive.txt"}, string(os.PathSeparator))
-	fp2 := "sensitive.txt"
+	fp2 := strings.Join([]string{p.GetLocation(), "sensitive.txt"}, string(os.PathSeparator))
+	fp3 := "sensitive.txt"
 	lines := []string{}
 	if IsExist(fp1) {
 		log.Printf("从视频目录%v中加载敏感词\n", fp1)
 		lines = readByLine(fp1)
 	} else if IsExist(fp2) {
 		log.Printf("从程序目录%v中加载敏感词\n", fp2)
-		lines = readByLine(fp1)
+		lines = readByLine(fp2)
+	} else if IsExist(fp3) {
+		log.Printf("从程序目录%v中加载敏感词\n", fp3)
+		lines = readByLine(fp3)
 	} else {
 		log.Println("没有找到敏感词文件")
 	}

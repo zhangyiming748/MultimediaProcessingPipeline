@@ -4,6 +4,7 @@ import (
 	"Multimedia_Processing_Pipeline/constant"
 	"Multimedia_Processing_Pipeline/log"
 	"Multimedia_Processing_Pipeline/util"
+	"os"
 	"testing"
 )
 
@@ -11,36 +12,27 @@ func init() {
 
 }
 
-// go test -timeout 24h -v -run TestYTdlp
+// go test -timeout 2000m -v -run TestYTdlp
 func TestYTdlp(t *testing.T) {
 	p := &constant.Param{
-		Root:     "/data",
+		Root:     "/App/ytdlp",
 		Language: "English",
 		Pattern:  "mp4",
-		Model:    "base",
-		Location: "/data",
-		Proxy:    "192.168.1.20:8889",
+		Model:    "small",
+		Location: "/App/ytdlp",
+		Proxy:    "192.168.1.10:8889",
+	}
+	file, err := os.OpenFile("fail.list", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
+	if err != nil {
+		return
 	}
 	log.SetLog(p)
-	uris := util.ReadByLine("/app/ytdlp/test.list")
+	uris := util.ReadByLine("/App/ytdlp/test.list")
 	for _, uri := range uris {
-		DownloadVideo(uri, p)
+		if link, err := DownloadVideo(uri, p); err != nil {
+			file.WriteString(link)
+			file.WriteString("\n")
+		}
 	}
-}
-
-// go test -timeout 24h -v -run TestLocalYTdlp
-func TestLocalYTdlp(t *testing.T) {
-	p := &constant.Param{
-		Root:     "/mnt/c/Users/zen/Github/Multimedia_Processing_Pipeline/ytdlp",
-		Language: "English",
-		Pattern:  "mp4",
-		Model:    "base",
-		Location: "/mnt/c/Users/zen/Github/Multimedia_Processing_Pipeline/ytdlp",
-		Proxy:    "192.168.1.20:8889",
-	}
-	log.SetLog(p)
-	uris := util.ReadByLine("/mnt/c/Users/zen/Github/Multimedia_Processing_Pipeline/ytdlp/test.list")
-	for _, uri := range uris {
-		DownloadVideo(uri, p)
-	}
+	file.Sync()
 }
