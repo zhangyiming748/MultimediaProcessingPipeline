@@ -15,7 +15,7 @@ func init() {
 	os.Setenv("PYTHONWARNINGS", "ignore::FutureWarning")
 }
 
-// go test -timeout 2000m -v -run TestWhisper
+// go test -timeout 2000h -v -run TestWhisper
 func TestWhisper(t *testing.T) {
 	//	targetHour := 7
 	//	targetMinute := 30
