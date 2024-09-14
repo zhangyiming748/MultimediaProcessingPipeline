@@ -8,20 +8,37 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	//"time"
 )
 
 func init() {
-
+	os.Setenv("PYTHONWARNINGS", "ignore::FutureWarning")
 }
 
 // go test -timeout 2000m -v -run TestWhisper
 func TestWhisper(t *testing.T) {
+	//	targetHour := 7
+	//	targetMinute := 30
+	//
+	//	for {
+	//		// 获取当前时间
+	//		now := time.Now()
+	//
+	//		// 检查当前时间是否达到了目标时间
+	//		if now.Hour() == targetHour && now.Minute() == targetMinute {
+	//			fmt.Println("开始运行程序...")
+	//			break // 达到目标时间，退出循环
+	//		}
+	//
+	//		// 等待一段时间再检查，避免过于频繁的循环
+	//		time.Sleep(30 * time.Second) // 每30秒检查一次
+	//	}
 	p := &constant.Param{
-		Root:     "/data",
-		Language: "English",
+		Root:     "C:\\Users\\zen\\Videos\\export\\KAGP-116\\work",
+		Language: "Japanese",
 		Pattern:  "mp4",
 		Model:    "large-v3",
-		Location: "/data",
+		Location: "C:\\Users\\zen\\Videos\\export",
 		Proxy:    "192.168.1.20:8889",
 	}
 	log.SetLog(p)

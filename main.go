@@ -13,6 +13,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 )
 
@@ -24,7 +25,9 @@ func initConfig(p *constant.Param) {
 		log.Fatalln("whisper未安装")
 	}
 	if !util.IsExistCmd("trans") {
-		log.Fatalln("trans未安装")
+		if runtime.GOOS != "windows" {
+			log.Fatalln("trans未安装")
+		}
 	}
 	if !util.IsExistCmd("yt-dlp") {
 		log.Fatalln("yt-dlp")
