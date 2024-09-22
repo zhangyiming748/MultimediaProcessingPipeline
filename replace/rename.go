@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -21,4 +22,14 @@ func Rename(src string) (dst string, err error) {
 		log.Printf("src:%s重命名dst:%s成功\n", src, dst)
 	}
 	return dst, nil
+}
+
+/*
+替换英文方括号
+*/
+func ReplaceEnglishSquareBrackets(input string) string {
+	//input := "这是一个测试字符串[包含方括号内容]，请忽略这部分内容。"
+	re := regexp.MustCompile(` \[[^\]]*?\]`)
+	result := re.ReplaceAllString(input, "")
+	return result
 }
