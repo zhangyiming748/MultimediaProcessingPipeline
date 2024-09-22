@@ -15,4 +15,4 @@ services:
       - proxy=192.168.1.20:8889 # 翻译引擎所使用的代理 如果为空则全程使用deeplx翻译
       - merge=0 # 同时执行编码操作 禁用时只生成命令 0禁用 1启用
       - lines=link.list # 保存下载url的文档 默认放在$root下 文件名为 link.list
-    image: zhangyiming748/multimedia_processing_pipeline:latest # 指定生成的镜像名称和标签
+    image: zhangyiming748/stand:latest # 指定生成的镜像名称和标签
