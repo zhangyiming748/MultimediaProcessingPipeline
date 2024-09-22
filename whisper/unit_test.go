@@ -11,10 +11,6 @@ import (
 	//"time"
 )
 
-func init() {
-	os.Setenv("PYTHONWARNINGS", "ignore::FutureWarning")
-}
-
 // go test -timeout 2000h -v -run TestWhisper
 func TestWhisper(t *testing.T) {
 	//	targetHour := 7
@@ -34,7 +30,7 @@ func TestWhisper(t *testing.T) {
 	//		time.Sleep(30 * time.Second) // 每30秒检查一次
 	//	}
 	p := &constant.Param{
-		Root:     "C:\\Users\\zen\\Videos\\export\\KAGP-116\\work",
+		Root:     "C:\\Users\\zen\\Videos\\export\\sdde",
 		Language: "Japanese",
 		Pattern:  "mp4",
 		Model:    "large-v3",

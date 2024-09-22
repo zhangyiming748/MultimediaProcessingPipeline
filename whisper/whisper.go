@@ -12,6 +12,10 @@ import (
 	"time"
 )
 
+func init() {
+	os.Setenv("PYTHONWARNINGS", "ignore::FutureWarning")
+}
+
 /*
 生成字幕后返回字幕的绝对路径
 */
@@ -20,6 +24,7 @@ func GetSubtitle(fp string, p *constant.Param) string {
 	if err == nil {
 		log.Println("utf-8环境设置成功")
 	}
+
 	cmd := exec.Command("whisper", "--device", "cuda", fp, "--model", p.GetModel(), "--model_dir", p.GetLocation(), "--output_format", "srt", "--prepend_punctuations", ",.?", "--language", p.GetLanguage(), "--output_dir", p.GetRoot(), "--verbose", "True")
 	//cmd := exec.Command("whisper",  fp, "--model", p.GetModel(), "--model_dir", p.GetLocation(), "--output_format", "srt", "--prepend_punctuations", ",.?", "--language", p.GetLanguage(), "--output_dir", p.GetRoot(), "--verbose", "True")
 	startTime := time.Now()

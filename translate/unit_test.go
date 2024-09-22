@@ -12,14 +12,14 @@ import (
 )
 
 // go test -timeout 2000m -v -run TestTransAll
-
+// docker run -dit --name trans -v /c/Users/zen/Github/MultimediaProcessingPipeline:/app -v /c/Users/zen/Videos/export/sdde:/data zhangyiming748/stand:latest bash
 func TestTransAll(t *testing.T) {
 	p := &constant.Param{
-		Root:     "/App/ytdlp",
+		Root:     "/data",
 		Language: "English",
 		Pattern:  "mp4",
 		Model:    "small",
-		Location: "/App/ytdlp",
+		Location: "/data",
 		Proxy:    "192.168.1.20:8889",
 	}
 	mylog.SetLog(p)

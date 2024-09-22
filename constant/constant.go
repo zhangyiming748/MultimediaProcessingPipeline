@@ -1,5 +1,9 @@
 package constant
 
+import (
+	"github.com/fatih/color"
+)
+
 type Param struct {
 	Root     string // 视频文件位置
 	Language string // 视频文件语言 English German Russian Japanese Korean Spanish French
@@ -109,4 +113,26 @@ func (c *Count) SetCache() {
 
 func (c *Count) GetCache() uint64 {
 	return c.Cache
+}
+
+func Warning(s string) {
+	c := color.New()
+	c.Add(color.FgYellow)
+	c.Add(color.BgWhite)
+	c.Add(color.Bold)
+	c.Println(s)
+}
+func Error(s string) {
+	c := color.New()
+	c.Add(color.FgRed)
+	c.Add(color.BgWhite)
+	c.Add(color.Bold)
+	c.Println(s)
+}
+func Info(s string) {
+	c := color.New()
+	c.Add(color.FgHiBlack)
+	c.Add(color.BgWhite)
+	c.Add(color.Bold)
+	c.Println(s)
 }

@@ -10,9 +10,9 @@ import (
 	"Multimedia_Processing_Pipeline/util"
 	"Multimedia_Processing_Pipeline/whisper"
 	"Multimedia_Processing_Pipeline/ytdlp"
+	"github.com/fatih/color"
 	"log"
 	"os"
-	"path/filepath"
 	"runtime"
 	"strings"
 )
@@ -39,12 +39,12 @@ func initConfig(p *constant.Param) {
 }
 func main() {
 	p := new(constant.Param)
-	p.Root = "/mnt/c/Users/zen/Github/Multimedia_Processing_Pipeline"
+	p.Root = "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline"
 	p.Language = "English"
 	p.Pattern = "mp4"
-	p.Model = "medium"
-	p.Location = "/data"
-	p.Proxy = "192.168.1.20:8889"
+	p.Model = "medium.en"
+	p.Location = "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline"
+	p.Proxy = "192.168.1.8:8889"
 	p.Merge = false
 	p.Lines = strings.Join([]string{p.GetRoot(), "link.list"}, string(os.PathSeparator))
 	initConfig(p)
@@ -53,6 +53,9 @@ func main() {
 	}
 	if language := os.Getenv("language"); language != "" {
 		p.SetLanguage(language)
+	}
+	if language := os.Getenv("language"); language == "English" {
+		p.SetLanguage("medium.en")
 	}
 	if pattern := os.Getenv("pattern"); pattern != "" {
 		p.SetPattern(pattern)
@@ -75,15 +78,15 @@ func main() {
 	c := new(constant.Count)
 	lines := util.ReadByLine(p.GetLines())
 	for _, line := range lines {
-		video, err := ytdlp.DownloadVideo(line, p)
-		if err != nil {
-			return
-		}
-		ext := strings.Replace(filepath.Ext(video), ".", "", 1)
-		p.SetPattern(ext)
+		video := ytdlp.DownloadVideo(line, p)
 		log.Printf("下载后的文件名为:%s\n", video)
+		video = strings.Replace(video, "\n", "", 1)
 		whisper.GetSubtitle(video, p)
+		color.Red("开始翻译")
 		translateShell.Trans(video, p, c)
-		merge.MkvWithAss(video, p)
+		if p.GetMerge() {
+			merge.Mp4WithSrt(video)
+		}
+
 	}
 }

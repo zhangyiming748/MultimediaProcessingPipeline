@@ -11,7 +11,6 @@ import (
 	"log"
 	"math/rand"
 	"os"
-	"os/exec"
 	"strconv"
 	"strings"
 	"sync"
@@ -23,7 +22,7 @@ var (
 )
 
 const (
-	TIMEOUT = 8 //second
+	TIMEOUT = 10 //second
 	RETRY   = 3
 )
 
@@ -37,12 +36,12 @@ func Translate(src string, p *constant.Param, c *constant.Count) string {
 	ack := make(chan string, 1)
 	wg.Add(1)
 	go TransByDeeplx(src, once, wg, ack)
-	go TransByGoogle(src, p.GetProxy(), once, wg, ack)
-	go TransByBing(src, p.GetProxy(), once, wg, ack)
+	//go TransByGoogle(src, p.GetProxy(), once, wg, ack)
+	//go TransByBing(src, p.GetProxy(), once, wg, ack)
 	select {
 	case dst = <-ack:
-		fmt.Println("收到翻译结果:", dst)
-	case <-time.After(5 * time.Second): // 设置超时时间为5秒
+		constant.Info(fmt.Sprintf("收到翻译结果:%v\n", dst))
+	case <-time.After(TIMEOUT * time.Second): // 设置超时时间为5秒
 		fmt.Println("翻译超时,重试")
 		Translate(src, p, c)
 	}
@@ -68,16 +67,13 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 	tmpname := strings.Join([]string{strings.Replace(srt, ".srt", "", 1), strconv.Itoa(r), ".srt"}, "")
 	var before []string
 	before = util.ReadInSlice(srt)
+	fmt.Println(before)
 	after, _ := os.OpenFile(tmpname, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0777)
 	for i := 0; i < len(before); i += 4 {
-		defer func() {
-			if err := recover(); err != nil {
-				fmt.Println(err) // 处理错误
-			}
-		}()
 		if i+3 > len(before) {
 			continue
 		}
+		log.SetPrefix(before[i])
 		after.WriteString(fmt.Sprintf("%s", before[i]))
 		after.WriteString(fmt.Sprintf("%s", before[i+1]))
 		src := before[i+2]
@@ -99,13 +95,17 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 		if err := sql.GetLevelDB().Put([]byte(src), []byte(dst), nil); err != nil {
 			log.Printf("缓存写入数据库错误:%v\n", err)
 		}
-		fmt.Printf("文件名:%v\t原文:%v\t译文:%v\n", tmpname, src, dst)
+		log.Printf("文件名:%v\t原文:%v\t译文:%v\n", tmpname, src, dst)
 		after.WriteString(fmt.Sprintf("%s", src))
 		after.WriteString(fmt.Sprintf("%s", dst))
 		after.WriteString(fmt.Sprintf("%s", before[i+3]))
 		after.Sync()
 	}
+	after.Close()
 	origin := strings.Join([]string{strings.Replace(srt, ".srt", "", 1), "_origin", ".srt"}, "")
-	exec.Command("cp", srt, origin).CombinedOutput()
-	os.Rename(tmpname, srt)
+	err := os.Rename(srt, origin)
+	err = os.Rename(tmpname, srt)
+	if err != nil {
+		constant.Warning(fmt.Sprintf("字幕文件重命名出现错误:%v\n", err))
+	}
 }
