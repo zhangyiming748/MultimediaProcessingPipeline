@@ -46,14 +46,14 @@ func Translate(src string, p *constant.Param, c *constant.Count) string {
 	}
 	select {
 	case dst = <-ack:
-		constant.Info(fmt.Sprintf("收到翻译结果:%v\n", dst))
+		//constant.Info(fmt.Sprintf("收到翻译结果:%v\n", dst))
 	case <-time.After(TIMEOUT * time.Second): // 设置超时时间为5秒
-		fmt.Println("翻译超时,重试")
-		Translate(src, p, c)
+		fmt.Printf("翻译超时,重试\n此时的src = %v\n", src)
+		return src
 	}
 	if dst == "" {
-		fmt.Println("翻译结果为空,重试")
-		Translate(src, p, c)
+		fmt.Printf("翻译结果为空,重试\n此时的src = %v\n", src)
+		return src
 	}
 	return dst
 }
