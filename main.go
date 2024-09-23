@@ -15,6 +15,7 @@ import (
 	"os"
 	"runtime"
 	"strings"
+	"sync"
 )
 
 func initConfig(p *constant.Param) {
@@ -45,7 +46,7 @@ func main() {
 	p.Model = "medium.en"
 	p.Location = "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline"
 	p.Proxy = "192.168.1.8:8889"
-	p.Merge = false
+	p.Merge = true
 	p.Lines = strings.Join([]string{p.GetRoot(), "link.list"}, string(os.PathSeparator))
 	initConfig(p)
 	if root := os.Getenv("root"); root != "" {
@@ -77,16 +78,28 @@ func main() {
 	}
 	c := new(constant.Count)
 	lines := util.ReadByLine(p.GetLines())
+	// 创建一个通道
+	file_ch := make(chan string)
+	wg := new(sync.WaitGroup)
+	if p.GetMerge() {
+		go merge.MergeByChannel(file_ch, wg)
+	}
 	for _, line := range lines {
 		video := ytdlp.DownloadVideo(line, p)
 		log.Printf("下载后的文件名为:%s\n", video)
 		video = strings.Replace(video, "\n", "", 1)
+		video_name := strings.Replace(video, "：", "", 1)
+		video_name = strings.Replace(video_name, ":", "", 1)
+		os.Rename(video, video_name)
+		log.Printf("合规重命名为:%s\n", video_name)
+		video = video_name
 		whisper.GetSubtitle(video, p)
 		color.Red("开始翻译")
 		translateShell.Trans(video, p, c)
 		if p.GetMerge() {
-			merge.Mp4WithSrt(video)
+			file_ch <- video
+			//merge.Mp4WithSrt(video)
 		}
-
 	}
+	wg.Wait()
 }
