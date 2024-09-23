@@ -92,6 +92,7 @@ func main() {
 		color.Red("开始翻译")
 		translateShell.Trans(video, p, c)
 		if p.GetMerge() {
+			wg.Add(1)
 			file_ch <- video
 			//merge.Mp4WithSrt(video)
 		}
