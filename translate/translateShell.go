@@ -24,12 +24,15 @@ var (
 
 const (
 	TIMEOUT = 10 //second
-	RETRY   = 3
+
 )
 
 func Translate(src string, p *constant.Param, c *constant.Count) string {
 	//trans -brief ja:zh "私の手の動きに合わせて|そう"
 	var dst string
+	if src == "" {
+		return dst
+	}
 	fmt.Println("富强|民主|文明|和谐|自由|平等|公正|法治|爱国|敬业|诚信|友善")
 	once := new(sync.Once)
 	wg := new(sync.WaitGroup)
