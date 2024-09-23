@@ -99,9 +99,9 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 		}
 		dst = replace.GetSensitive(dst)
 		if err := sql.GetLevelDB().Put([]byte(src), []byte(dst), nil); err != nil {
-			log.Printf("缓存写入数据库错误:%v\n", err)
+			fmt.Printf("缓存写入数据库错误:%v\n", err)
 		}
-		log.Printf("文件名:%v\t原文:%v\t译文:%v\n", tmpname, src, dst)
+		fmt.Printf("文件名:%v\t原文:%v\t译文:%v\n", tmpname, src, dst)
 		after.WriteString(fmt.Sprintf("%s", src))
 		after.WriteString(fmt.Sprintf("%s", dst))
 		after.WriteString(fmt.Sprintf("%s", before[i+3]))
