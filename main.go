@@ -88,11 +88,6 @@ func main() {
 		video := ytdlp.DownloadVideo(line, p)
 		log.Printf("下载后的文件名为:%s\n", video)
 		video = strings.Replace(video, "\n", "", 1)
-		video_name := strings.Replace(video, "：", "", 1)
-		video_name = strings.Replace(video_name, ":", "", 1)
-		os.Rename(video, video_name)
-		log.Printf("合规重命名为:%s\n", video_name)
-		video = video_name
 		whisper.GetSubtitle(video, p)
 		color.Red("开始翻译")
 		translateShell.Trans(video, p, c)
