@@ -4,7 +4,6 @@ import (
 	"Multimedia_Processing_Pipeline/constant"
 	"Multimedia_Processing_Pipeline/sql"
 	"bufio"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -53,13 +52,13 @@ func SetSensitive(p *constant.Param) {
 	for _, line := range lines {
 		before := strings.Split(line, ":")[0]
 		after := strings.Split(line, ":")[1]
-		log.Printf("写入敏感词:\tbefore:%v\tafter:%v\n", before, after)
+		log.Printf("写入敏感词 : before - %v\tafter - %v\n", before, after)
 		Sensitive[before] = after
 		err := sql.GetLevelDB().Put([]byte(before), []byte(after), nil)
 		if err != nil {
-			log.Printf("敏感词%v写入数据库失败%v\n", err)
+			log.Printf("敏感词:%v - %v写入数据库失败:%v\n", before, after, err)
 		} else {
-			log.Printf("敏感词%v:%v写入数据库成功\n", before, after)
+			log.Printf("敏感词:%v - %v写入数据库成功\n", before, after)
 		}
 	}
 }
@@ -68,8 +67,7 @@ func readByLine(fp string) []string {
 	lines := []string{}
 	fi, err := os.Open(fp)
 	if err != nil {
-		fmt.Printf("Error: %s\n", err)
-		log.Println("按行读文件出错")
+		log.Println("按行读文件出错", err)
 		return []string{}
 	}
 	defer fi.Close()
