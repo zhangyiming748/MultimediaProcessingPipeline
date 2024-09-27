@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/syndtr/goleveldb/leveldb"
+	"github.com/zhangyiming748/pretty"
 	"log"
 	"math/rand"
 	"os"
@@ -33,7 +34,7 @@ func Translate(src string, p *constant.Param, c *constant.Count) string {
 	if src == "" {
 		return dst
 	}
-	fmt.Println("富强|民主|文明|和谐|自由|平等|公正|法治|爱国|敬业|诚信|友善")
+	//fmt.Println("富强|民主|文明|和谐|自由|平等|公正|法治|爱国|敬业|诚信|友善")
 	once := new(sync.Once)
 	wg := new(sync.WaitGroup)
 	defer wg.Wait()
@@ -64,8 +65,8 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 	r := seed.Intn(2000)
 	//中间文件名
 	//srt := strings.Replace(fp, p.GetPattern(), "srt", 1)
-	log.Printf("trans接受到的fp=%s\n", fp)
-	log.Printf("此时的p=%+v\n", p)
+	//log.Printf("trans接受到的fp=%s\n", fp)
+	//log.Printf("此时的p=%+v\n", p)
 
 	srt := strings.Replace(fp, p.GetPattern(), "srt", 1)
 	log.Printf("%v根据文件名:%s\t替换的字幕名:%s\n", p.GetPattern(), fp, srt)
@@ -101,7 +102,7 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 		if err := sql.GetLevelDB().Put([]byte(src), []byte(dst), nil); err != nil {
 			fmt.Printf("缓存写入数据库错误:%v\n", err)
 		}
-		fmt.Printf("文件名:%v\t原文:%v\t译文:%v\n", tmpname, src, dst)
+		pretty.P(fmt.Sprintf("文件名:%v\n原文:%v\n译文:%v\n", tmpname, src, dst))
 		after.WriteString(fmt.Sprintf("%s", src))
 		after.WriteString(fmt.Sprintf("%s", dst))
 		after.WriteString(fmt.Sprintf("%s", before[i+3]))

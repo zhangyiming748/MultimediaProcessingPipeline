@@ -15,11 +15,11 @@ import (
 // docker run -dit --name trans -v /c/Users/zen/Github/MultimediaProcessingPipeline:/app -v /c/Users/zen/Videos/export/sdde:/data zhangyiming748/stand:latest bash
 func TestTransAll(t *testing.T) {
 	p := &constant.Param{
-		Root:     "/data",
+		Root:     "C:\\Users\\zen\\Videos\\export\\en",
 		Language: "English",
 		Pattern:  "mp4",
 		Model:    "small",
-		Location: "/data",
+		Location: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
 		Proxy:    "192.168.1.20:8889",
 	}
 	mylog.SetLog(p)
@@ -29,24 +29,13 @@ func TestTransAll(t *testing.T) {
 
 	c := new(constant.Count)
 	for _, fp := range fps {
-		if strings.HasSuffix(fp, ".mp4") {
+		if strings.HasSuffix(fp, ".srt") {
 			Trans(fp, p, c)
 		}
 	}
 }
 
 func getFiles(currentDir string) (filePaths []string) {
-	// 获取当前工作目录
-	//currentDir, err := os.Getwd()
-	//if err != nil {
-	//	fmt.Println("获取当前目录失败:", err)
-	//	return []string{}
-	//}
-
-	// 创建一个切片来保存文件的绝对路径
-	//var filePaths []string
-
-	// 使用 Walk 函数遍历当前目录
 	err := filepath.Walk(currentDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err

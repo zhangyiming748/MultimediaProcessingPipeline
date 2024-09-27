@@ -13,51 +13,24 @@ import (
 
 // go test -timeout 2000h -v -run TestWhisper
 func TestWhisper(t *testing.T) {
-	//	targetHour := 7
-	//	targetMinute := 30
-	//
-	//	for {
-	//		// 获取当前时间
-	//		now := time.Now()
-	//
-	//		// 检查当前时间是否达到了目标时间
-	//		if now.Hour() == targetHour && now.Minute() == targetMinute {
-	//			fmt.Println("开始运行程序...")
-	//			break // 达到目标时间，退出循环
-	//		}
-	//
-	//		// 等待一段时间再检查，避免过于频繁的循环
-	//		time.Sleep(30 * time.Second) // 每30秒检查一次
-	//	}
 	p := &constant.Param{
-		Root:     "C:\\Users\\zen\\Videos\\export\\sdde",
-		Language: "Japanese",
-		Pattern:  "mp4",
-		Model:    "large-v3",
-		Location: "C:\\Users\\zen\\Videos\\export",
+		Root:     "C:\\Users\\zen\\Videos\\export\\en",
+		Language: "English",
+		Pattern:  "webm",
+		Model:    "medium.en",
+		Location: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
 		Proxy:    "192.168.1.20:8889",
 	}
 	log.SetLog(p)
 	fps := getFiles(p.GetRoot())
 	for _, fp := range fps {
-		if strings.HasSuffix(fp, ".mp4") {
+		if strings.HasSuffix(fp, p.GetPattern()) {
 			GetSubtitle(fp, p)
 		}
 	}
 }
 
 func getFiles(currentDir string) (filePaths []string) {
-	// 获取当前工作目录
-	//currentDir, err := os.Getwd()
-	//if err != nil {
-	//	fmt.Println("获取当前目录失败:", err)
-	//	return []string{}
-	//}
-
-	// 创建一个切片来保存文件的绝对路径
-	//var filePaths []string
-
-	// 使用 Walk 函数遍历当前目录
 	err := filepath.Walk(currentDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err

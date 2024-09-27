@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/schollz/progressbar/v3"
+	"github.com/zhangyiming748/pretty"
 	"log"
 	"os"
 	"os/exec"
@@ -33,7 +34,7 @@ func ExecCommand(c *exec.Cmd, msg string) (e error) {
 		_, err := stdout.Read(tmp)
 		t := string(tmp)
 		t = strings.Replace(t, "\u0000", "", -1)
-		fmt.Printf("\r%v\n%v", t, msg)
+		pretty.P(fmt.Sprintf("\r%v\n%v", t, msg))
 		if err != nil {
 			break
 		}
