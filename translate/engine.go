@@ -9,8 +9,8 @@ import (
 	"sync"
 )
 
-func TransByDeeplx(src string, once *sync.Once, wg *sync.WaitGroup, dst chan string) {
-	result, fail := DeepLx.TranslateByDeepLX("auto", "zh", src, "")
+func TransByDeeplx(src, proxy string, once *sync.Once, wg *sync.WaitGroup, dst chan string) {
+	result, fail := DeepLx.TranslateByDeepLX("auto", "zh", src, proxy)
 	if fail != nil {
 		return
 	} else {

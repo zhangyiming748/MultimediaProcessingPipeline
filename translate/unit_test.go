@@ -15,12 +15,12 @@ import (
 // docker run -dit --name trans -v /c/Users/zen/Github/MultimediaProcessingPipeline:/app -v /c/Users/zen/Videos/export/sdde:/data zhangyiming748/stand:latest bash
 func TestTransAll(t *testing.T) {
 	p := &constant.Param{
-		Root:     "C:\\Users\\zen\\Videos\\export\\en",
+		Root:     "/mnt/e/Downloads/My Pack/GVG-170/Pack From Shared/ReADA",
 		Language: "English",
 		Pattern:  "mp4",
 		Model:    "small",
-		Location: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
-		Proxy:    "192.168.1.20:8889",
+		Location: "/mnt/e/Downloads/My Pack/GVG-170/Pack From Shared/ReADA",
+		Proxy:    "192.168.1.10:8889",
 	}
 	mylog.SetLog(p)
 	sql.SetLevelDB(p)

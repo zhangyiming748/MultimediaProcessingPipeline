@@ -40,7 +40,7 @@ func Translate(src string, p *constant.Param, c *constant.Count) string {
 	defer wg.Wait()
 	ack := make(chan string, 1)
 	wg.Add(1)
-	go TransByDeeplx(src, once, wg, ack)
+	go TransByDeeplx(src, p.GetProxy(), once, wg, ack)
 	if runtime.GOOS == "linux" {
 		go TransByGoogle(src, p.GetProxy(), once, wg, ack)
 		go TransByBing(src, p.GetProxy(), once, wg, ack)
@@ -60,6 +60,17 @@ func Translate(src string, p *constant.Param, c *constant.Count) string {
 }
 
 func Trans(fp string, p *constant.Param, c *constant.Count) {
+	defer func() {
+		if err := recover(); err != nil {
+			v := fmt.Sprintf("捕获到错误:%v\n", err)
+			if strings.Contains(v, "index out of range") {
+				fmt.Println("捕获到 index out of range 类型错误")
+				return
+			} else {
+				log.Fatalf("捕获到其他错误:%v\n", v)
+			}
+		}
+	}()
 
 	// todo 翻译字幕
 	r := seed.Intn(2000)
