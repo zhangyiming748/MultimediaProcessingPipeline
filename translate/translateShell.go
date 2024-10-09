@@ -60,17 +60,6 @@ func Translate(src string, p *constant.Param, c *constant.Count) string {
 }
 
 func Trans(fp string, p *constant.Param, c *constant.Count) {
-	defer func() {
-		if err := recover(); err != nil {
-			v := fmt.Sprintf("捕获到错误:%v\n", err)
-			if strings.Contains(v, "index out of range") {
-				fmt.Println("捕获到 index out of range 类型错误")
-				return
-			} else {
-				log.Fatalf("捕获到其他错误:%v\n", v)
-			}
-		}
-	}()
 
 	// todo 翻译字幕
 	r := seed.Intn(2000)
@@ -87,6 +76,25 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 	before = util.ReadInSlice(srt)
 	fmt.Println(before)
 	after, _ := os.OpenFile(tmpname, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0777)
+	defer func() {
+		if err := recover(); err != nil {
+			v := fmt.Sprintf("捕获到错误:%v\n", err)
+			if strings.Contains(v, "index out of range") {
+				fmt.Println("捕获到 index out of range 类型错误,忽略并继续执行重命名操作")
+				{
+					origin := strings.Join([]string{strings.Replace(srt, ".srt", "", 1), "_origin", ".srt"}, "")
+					err := os.Rename(srt, origin)
+					err = os.Rename(tmpname, srt)
+					if err != nil {
+						constant.Warning(fmt.Sprintf("字幕文件重命名出现错误:%v\n", err))
+					}
+				}
+				return
+			} else {
+				log.Fatalf("捕获到其他错误:%v\n", v)
+			}
+		}
+	}()
 	for i := 0; i < len(before); i += 4 {
 		if i+3 > len(before) {
 			continue
