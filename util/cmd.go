@@ -122,9 +122,7 @@ func ExecCommandWithBar(c *exec.Cmd, totalFrame string) (e error) {
 		log.Printf("命令执行中产生错误:%v\n", err)
 		return err
 	}
-	if isExitLabel() {
-		log.Fatalf("命令端获取到退出状态,命令结束后退出:%v\n", c.String())
-	}
+	log.Printf("命令结束:%v\n", c.String())
 	return nil
 }
 func GetFrameNum(s string) (int, error) {
