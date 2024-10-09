@@ -13,7 +13,7 @@ func init() {
 
 // go test -v -run TestMerge
 func TestMerge(t *testing.T) {
-	root := "C:\\Users\\zen\\Videos\\export\\en"
+	root := "E:\\Downloads\\My Pack\\GVG-170\\Pack From Shared\\ReADA"
 	mp4s, _ := getMP4Files(root)
 	for _, mp4 := range mp4s {
 		Mp4WithSrt(mp4)
