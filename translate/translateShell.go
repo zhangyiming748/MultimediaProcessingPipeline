@@ -56,6 +56,7 @@ func Translate(src string, p *constant.Param, c *constant.Count) string {
 		fmt.Printf("翻译结果为空,重试\n此时的src = %v\n", src)
 		return src
 	}
+	dst = strings.Replace(dst, "\r\n", "", -1)
 	return dst
 }
 

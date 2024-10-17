@@ -45,7 +45,7 @@ func main() {
 	p.Pattern = "mp4"
 	p.Model = "medium.en"
 	p.Location = "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline"
-	p.Proxy = "192.168.1.8:8889"
+	p.Proxy = "127.0.0.1:8889"
 	p.Merge = true
 	p.Lines = strings.Join([]string{p.GetRoot(), "link.list"}, string(os.PathSeparator))
 	initConfig(p)
