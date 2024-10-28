@@ -40,13 +40,13 @@ func initConfig(p *constant.Param) {
 }
 func main() {
 	p := new(constant.Param)
-	p.Root = "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline"
+	p.Root = "/data"
 	p.Language = "English"
 	p.Pattern = "mp4"
 	p.Model = "medium.en"
-	p.Location = "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline"
-	p.Proxy = "127.0.0.1:8889"
-	p.Merge = true
+	p.Location = "/data"
+	p.Proxy = "192.168.1.7:8889"
+	p.Merge = false
 	p.Lines = strings.Join([]string{p.GetRoot(), "link.list"}, string(os.PathSeparator))
 	initConfig(p)
 	if root := os.Getenv("root"); root != "" {

@@ -11,15 +11,15 @@ import (
 	//"time"
 )
 
-// go test -timeout 2000h -v -run TestWhisper
+// go test -timeout 2000h -v -run TestWhisper7`
 func TestWhisper(t *testing.T) {
 	p := &constant.Param{
-		Root:     "/Users/zen/Movies/conv",
+		Root:     "/data",
 		Language: "English",
 		Pattern:  "mp4",
 		Model:    "medium.en",
-		Location: "/Users/zen/Movies/conv",
-		Proxy:    "192.168.1.20:8889",
+		Location: "/data",
+		Proxy:    "192.168.1.7:8889",
 	}
 	log.SetLog(p)
 	fps := getFiles(p.GetRoot())

@@ -20,7 +20,7 @@ func TestTransAll(t *testing.T) {
 		Pattern:  "mp4",
 		Model:    "medium.en",
 		Location: "/data",
-		Proxy:    "192.168.1.9:8889",
+		Proxy:    "192.168.1.7:8889",
 	}
 	mylog.SetLog(p)
 	sql.SetLevelDB(p)

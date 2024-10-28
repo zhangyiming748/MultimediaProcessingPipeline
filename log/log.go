@@ -16,6 +16,7 @@ func SetLog(p *constant.Param) {
 		MaxSize:    1, // MB
 		MaxBackups: 3,
 		MaxAge:     28, // days
+		LocalTime:  true,
 	}
 	consoleLogger := log.New(os.Stdout, "CONSOLE: ", log.LstdFlags)
 	log.SetOutput(io.MultiWriter(fileLogger, consoleLogger.Writer()))
