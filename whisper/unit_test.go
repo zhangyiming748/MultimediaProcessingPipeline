@@ -14,11 +14,11 @@ import (
 // go test -timeout 2000h -v -run TestWhisper
 func TestWhisper(t *testing.T) {
 	p := &constant.Param{
-		Root:     "C:\\Users\\zen\\Videos\\export\\en",
+		Root:     "/Users/zen/Movies/conv",
 		Language: "English",
-		Pattern:  "webm",
+		Pattern:  "mp4",
 		Model:    "medium.en",
-		Location: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
+		Location: "/Users/zen/Movies/conv",
 		Proxy:    "192.168.1.20:8889",
 	}
 	log.SetLog(p)
