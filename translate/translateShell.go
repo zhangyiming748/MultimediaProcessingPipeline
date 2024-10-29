@@ -57,6 +57,7 @@ func Translate(src string, p *constant.Param, c *constant.Count) string {
 		return src
 	}
 	dst = strings.Replace(dst, "\r\n", "", -1)
+	dst = strings.Replace(dst, "\n", "", -1)
 	return dst
 }
 
