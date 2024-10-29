@@ -9,18 +9,22 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"log"
 )
 
 // go test -timeout 2000m -v -run TestTransAll
 // docker run -dit --name trans -v /c/Users/zen/Github/MultimediaProcessingPipeline:/app -v /c/Users/zen/Videos/export/sdde:/data zhangyiming748/stand:latest bash
 func TestTransAll(t *testing.T) {
+	defer func() {
+		log.Println("全部任务完成")
+	}()
 	p := &constant.Param{
 		Root:     "/data",
 		Language: "English",
 		Pattern:  "mp4",
 		Model:    "medium.en",
 		Location: "/data",
-		Proxy:    "192.168.1.7:8889",
+		Proxy:    "192.168.1.31:8889",
 	}
 	mylog.SetLog(p)
 	sql.SetLevelDB(p)

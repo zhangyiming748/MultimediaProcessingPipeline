@@ -11,15 +11,36 @@ import (
 	//"time"
 )
 
-// go test -timeout 2000h -v -run TestWhisper7`
+// go test -timeout 2000h -v -run TestWhisper
 func TestWhisper(t *testing.T) {
+
 	p := &constant.Param{
-		Root:     "/data",
+		Root:     "/data/joi/re",
 		Language: "English",
 		Pattern:  "mp4",
 		Model:    "medium.en",
 		Location: "/data",
-		Proxy:    "192.168.1.7:8889",
+		Proxy:    "192.168.1.31:8889",
+	}
+	log.SetLog(p)
+	fps := getFiles(p.GetRoot())
+	for _, fp := range fps {
+		if strings.HasSuffix(fp, p.GetPattern()) {
+			GetSubtitle(fp, p)
+		}
+	}
+}
+
+// go test -timeout 2000h -v -run TestWhisper
+func TestWhisperOne(t *testing.T) {
+
+	p := &constant.Param{
+		Root:     "F:\\telegram\\SLAP-037",
+		Language: "Japanese",
+		Pattern:  "mp4",
+		Model:    "large-v3",
+		Location: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
+		Proxy:    "192.168.1.31:8889",
 	}
 	log.SetLog(p)
 	fps := getFiles(p.GetRoot())
