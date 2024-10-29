@@ -15,7 +15,7 @@ import (
 func TestWhisper(t *testing.T) {
 
 	p := &constant.Param{
-		Root:     "/data/re",
+		Root:     "/data/joi",
 		Language: "English",
 		Pattern:  "mp4",
 		Model:    "medium.en",

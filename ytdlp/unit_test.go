@@ -4,6 +4,7 @@ import (
 	"Multimedia_Processing_Pipeline/constant"
 	"Multimedia_Processing_Pipeline/log"
 	"Multimedia_Processing_Pipeline/util"
+	"fmt"
 	"os"
 	"testing"
 )
@@ -27,11 +28,10 @@ func TestYTdlp(t *testing.T) {
 		return
 	}
 	log.SetLog(p)
-	uris := util.ReadByLine("/App/ytdlp/test.list")
+	uris := util.ReadByLine("/data/est.list")
 	for _, uri := range uris {
-		if link, err := DownloadVideo(uri, p); err != nil {
-			file.WriteString(link)
-			file.WriteString("\n")
+		if link := DownloadVideo(uri, p); link == "" {
+			file.WriteString(fmt.Sprintln(uri))
 		}
 	}
 	file.Sync()

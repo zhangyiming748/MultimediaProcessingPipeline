@@ -3,13 +3,14 @@ package translateShell
 import (
 	"Multimedia_Processing_Pipeline/constant"
 	mylog "Multimedia_Processing_Pipeline/log"
+	"Multimedia_Processing_Pipeline/replace"
 	"Multimedia_Processing_Pipeline/sql"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
-	"log"
 )
 
 // go test -timeout 2000m -v -run TestTransAll
@@ -19,15 +20,17 @@ func TestTransAll(t *testing.T) {
 		log.Println("全部任务完成")
 	}()
 	p := &constant.Param{
-		Root:     "/data",
+		Root:     "/data/joi",
 		Language: "English",
 		Pattern:  "mp4",
 		Model:    "medium.en",
 		Location: "/data",
 		Proxy:    "192.168.1.31:8889",
 	}
+
 	mylog.SetLog(p)
 	sql.SetLevelDB(p)
+	replace.SetSensitive(p)
 	//util.ExitAfterRun()
 	fps := getFiles(p.GetRoot())
 
