@@ -4,6 +4,10 @@ import (
 	"github.com/fatih/color"
 )
 
+const (
+	HASEE = "DESKTOP-VGFTVD8"
+)
+
 type Param struct {
 	Root     string // 视频文件位置
 	Language string // 视频文件语言 English German Russian Japanese Korean Spanish French

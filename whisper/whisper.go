@@ -24,12 +24,17 @@ func GetSubtitle(fp string, p *constant.Param) string {
 	if err == nil {
 		log.Println("utf-8环境设置成功")
 	}
+	var cmd *exec.Cmd
+	if hostname, unknown := os.Hostname(); unknown != nil {
+		fmt.Println("未找到计算机名")
+	} else if hostname == constant.HASEE {
+		fmt.Println("是神舟战神,可以使用cuda加速")
+		cmd = exec.Command("whisper", fp, "--model", p.GetModel(), "--device", "cuda", "--model_dir", p.GetLocation(), "--output_format", "srt", "--prepend_punctuations", ",.?", "--language", p.GetLanguage(), "--output_dir", p.GetRoot(), "--verbose", "True")
+	} else {
+		fmt.Println("是其他电脑,使用cpu硬肝")
+		cmd = exec.Command("whisper", fp, "--model", p.GetModel(), "--model_dir", p.GetLocation(), "--output_format", "srt", "--prepend_punctuations", ",.?", "--language", p.GetLanguage(), "--output_dir", p.GetRoot(), "--verbose", "True")
+	}
 
-	cmd := exec.Command("whisper", fp, "--model", p.GetModel(), "--model_dir", p.GetLocation(), "--output_format", "srt", "--prepend_punctuations", ",.?", "--language", p.GetLanguage(), "--output_dir", p.GetRoot(), "--verbose", "True")
-	//if runtime.GOOS == "windows" {
-	//	cmd = exec.Command("whisper", fp, "--model", p.GetModel(), "--device", "cuda", "--model_dir", p.GetLocation(), "--output_format", "srt", "--prepend_punctuations", ",.?", "--language", p.GetLanguage(), "--output_dir", p.GetRoot(), "--verbose", "True")
-	//
-	//}
 	startTime := time.Now()
 	msg := fmt.Sprintf("正在处理的文件:%s", fp)
 	err = util.ExecCommand(cmd, msg)

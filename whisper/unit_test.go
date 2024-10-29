@@ -15,31 +15,11 @@ import (
 func TestWhisper(t *testing.T) {
 
 	p := &constant.Param{
-		Root:     "/data/joi/re",
+		Root:     "/data/re",
 		Language: "English",
 		Pattern:  "mp4",
 		Model:    "medium.en",
 		Location: "/data",
-		Proxy:    "192.168.1.31:8889",
-	}
-	log.SetLog(p)
-	fps := getFiles(p.GetRoot())
-	for _, fp := range fps {
-		if strings.HasSuffix(fp, p.GetPattern()) {
-			GetSubtitle(fp, p)
-		}
-	}
-}
-
-// go test -timeout 2000h -v -run TestWhisper
-func TestWhisperOne(t *testing.T) {
-
-	p := &constant.Param{
-		Root:     "F:\\telegram\\SLAP-037",
-		Language: "Japanese",
-		Pattern:  "mp4",
-		Model:    "large-v3",
-		Location: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
 		Proxy:    "192.168.1.31:8889",
 	}
 	log.SetLog(p)
@@ -73,4 +53,14 @@ func getFiles(currentDir string) (filePaths []string) {
 		fmt.Println(filePath)
 	}
 	return filePaths
+}
+
+// go test -timeout 2000h -v -run TestGetSpecif
+
+func TestGetSpecif(t *testing.T) {
+	hostname, err := os.Hostname()
+	if err != nil {
+		fmt.Println(err)
+	}
+	t.Log(hostname)
 }
