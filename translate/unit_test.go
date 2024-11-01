@@ -65,3 +65,14 @@ func getFiles(currentDir string) (filePaths []string) {
 	}
 	return filePaths
 }
+
+func TestDeeplx(t *testing.T) {
+	src := "hЯ суперкрасивый парень.ello"
+	token := ""
+	os.Setenv("TOKEN", token)
+	deeplx, err := Deeplx(src)
+	if err != nil {
+		t.Log(err)
+	}
+	t.Log(deeplx)
+}

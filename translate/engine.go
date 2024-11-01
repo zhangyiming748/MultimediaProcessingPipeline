@@ -1,16 +1,29 @@
 package translateShell
 
 import (
+	"Multimedia_Processing_Pipeline/util"
+	"encoding/json"
+	"errors"
 	"fmt"
-	DeepLx "github.com/zhangyiming748/DeepLX"
 	"log"
+	"os"
 	"os/exec"
 	"strings"
 	"sync"
 )
 
+type DeeplxRep struct {
+	Alternatives []string `json:"alternatives"`
+	Code         int      `json:"code"`
+	Data         string   `json:"data"`
+	Id           int64    `json:"id"`
+	Method       string   `json:"method"`
+	SourceLang   string   `json:"source_lang"`
+	TargetLang   string   `json:"target_lang"`
+}
+
 func TransByDeeplx(src, proxy string, once *sync.Once, wg *sync.WaitGroup, dst chan string) {
-	result, fail := DeepLx.TranslateByDeepLX("auto", "zh", src, proxy)
+	result, fail := Deeplx(src)
 	if fail != nil {
 		return
 	} else {
@@ -21,6 +34,7 @@ func TransByDeeplx(src, proxy string, once *sync.Once, wg *sync.WaitGroup, dst c
 		})
 	}
 }
+
 func TransByGoogle(src, proxy string, once *sync.Once, wg *sync.WaitGroup, dst chan string) {
 	cmd := exec.Command("trans", "-brief", "-engine", "google", "-proxy", proxy, ":zh-CN", src)
 	output, err := cmd.CombinedOutput()
@@ -36,6 +50,7 @@ func TransByGoogle(src, proxy string, once *sync.Once, wg *sync.WaitGroup, dst c
 		})
 	}
 }
+
 func TransByBing(src, proxy string, once *sync.Once, wg *sync.WaitGroup, dst chan string) {
 	cmd := exec.Command("trans", "-brief", "-engine", "bing", "-proxy", proxy, ":zh-CN", src)
 	output, err := cmd.CombinedOutput()
@@ -51,6 +66,7 @@ func TransByBing(src, proxy string, once *sync.Once, wg *sync.WaitGroup, dst cha
 		})
 	}
 }
+
 func TransOnce(src, proxy string) (string, error) {
 	cmd := exec.Command("trans", "-brief", "-engine", "bing", "-proxy", proxy, ":zh-CN", src)
 	output, err := cmd.CombinedOutput()
@@ -60,4 +76,29 @@ func TransOnce(src, proxy string) (string, error) {
 		return "", err
 	}
 	return result, nil
+}
+
+func Deeplx(src string) (dst string, err error) {
+	headers := map[string]string{
+		"Content-Type": "application/json",
+	}
+	data := map[string]string{
+		"text":        src,
+		"source_lang": "auto",
+		"target_lang": "zh",
+	}
+	token := os.Getenv("TOKEN")
+	if token == "" {
+		notfound := errors.New("没有找到deeplx的apikey环境变量$TOKEN")
+		return "", notfound
+	}
+	uri := strings.Join([]string{"https://api.deeplx.org", token, "translate"}, "/")
+	j, err := util.HttpPostJson(headers, data, uri)
+	if err != nil {
+		return "deeplx 请求发生错误", err
+	}
+	fmt.Println(string(j))
+	var result DeeplxRep
+	json.Unmarshal(j, &result)
+	return result.Data, nil
 }
