@@ -19,12 +19,13 @@ func TestTransAll(t *testing.T) {
 	defer func() {
 		log.Println("全部任务完成")
 	}()
+	
 	p := &constant.Param{
-		Root:     "/data/joi",
+		Root:     "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
 		Language: "English",
 		Pattern:  "mp4",
 		Model:    "medium.en",
-		Location: "/data",
+		Location: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
 		Proxy:    "192.168.1.31:8889",
 	}
 
