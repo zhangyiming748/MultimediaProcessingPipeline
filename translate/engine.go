@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	DP "github.com/OwO-Network/DeepLX/translate"
 	"log"
 	"os"
 	"os/exec"
@@ -23,15 +24,30 @@ type DeeplxRep struct {
 }
 
 func TransByDeeplx(src, proxy string, once *sync.Once, wg *sync.WaitGroup, dst chan string) {
-	result, fail := Deeplx(src)
-	if fail != nil {
-		return
+	token := os.Getenv("TOKEN")
+	if token != "" {
+		rep, fail := Deeplx(src)
+		if fail != nil {
+			return
+		} else {
+			once.Do(func() {
+				fmt.Println("linux.do的DeepLx返回翻译结果")
+				dst <- rep
+				wg.Done()
+			})
+		}
 	} else {
-		once.Do(func() {
-			fmt.Println("DeepLx返回翻译结果")
-			dst <- result
-			wg.Done()
-		})
+		//var req DP.DeepLXTranslationResult
+		rep, fail := DP.TranslateByDeepLX("auto", "zh", src, "html", proxy, "")
+		if fail != nil {
+			return
+		} else {
+			once.Do(func() {
+				fmt.Println("DeepLx返回翻译结果", rep)
+				dst <- rep.Data
+				wg.Done()
+			})
+		}
 	}
 }
 

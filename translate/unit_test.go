@@ -6,10 +6,12 @@ import (
 	"Multimedia_Processing_Pipeline/replace"
 	"Multimedia_Processing_Pipeline/sql"
 	"fmt"
+	DP "github.com/OwO-Network/DeepLX/translate"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 )
 
@@ -19,7 +21,7 @@ func TestTransAll(t *testing.T) {
 	defer func() {
 		log.Println("全部任务完成")
 	}()
-	
+
 	p := &constant.Param{
 		Root:     "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
 		Language: "English",
@@ -76,4 +78,24 @@ func TestDeeplx(t *testing.T) {
 		t.Log(err)
 	}
 	t.Log(deeplx)
+}
+func TestTranslateByDeepLX(t *testing.T) {
+	source := "auto"
+	target := "zh"
+	text := "hello"
+	lx, err := DP.TranslateByDeepLX(source, target, text, "html", "", "")
+	if err != nil {
+		log.Fatalln(err)
+	}
+	t.Logf("%+v\ndata = %v\n", lx, lx.Data)
+}
+func TestTransByDeeplx(t *testing.T) {
+	ch := make(chan string, 1)
+	var one sync.Once
+	var wg sync.WaitGroup
+	wg.Add(1)
+	//os.Setenv("TOKEN", "")
+	go TransByDeeplx("hello", "http://127.0.0.1:8889", &one, &wg, ch)
+	wg.Wait()
+	fmt.Println("通道接收 ", <-ch)
 }
