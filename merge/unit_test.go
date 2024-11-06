@@ -1,6 +1,7 @@
 package merge
 
 import (
+	"Multimedia_Processing_Pipeline/replace"
 	"os"
 	"path/filepath"
 	"strings"
@@ -42,4 +43,10 @@ func getMP4Files(dir string) ([]string, error) {
 	}
 
 	return mp4Files, nil
+}
+
+func TestReplaceEnglish(t *testing.T) {
+	input := "这是一个测试字符串 [包含方括号内容],请忽略这部分内容。"
+	ret := replace.ReplaceEnglishSquareBrackets(input)
+	t.Log(ret)
 }

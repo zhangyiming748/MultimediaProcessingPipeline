@@ -13,13 +13,12 @@ import (
 
 // go test -timeout 2000h -v -run TestWhisper
 func TestWhisper(t *testing.T) {
-
 	p := &constant.Param{
-		Root:     "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
+		Root:     "/data/joi",
 		Language: "English",
 		Pattern:  "mp4",
 		Model:    "medium.en",
-		Location: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
+		Location: "/data",
 		Proxy:    "192.168.1.31:8889",
 	}
 	log.SetLog(p)

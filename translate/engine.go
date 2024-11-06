@@ -37,7 +37,6 @@ func TransByDeeplx(src, proxy string, once *sync.Once, wg *sync.WaitGroup, dst c
 			})
 		}
 	} else {
-		//var req DP.DeepLXTranslationResult
 		rep, fail := DP.TranslateByDeepLX("auto", "zh", src, "html", proxy, "")
 		if fail != nil {
 			return

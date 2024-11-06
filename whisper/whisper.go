@@ -46,6 +46,6 @@ func GetSubtitle(fp string, p *constant.Param) string {
 	endTime := time.Now()
 	duration := endTime.Sub(startTime)
 	totalMinutes := duration.Seconds() / 60
-	log.Printf("文件%v总共用时: %.2f 分钟\n", fp, totalMinutes)
+	log.Printf("文件%v\n总共用时: %.2f 分钟\n", fp, totalMinutes)
 	return fp
 }
