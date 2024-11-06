@@ -40,17 +40,19 @@ func Translate(src string, p *constant.Param, c *constant.Count) string {
 	defer wg.Wait()
 	ack := make(chan string, 1)
 	wg.Add(1)
-	go TransByDeeplx(src, p.GetProxy(), once, wg, ack)
+	//go TransByDeeplx(src, p.GetProxy(), once, wg, ack)
 	if runtime.GOOS == "linux" {
 		go TransByGoogle(src, p.GetProxy(), once, wg, ack)
 		go TransByBing(src, p.GetProxy(), once, wg, ack)
+	} else {
+		go TransByDeeplx(src, p.GetProxy(), once, wg, ack)
 	}
 	select {
 	case dst = <-ack:
 		//constant.Info(fmt.Sprintf("收到翻译结果:%v\n", dst))
 	case <-time.After(TIMEOUT * time.Second): // 设置超时时间为5秒
 		fmt.Printf("翻译超时,重试\n此时的src = %v\n", src)
-		return src
+		Translate(src, p, c)
 	}
 	if dst == "" {
 		fmt.Printf("翻译结果为空,重试\n此时的src = %v\n", src)

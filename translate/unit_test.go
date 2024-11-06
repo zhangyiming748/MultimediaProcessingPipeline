@@ -23,11 +23,11 @@ func TestTransAll(t *testing.T) {
 	}()
 
 	p := &constant.Param{
-		Root:     "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
+		Root:     "/data/joi",
 		Language: "English",
 		Pattern:  "mp4",
 		Model:    "medium.en",
-		Location: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
+		Location: "/data/joi",
 		Proxy:    "192.168.1.31:8889",
 	}
 
