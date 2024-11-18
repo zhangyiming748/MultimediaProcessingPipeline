@@ -1,4 +1,4 @@
-name: download_whisper_trans
+name: wta
 services:
   whisperandtrans:
     stdin_open: true

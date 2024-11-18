@@ -14,11 +14,28 @@ import (
 // go test -timeout 2000h -v -run TestWhisper
 func TestWhisper(t *testing.T) {
 	p := &constant.Param{
-		Root:     "/data/joi",
-		Language: "English",
+		Root:     "/data/jp",
+		Language: "Japanese",
 		Pattern:  "mp4",
-		Model:    "medium.en",
+		Model:    "large-v3",
 		Location: "/data",
+		Proxy:    "192.168.1.31:8889",
+	}
+	log.SetLog(p)
+	fps := getFiles(p.GetRoot())
+	for _, fp := range fps {
+		if strings.HasSuffix(fp, p.GetPattern()) {
+			GetSubtitle(fp, p)
+		}
+	}
+}
+func TestWhisperWindows(t *testing.T) {
+	p := &constant.Param{
+		Root:     "D:\\video\\rct\\h265",
+		Language: "Japanese",
+		Pattern:  "mp4",
+		Model:    "large-v3",
+		Location: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
 		Proxy:    "192.168.1.31:8889",
 	}
 	log.SetLog(p)

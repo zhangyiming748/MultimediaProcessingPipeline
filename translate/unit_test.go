@@ -23,7 +23,7 @@ func TestTransAll(t *testing.T) {
 	}()
 
 	p := &constant.Param{
-		Root:     "/data/joi",
+		Root:     "/data/jp",
 		Language: "English",
 		Pattern:  "mp4",
 		Model:    "medium.en",
