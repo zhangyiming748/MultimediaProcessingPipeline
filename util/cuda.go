@@ -29,7 +29,3 @@ func CheckCUDA() bool {
 	fmt.Println("CUDA is not supported on this machine.")
 	return false
 }
-
-func main() {
-	CheckCUDA()
-}

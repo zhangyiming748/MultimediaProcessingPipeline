@@ -129,9 +129,9 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 			fmt.Printf("缓存写入数据库错误:%v\n", err)
 		}
 		pretty.P(fmt.Sprintf("文件名:%v\n原文:%v\n译文:%v\n", tmpname, src, dst))
-		after.WriteString(fmt.Sprintf("%s", src))
-		after.WriteString(fmt.Sprintf("%s", dst))
-		after.WriteString(fmt.Sprintf("%s", before[i+3]))
+		after.WriteString(src)
+		after.WriteString(dst)
+		after.WriteString(before[i+3])
 		after.Sync()
 	}
 	after.Close()

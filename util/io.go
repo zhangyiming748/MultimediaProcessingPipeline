@@ -46,7 +46,6 @@ func WriteByLine(fp string, s []string) {
 		writer.WriteString("\n")
 	}
 	writer.Flush()
-	return
 }
 
 // 按行写文件 截断
@@ -62,7 +61,6 @@ func WriteByLineOnce(fp string, s []string) {
 		writer.WriteString("\n")
 	}
 	writer.Flush()
-	return
 }
 func IsExist(folderPath string) bool {
 	_, err := os.Stat(folderPath)
@@ -111,10 +109,8 @@ func ReadInSlice(fp string) []string {
 		fmt.Println("Error reading file:", err)
 		return []string{}
 	}
-
 	// 创建一个bufio.Reader对象
 	reader := bufio.NewReader(bytes.NewReader(fileBytes))
-
 	// 按行读取文件内容并存储到字符串切片中
 	var lines []string
 	for {
@@ -124,10 +120,5 @@ func ReadInSlice(fp string) []string {
 		}
 		lines = append(lines, line)
 	}
-
-	// 打印结果
-	//for i, line := range lines {
-	//	fmt.Printf("第%d行: %s\n", i+1, line)
-	//}
 	return lines
 }

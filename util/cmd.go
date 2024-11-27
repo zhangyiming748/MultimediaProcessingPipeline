@@ -4,14 +4,14 @@ import (
 	"Multimedia_Processing_Pipeline/constant"
 	"errors"
 	"fmt"
-	"github.com/schollz/progressbar/v3"
-	"github.com/zhangyiming748/pretty"
 	"log"
-	"os"
 	"os/exec"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/schollz/progressbar/v3"
+	"github.com/zhangyiming748/pretty"
 )
 
 /*
@@ -57,21 +57,6 @@ func ExecCommand4Ytdlp(c *exec.Cmd) {
 		return
 	} else {
 		constant.Info(string(output))
-	}
-}
-
-/*
-判断古希腊掌管退出信号的文件是否存在
-*/
-func isExitLabel() bool {
-	filePath := "/exit"
-	_, err := os.Stat(filePath)
-	if os.IsNotExist(err) {
-		fmt.Println("古希腊掌管退出信号的文件不存在")
-		return false
-	} else {
-		fmt.Println("古希腊掌管退出信号的文件存在")
-		return true
 	}
 }
 
