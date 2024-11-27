@@ -21,6 +21,15 @@ func TestMerge(t *testing.T) {
 	}
 }
 
+// go test -timeout 2000m -v -run TestInsideMerge
+func TestInsideMerge(t *testing.T) {
+	root := "/Users/zen/Documents/精修"
+	mp4s, _ := getMP4Files(root)
+	for _, mp4 := range mp4s {
+		Mp4WithSrtHard(mp4)
+	}
+}
+
 // getMP4Files 遍历指定目录，返回所有 mp4 文件的路径
 func getMP4Files(dir string) ([]string, error) {
 	var mp4Files []string

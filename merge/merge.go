@@ -5,7 +5,6 @@ import (
 	"Multimedia_Processing_Pipeline/replace"
 	"Multimedia_Processing_Pipeline/util"
 	"fmt"
-	"github.com/zhangyiming748/FastMediaInfo"
 	"log"
 	"os"
 	"os/exec"
@@ -13,6 +12,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/zhangyiming748/FastMediaInfo"
 )
 
 func Mp4WithSrt(file string) {
@@ -32,6 +33,33 @@ func Mp4WithSrt(file string) {
 			return
 		} else {
 			os.Remove(file)
+		}
+	}
+	countdown_with_exit(10)
+}
+
+/*
+精修字幕在人工确认后直接嵌入视频
+*/
+func Mp4WithSrtHard(file string) {
+	srt := strings.Replace(file, filepath.Ext(file), ".srt", 1)
+	if isExist(srt) {
+		output := strings.Replace(file, filepath.Ext(file), "_with_subtitle_inside.mp4", 1)
+		output = replace.ReplaceEnglishSquareBrackets(output)
+		par := FastMediaInfo.GetStandMediaInfo(file)
+		width, _ := strconv.Atoi(par.Video.Width)
+		height, _ := strconv.Atoi(par.Video.Height)
+		log.Printf("获取到的分辨率:%vx%v\t", width, height)
+		//ffmpeg -i input.mp4 -vf "subtitles=subtitle.srt" output.mp4
+		subtitles := strings.Join([]string{"subtitles", srt}, "=")
+		cmd := exec.Command("ffmpeg", "-i", file, "-vf", subtitles, "-c:v", "libx265", "-c:a", "libopus", "-map_chapters", "-1", "-ac", "1", output)
+		fmt.Printf("生成的命令: %s\n", cmd.String())
+		err := util.ExecCommandWithBar(cmd, par.Video.FrameCount)
+		if err != nil {
+			constant.Error(fmt.Sprintf("合成视频%v命令执行失败:%v 退出", output, err))
+			return
+		} else {
+			//os.Remove(file)
 		}
 	}
 	countdown_with_exit(10)
