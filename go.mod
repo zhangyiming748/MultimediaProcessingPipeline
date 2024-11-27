@@ -6,13 +6,13 @@ require (
 	github.com/OwO-Network/DeepLX v0.9.9-0.20241102031950-ede6229b0ec3
 	github.com/fatih/color v1.18.0
 	github.com/mattn/go-sqlite3 v1.14.24
-	github.com/nalgeon/redka v0.5.2
-	github.com/schollz/progressbar/v3 v3.17.0
+	github.com/nalgeon/redka v0.5.3
+	github.com/schollz/progressbar/v3 v3.17.1
 	github.com/syndtr/goleveldb v1.0.0
 	github.com/zhangyiming748/FastMediaInfo v0.0.7
 	github.com/zhangyiming748/lumberjack v0.0.1
 	github.com/zhangyiming748/pretty v0.0.3
-	golang.org/x/text v0.19.0
+	golang.org/x/text v0.20.0
 )
 
 require (
@@ -49,8 +49,8 @@ require (
 	golang.org/x/arch v0.7.0 // indirect
 	golang.org/x/crypto v0.21.0 // indirect
 	golang.org/x/net v0.23.0 // indirect
-	golang.org/x/sys v0.26.0 // indirect
-	golang.org/x/term v0.25.0 // indirect
+	golang.org/x/sys v0.27.0 // indirect
+	golang.org/x/term v0.26.0 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

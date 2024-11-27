@@ -19,3 +19,5 @@ merge.sh
 sensitive.txt
 leveldb/
 report.txt
+before.txt
+after.txt

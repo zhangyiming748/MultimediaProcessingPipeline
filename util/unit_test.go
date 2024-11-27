@@ -11,7 +11,3 @@ func TestGetQuotedContent(t *testing.T) {
 		t.Log(content)
 	}
 }
-
-func TestCUDA(t *testing.T) {
-	GetCUDA()
-}
