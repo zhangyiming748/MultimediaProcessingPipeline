@@ -7,16 +7,16 @@ import (
 	"Multimedia_Processing_Pipeline/util"
 	"errors"
 	"fmt"
-	"github.com/syndtr/goleveldb/leveldb"
-	"github.com/zhangyiming748/pretty"
 	"log"
 	"math/rand"
 	"os"
-	"runtime"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/syndtr/goleveldb/leveldb"
+	"github.com/zhangyiming748/pretty"
 )
 
 var (
@@ -41,12 +41,15 @@ func Translate(src string, p *constant.Param, c *constant.Count) string {
 	ack := make(chan string, 1)
 	wg.Add(1)
 	//go TransByDeeplx(src, p.GetProxy(), once, wg, ack)
-	if runtime.GOOS == "linux" {
-		go TransByGoogle(src, p.GetProxy(), once, wg, ack)
-		go TransByBing(src, p.GetProxy(), once, wg, ack)
-	} else {
-		go TransByDeeplx(src, p.GetProxy(), once, wg, ack)
-	}
+	// if runtime.GOOS == "macos" {
+	// 	go TransByGoogle(src, p.GetProxy(), once, wg, ack)
+	// 	go TransByBing(src, p.GetProxy(), once, wg, ack)
+	// } else {
+	// 	//又不能用了
+	// 	//go TransByDeeplx(src, p.GetProxy(), once, wg, ack)
+	// }
+	go TransByGoogle(src, p.GetProxy(), once, wg, ack)
+	go TransByBing(src, p.GetProxy(), once, wg, ack)
 	select {
 	case dst = <-ack:
 		//constant.Info(fmt.Sprintf("收到翻译结果:%v\n", dst))
