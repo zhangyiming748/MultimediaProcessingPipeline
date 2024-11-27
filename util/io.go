@@ -47,7 +47,22 @@ func WriteByLine(fp string, s []string) {
 	}
 	writer.Flush()
 	return
+}
 
+// 按行写文件 截断
+func WriteByLineOnce(fp string, s []string) {
+	file, err := os.OpenFile(fp, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0777)
+	if err != nil {
+		return
+	}
+	defer file.Close()
+	writer := bufio.NewWriter(file)
+	for _, v := range s {
+		writer.WriteString(v)
+		writer.WriteString("\n")
+	}
+	writer.Flush()
+	return
 }
 func IsExist(folderPath string) bool {
 	_, err := os.Stat(folderPath)

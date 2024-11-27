@@ -5,14 +5,16 @@ import (
 	mylog "Multimedia_Processing_Pipeline/log"
 	"Multimedia_Processing_Pipeline/replace"
 	"Multimedia_Processing_Pipeline/sql"
+	"Multimedia_Processing_Pipeline/util"
 	"fmt"
-	DP "github.com/OwO-Network/DeepLX/translate"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
 	"sync"
 	"testing"
+
+	DP "github.com/OwO-Network/DeepLX/translate"
 )
 
 // go test -timeout 2000m -v -run TestTransAll
@@ -98,4 +100,20 @@ func TestTransByDeeplx(t *testing.T) {
 	go TransByDeeplx("hello", "http://127.0.0.1:8889", &one, &wg, ch)
 	wg.Wait()
 	fmt.Println("通道接收 ", <-ch)
+}
+
+// go test -timeout 2000m -v -run TestSingleTranslate
+func TestSingleTranslate(t *testing.T) {
+	p := new(constant.Param)
+	p.SetProxy("http://127.0.0.1:8889")
+	c := new(constant.Count)
+	beforeWords := util.ReadByLine("before.txt")
+	afterWords := []string{}
+	for i, word := range beforeWords {
+		log.Printf("第%d个句子:%s\n", i, word)
+		after := Translate(word, p, c)
+		after = strings.Replace(after, "\n", "", 1)
+		afterWords = append(afterWords, after)
+	}
+	util.WriteByLineOnce("after.txt", afterWords)
 }
