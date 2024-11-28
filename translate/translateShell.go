@@ -41,7 +41,7 @@ func Translate(src string, p *constant.Param, c *constant.Count) string {
 	defer wg.Wait()
 	ack := make(chan string, 1)
 	wg.Add(1)
-	go TransByDeeplx(src, p.GetProxy(), once, wg, ack)
+	//go TransByDeeplx(src, p.GetProxy(), once, wg, ack)
 	if runtime.GOOS == "windows" {
 		log.Fatalln("不能在Windows系统上安装translate-shell")
 	} else {

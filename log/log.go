@@ -14,10 +14,11 @@ func SetLog(p *constant.Param) {
 	fileLogger := &lumberjack.Logger{
 		Filename:   strings.Join([]string{p.GetRoot(), "MultimediaProcessingPipeline.log"}, string(os.PathSeparator)),
 		MaxSize:    1, // MB
-		MaxBackups: 3,
+		MaxBackups: 30,
 		MaxAge:     28, // days
 		LocalTime:  true,
 	}
+	fileLogger.Rotate()
 	consoleLogger := log.New(os.Stdout, "CONSOLE: ", log.LstdFlags)
 	log.SetOutput(io.MultiWriter(fileLogger, consoleLogger.Writer()))
 	log.SetFlags(log.LstdFlags | log.Lshortfile)

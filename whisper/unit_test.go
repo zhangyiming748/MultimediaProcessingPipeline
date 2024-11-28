@@ -29,11 +29,11 @@ func TestWhisper(t *testing.T) {
 		}
 	}
 }
-func TestWhisperWindows(t *testing.T) {
+func TestWhisperOnWindows(t *testing.T) {
 	p := &constant.Param{
-		Root:     "D:\\video\\rct\\h265",
-		Language: "Japanese",
-		Pattern:  "mp4",
+		Root:     "C:\\Users\\zen\\Ada Hunter Red Suit All Cutscenes",
+		Language: "English",
+		Pattern:  "m4a",
 		Model:    "large-v3",
 		Location: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
 		Proxy:    "192.168.1.31:8889",

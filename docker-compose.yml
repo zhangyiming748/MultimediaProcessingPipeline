@@ -5,5 +5,6 @@ services:
     tty: true
     container_name: wta
     volumes:
-      - C:\Users\zen\Github\MultimediaProcessingPipeline:/data # 你的视频所在文件夹
+      - C:\Users\zen\Github\MultimediaProcessingPipeline:/app
+      - C:\Users\zen\Ada:/data # 你的视频所在文件夹
     image: zhangyiming748/stand:latest # 指定生成的镜像名称和标签

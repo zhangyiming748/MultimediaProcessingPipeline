@@ -25,12 +25,12 @@ func TestTransAll(t *testing.T) {
 	}()
 
 	p := &constant.Param{
-		Root:     "/data/jp",
+		Root:     "/data",
 		Language: "English",
 		Pattern:  "mp4",
 		Model:    "medium.en",
-		Location: "/data/joi",
-		Proxy:    "192.168.1.31:8889",
+		Location: "/app",
+		Proxy:    "192.168.1.35:8889",
 	}
 
 	mylog.SetLog(p)
