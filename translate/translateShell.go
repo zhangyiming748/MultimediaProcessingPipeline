@@ -2,6 +2,7 @@ package translateShell
 
 import (
 	"Multimedia_Processing_Pipeline/constant"
+	"Multimedia_Processing_Pipeline/model"
 	"Multimedia_Processing_Pipeline/replace"
 	"Multimedia_Processing_Pipeline/sql"
 	"Multimedia_Processing_Pipeline/util"
@@ -17,7 +18,6 @@ import (
 	"time"
 
 	"github.com/syndtr/goleveldb/leveldb"
-	"github.com/zhangyiming748/pretty"
 )
 
 var (
@@ -66,6 +66,14 @@ func Translate(src string, p *constant.Param, c *constant.Count) string {
 }
 
 func Trans(fp string, p *constant.Param, c *constant.Count) {
+	var archives []model.TranslateHistory
+	defer func() {
+		all, err := new(model.TranslateHistory).InsertAll(archives)
+		if err != nil {
+			log.Printf("最终插入mysql失败:%v\n", err)
+		}
+		log.Printf("最终插入mysql成功:%v\n", all)
+	}()
 
 	// todo 翻译字幕
 	r := seed.Intn(2000)
@@ -105,9 +113,10 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 		if i+3 > len(before) {
 			continue
 		}
+		log.Printf("翻译之前序号\"%s\"时间\"%s\"正文\"%s\"空行\"%s\"\n", before[i], before[i+1], before[i+2], before[i+3])
 		log.SetPrefix(before[i])
-		after.WriteString(fmt.Sprintf("%s", before[i]))
-		after.WriteString(fmt.Sprintf("%s", before[i+1]))
+		after.WriteString(before[i])
+		after.WriteString(before[i+1])
 		src := before[i+2]
 		afterSrc := replace.GetSensitive(src)
 		var dst string
@@ -127,11 +136,18 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 		if err := sql.GetLevelDB().Put([]byte(src), []byte(dst), nil); err != nil {
 			fmt.Printf("缓存写入数据库错误:%v\n", err)
 		}
-		pretty.P(fmt.Sprintf("文件名:%v\n原文:%v\n译文:%v\n", tmpname, src, dst))
+		log.Printf("翻译之后序号\"%s\"时间\"%s\"正文\"%s\"空行\"%s\"\n", before[i], before[i+1], before[i+2], before[i+3])
+		log.Printf("原文\"%s\"\t译文\"%s\"\n", src, dst)
 		after.WriteString(src)
 		after.WriteString(dst)
 		after.WriteString(before[i+3])
+		after.WriteString(before[i+3])
 		after.Sync()
+		archive := model.TranslateHistory{
+			Src: src,
+			Dst: dst,
+		}
+		archives = append(archives, archive)
 	}
 	after.Close()
 	origin := strings.Join([]string{strings.Replace(srt, ".srt", "", 1), "_origin", ".srt"}, "")

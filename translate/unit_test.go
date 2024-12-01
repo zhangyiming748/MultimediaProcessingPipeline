@@ -3,6 +3,7 @@ package translateShell
 import (
 	"Multimedia_Processing_Pipeline/constant"
 	mylog "Multimedia_Processing_Pipeline/log"
+	"Multimedia_Processing_Pipeline/model"
 	"Multimedia_Processing_Pipeline/replace"
 	"Multimedia_Processing_Pipeline/sql"
 	"Multimedia_Processing_Pipeline/util"
@@ -25,16 +26,18 @@ func TestTransAll(t *testing.T) {
 	}()
 
 	p := &constant.Param{
-		Root:     "/data",
+		Root:     "C:\\Users\\zen\\Videos\\export\\KAGP-116\\test",
 		Language: "English",
 		Pattern:  "mp4",
 		Model:    "medium.en",
-		Location: "/app",
+		Location: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
 		Proxy:    "192.168.1.35:8889",
 	}
 
 	mylog.SetLog(p)
 	sql.SetLevelDB(p)
+	sql.SetMysql()
+	sql.GetMysql().Sync2(model.TranslateHistory{})
 	replace.SetSensitive(p)
 	//util.ExitAfterRun()
 	fps := getFiles(p.GetRoot())
