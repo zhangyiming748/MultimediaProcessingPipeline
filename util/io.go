@@ -35,7 +35,7 @@ func ReadByLine(fp string) []string {
 
 // 按行写文件
 func WriteByLine(fp string, s []string) {
-	file, err := os.OpenFile(fp, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0777)
+	file, err := os.OpenFile(fp, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0777)
 	if err != nil {
 		return
 	}

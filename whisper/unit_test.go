@@ -3,9 +3,11 @@ package whisper
 import (
 	"Multimedia_Processing_Pipeline/constant"
 	"Multimedia_Processing_Pipeline/log"
+	"Multimedia_Processing_Pipeline/util"
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 	//"time"
@@ -14,20 +16,30 @@ import (
 // go test -timeout 2000h -v -run TestWhisper
 func TestWhisper(t *testing.T) {
 	p := &constant.Param{
-		Root:     "/data/jp",
-		Language: "Japanese",
+		Root:     "E:\\Downloads\\My Pack\\anime\\动画\\蒂法 三部",
+		Language: "English",
 		Pattern:  "mp4",
 		Model:    "large-v3",
-		Location: "/data",
-		Proxy:    "192.168.1.31:8889",
+		Location: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
+		Proxy:    "127.0.01:8889",
 	}
 	log.SetLog(p)
 	fps := getFiles(p.GetRoot())
+	cmds := []string{}
 	for _, fp := range fps {
 		if strings.HasSuffix(fp, p.GetPattern()) {
-			GetSubtitle(fp, p)
+			cmd := GetSubtitle(fp, p, true)
+			cmds = append(cmds, cmd)
 		}
 	}
+	if runtime.GOOS == "windows" {
+		fp := filepath.Join(p.GetRoot(), "whisper.bat")
+		util.WriteByLine(fp, cmds)
+	} else {
+		fp := filepath.Join(p.GetRoot(), "whisper.sh")
+		util.WriteByLine(fp, cmds)
+	}
+	util.WriteByLine("whisper.bat", cmds)
 }
 func TestWhisperOnWindows(t *testing.T) {
 	p := &constant.Param{
@@ -42,7 +54,7 @@ func TestWhisperOnWindows(t *testing.T) {
 	fps := getFiles(p.GetRoot())
 	for _, fp := range fps {
 		if strings.HasSuffix(fp, p.GetPattern()) {
-			GetSubtitle(fp, p)
+			GetSubtitle(fp, p, false)
 		}
 	}
 }

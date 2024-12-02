@@ -21,3 +21,7 @@ leveldb/
 report.txt
 before.txt
 after.txt
+whisper.bat
+whisper.sh
+mergeInside.bat
+mergeInside.sh

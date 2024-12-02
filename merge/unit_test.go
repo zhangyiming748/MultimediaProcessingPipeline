@@ -2,8 +2,12 @@ package merge
 
 import (
 	"Multimedia_Processing_Pipeline/replace"
+	"Multimedia_Processing_Pipeline/util"
+	"log"
 	"os"
+	"path"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -23,11 +27,27 @@ func TestMerge(t *testing.T) {
 
 // go test -timeout 2000m -v -run TestInsideMerge
 func TestInsideMerge(t *testing.T) {
-	root := "/Users/zen/Documents/精修"
+	root := "E:\\Downloads\\My Pack\\anime\\动画\\蒂法 三部\\字幕文件"
+	dirPath := path.Dir(root)
 	mp4s, _ := getMP4Files(root)
+	cmds := []string{}
 	for _, mp4 := range mp4s {
-		Mp4WithSrtHard(mp4)
+		cmd := Mp4WithSrtHard(mp4)
+		if strings.Contains(cmd, "C:\\Program Files\\ffmpeg\\bin\\") {
+			cmd = strings.Replace(cmd, "C:\\Program Files\\ffmpeg\\bin\\ffmpeg", "ffmpeg", -1)
+		}
+		cmds = append(cmds, cmd)
 	}
+	fp := ""
+	if runtime.GOOS == "windows" {
+		fp = filepath.Join(root, "mergeInside.bat")
+		log.Println(fp)
+		util.WriteByLine(fp, cmds)
+	} else {
+		fp = filepath.Join(dirPath, "mergeInside.sh")
+		util.WriteByLine(fp, cmds)
+	}
+
 }
 
 // getMP4Files 遍历指定目录，返回所有 mp4 文件的路径
