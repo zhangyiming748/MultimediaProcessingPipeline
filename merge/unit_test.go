@@ -18,7 +18,7 @@ func init() {
 
 // go test -v -run TestMerge
 func TestMerge(t *testing.T) {
-	root := "E:\\Downloads\\My Pack\\GVG-170\\Pack From Shared\\ReADA"
+	root := "C:\\Users\\zen\\Videos\\export\\KAGP-116"
 	mp4s, _ := getMP4Files(root)
 	for _, mp4 := range mp4s {
 		Mp4WithSrt(mp4)
@@ -27,7 +27,7 @@ func TestMerge(t *testing.T) {
 
 // go test -timeout 2000m -v -run TestInsideMerge
 func TestInsideMerge(t *testing.T) {
-	root := "E:\\Downloads\\My Pack\\anime\\动画\\蒂法 三部\\字幕文件"
+	root := "C:\\Users\\zen\\Videos\\export\\sdde\\KAGP-116 素人少女撒尿百科4 13人在镜头前撒尿"
 	dirPath := path.Dir(root)
 	mp4s, _ := getMP4Files(root)
 	cmds := []string{}
@@ -36,11 +36,14 @@ func TestInsideMerge(t *testing.T) {
 		if strings.Contains(cmd, "C:\\Program Files\\ffmpeg\\bin\\") {
 			cmd = strings.Replace(cmd, "C:\\Program Files\\ffmpeg\\bin\\ffmpeg", "ffmpeg", -1)
 		}
+		if strings.Contains(cmd, root) {
+			cmd = strings.Replace(cmd, root, "", 1)
+		}
 		cmds = append(cmds, cmd)
 	}
 	fp := ""
 	if runtime.GOOS == "windows" {
-		fp = filepath.Join(root, "mergeInside.bat")
+		fp = filepath.Join(root, "mergeInside.ps1")
 		log.Println(fp)
 		util.WriteByLine(fp, cmds)
 	} else {

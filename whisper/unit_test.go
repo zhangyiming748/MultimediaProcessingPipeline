@@ -16,46 +16,28 @@ import (
 // go test -timeout 2000h -v -run TestWhisper
 func TestWhisper(t *testing.T) {
 	p := &constant.Param{
-		Root:     "E:\\Downloads\\My Pack\\anime\\动画\\蒂法 三部",
-		Language: "English",
+		Root:     "C:\\Users\\zen\\Videos\\export\\KAGP-116",
+		Language: "Japanese",
 		Pattern:  "mp4",
 		Model:    "large-v3",
 		Location: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
-		Proxy:    "127.0.01:8889",
+		Proxy:    "127.0.0.1:8889",
 	}
 	log.SetLog(p)
 	fps := getFiles(p.GetRoot())
 	cmds := []string{}
 	for _, fp := range fps {
 		if strings.HasSuffix(fp, p.GetPattern()) {
-			cmd := GetSubtitle(fp, p, true)
+			cmd := GetSubtitle(fp, p, false)
 			cmds = append(cmds, cmd)
 		}
 	}
 	if runtime.GOOS == "windows" {
-		fp := filepath.Join(p.GetRoot(), "whisper.bat")
+		fp := filepath.Join(p.GetRoot(), "whisper.ps1")
 		util.WriteByLine(fp, cmds)
 	} else {
-		fp := filepath.Join(p.GetRoot(), "whisper.sh")
+		fp := filepath.Join(p.GetRoot(), "whisper.ps1")
 		util.WriteByLine(fp, cmds)
-	}
-	util.WriteByLine("whisper.bat", cmds)
-}
-func TestWhisperOnWindows(t *testing.T) {
-	p := &constant.Param{
-		Root:     "C:\\Users\\zen\\Ada Hunter Red Suit All Cutscenes",
-		Language: "English",
-		Pattern:  "m4a",
-		Model:    "large-v3",
-		Location: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
-		Proxy:    "192.168.1.31:8889",
-	}
-	log.SetLog(p)
-	fps := getFiles(p.GetRoot())
-	for _, fp := range fps {
-		if strings.HasSuffix(fp, p.GetPattern()) {
-			GetSubtitle(fp, p, false)
-		}
 	}
 }
 

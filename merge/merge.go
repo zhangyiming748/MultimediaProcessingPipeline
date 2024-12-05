@@ -21,6 +21,7 @@ func Mp4WithSrt(file string) {
 	if isExist(srt) {
 		output := strings.Replace(file, filepath.Ext(file), "_with_subtitle.mp4", 1)
 		output = replace.ReplaceEnglishSquareBrackets(output)
+
 		par := FastMediaInfo.GetStandMediaInfo(file)
 		width, _ := strconv.Atoi(par.Video.Width)
 		height, _ := strconv.Atoi(par.Video.Height)
@@ -48,14 +49,21 @@ func Mp4WithSrtHard(file string) (cmd string) {
 		srt = filepath.Base(srt)
 		output := strings.Replace(file, filepath.Ext(file), "_with_subtitle_inside.mp4", 1)
 		output = replace.ReplaceEnglishSquareBrackets(output)
+		//output = strings.Replace(output, "\\", "", 1)
+		log.Printf("output = %s\n", output)
+		output = filepath.Base(output)
+		log.Printf("output = %s\n", output)
 		par := FastMediaInfo.GetStandMediaInfo(file)
 		width, _ := strconv.Atoi(par.Video.Width)
 		height, _ := strconv.Atoi(par.Video.Height)
 		log.Printf("获取到的分辨率:%vx%v\t", width, height)
 		//ffmpeg -i input.mp4 -vf "subtitles=subtitle.srt" output.mp4
-		subtitles := strings.Join([]string{"subtitles", srt}, "=")
-		c := exec.Command("ffmpeg", "-i", base, "-vf", subtitles, "-c:v", "h264_nvenc", "-c:a", "libopus", "-map_chapters", "-1", "-ac", "1", output)
-		return c.String()
+		//	subtitles := strings.Join([]string{"subtitles", srt}, "=")
+		sub := strings.Join([]string{"subtitles=", "\"", srt, "\""}, "")
+		str := strings.Join([]string{"& ffmpeg ", "-i ", "\"", base, "\"", " -vf ", sub, " -c:v ", "h264_nvenc ", "-c:a ", "libopus ", "-map_chapters ", "-1 ", "-ac ", "1 ", "\"", output, "\""}, "")
+		//c := exec.Command("ffmpeg", "-i", base, "-vf", subtitles, "-c:v", "h264_nvenc", "-c:a", "libopus", "-map_chapters", "-1", "-ac", "1", output)
+		//return c.String()
+		return str
 	}
 	return ""
 }

@@ -26,7 +26,7 @@ func TestTransAll(t *testing.T) {
 	}()
 
 	p := &constant.Param{
-		Root:     "E:\\Downloads\\My Pack\\anime\\动画\\蒂法 三部",
+		Root:     "C:\\Users\\zen\\Videos\\export\\KAGP-116",
 		Language: "English",
 		Pattern:  "mp4",
 		Model:    "medium.en",
