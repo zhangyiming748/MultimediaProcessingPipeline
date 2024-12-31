@@ -1,17 +1,44 @@
-package whisper
+package t
 
 import (
 	"Multimedia_Processing_Pipeline/constant"
 	"Multimedia_Processing_Pipeline/log"
 	"Multimedia_Processing_Pipeline/util"
+	"Multimedia_Processing_Pipeline/whisper"
+	"Multimedia_Processing_Pipeline/ytdlp"
 	"fmt"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
 	"testing"
-	//"time"
 )
+
+var p = &constant.Param{
+	Root:     "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\ytdlp",
+	Language: "English",
+	Pattern:  "mp4",
+	Model:    "small",
+	Location: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\ytdlp",
+	Proxy:    "192.168.1.35:8889",
+}
+
+func TestYTdlp(t *testing.T) {
+
+	file, err := os.OpenFile("fail.list", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
+	if err != nil {
+		return
+	}
+	log.SetLog(p)
+	link := filepath.Join(p.GetLocation(), "link.list")
+	uris := util.ReadByLine(link)
+	for _, uri := range uris {
+		if link := ytdlp.DownloadVideo(uri, p); link == "" {
+			file.WriteString(fmt.Sprintln(uri))
+		}
+	}
+	file.Sync()
+}
 
 // go test -timeout 2000h -v -run TestWhisper
 func TestWhisper(t *testing.T) {
@@ -19,7 +46,7 @@ func TestWhisper(t *testing.T) {
 		Root:     "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\videos",
 		Language: "English",
 		Pattern:  "mp4",
-		Model:    "large-v3",
+		Model:    "medium.en",
 		Location: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
 		Proxy:    "192.168.1.35:8889",
 	}
@@ -28,7 +55,7 @@ func TestWhisper(t *testing.T) {
 	cmds := []string{}
 	for _, fp := range fps {
 		if strings.HasSuffix(fp, p.GetPattern()) {
-			cmd := GetSubtitle(fp, p, false)
+			cmd := whisper.GetSubtitle(fp, p, false)
 			cmds = append(cmds, cmd)
 		}
 	}

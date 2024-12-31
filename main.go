@@ -10,12 +10,13 @@ import (
 	"Multimedia_Processing_Pipeline/util"
 	"Multimedia_Processing_Pipeline/whisper"
 	"Multimedia_Processing_Pipeline/ytdlp"
-	"github.com/fatih/color"
 	"log"
 	"os"
 	"runtime"
 	"strings"
 	"sync"
+
+	"github.com/fatih/color"
 )
 
 func initConfig(p *constant.Param) {
@@ -88,7 +89,7 @@ func main() {
 		video := ytdlp.DownloadVideo(line, p)
 		log.Printf("下载后的文件名为:%s\n", video)
 		video = strings.Replace(video, "\n", "", 1)
-		whisper.GetSubtitle(video, p)
+		whisper.GetSubtitle(video, p, false)
 		color.Red("开始翻译")
 		translateShell.Trans(video, p, c)
 		if p.GetMerge() {

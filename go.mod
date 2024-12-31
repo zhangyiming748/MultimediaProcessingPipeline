@@ -13,7 +13,6 @@ require (
 	github.com/zhangyiming748/FastMediaInfo v0.0.7
 	github.com/zhangyiming748/lumberjack v0.0.1
 	github.com/zhangyiming748/pretty v0.0.3
-	golang.org/x/text v0.20.0
 	xorm.io/xorm v1.3.9
 )
 
@@ -35,5 +34,6 @@ require (
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 	golang.org/x/sys v0.27.0 // indirect
 	golang.org/x/term v0.26.0 // indirect
+	golang.org/x/text v0.20.0 // indirect
 	xorm.io/builder v0.3.11-0.20220531020008-1bd24a7dc978 // indirect
 )
