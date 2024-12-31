@@ -150,9 +150,9 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 	}
 	after.Close()
 	origin := strings.Join([]string{strings.Replace(srt, ".srt", "", 1), "_origin", ".srt"}, "")
-	err := os.Rename(srt, origin)
-	err = os.Rename(tmpname, srt)
-	if err != nil {
-		constant.Warning(fmt.Sprintf("字幕文件重命名出现错误:%v\n", err))
+	err1 := os.Rename(srt, origin)
+	err2 := os.Rename(tmpname, srt)
+	if err1 != nil || err2 != nil {
+		constant.Warning(fmt.Sprintf("字幕文件重命名出现错误:%v:%v\n", err1, err2))
 	}
 }
