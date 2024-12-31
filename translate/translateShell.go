@@ -43,11 +43,11 @@ func Translate(src string, p *constant.Param, c *constant.Count) string {
 	wg.Add(1)
 	//go TransByDeeplx(src, p.GetProxy(), once, wg, ack)
 	if runtime.GOOS == "windows" {
-		go TransByDeeplx(src, p.GetProxy(), once, wg, ack)
+		go TransByDeeplx(src, p, once, wg, ack)
 	} else {
 		go TransByGoogle(src, p.GetProxy(), once, wg, ack)
 		go TransByBing(src, p.GetProxy(), once, wg, ack)
-		go TransByDeeplx(src, p.GetProxy(), once, wg, ack)
+		go TransByDeeplx(src, p, once, wg, ack)
 	}
 	select {
 	case dst = <-ack:
@@ -86,8 +86,7 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 	log.Printf("%v根据文件名:%s\t替换的字幕名:%s\n", p.GetPattern(), fp, srt)
 	//log.Fatalf("%v根据文件名:%s\t替换的字幕名:%s\n", p.GetPattern(), fp, srt)
 	tmpname := strings.Join([]string{strings.Replace(srt, ".srt", "", 1), strconv.Itoa(r), ".srt"}, "")
-	var before []string
-	before = util.ReadInSlice(srt)
+	before := util.ReadInSlice(srt)
 	fmt.Println(before)
 	after, _ := os.OpenFile(tmpname, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0777)
 	defer func() {
@@ -97,9 +96,9 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 				fmt.Println("捕获到 index out of range 类型错误,忽略并继续执行重命名操作")
 				{
 					origin := strings.Join([]string{strings.Replace(srt, ".srt", "", 1), "_origin", ".srt"}, "")
-					err := os.Rename(srt, origin)
-					err = os.Rename(tmpname, srt)
-					if err != nil {
+					err1 := os.Rename(srt, origin)
+					err2 := os.Rename(tmpname, srt)
+					if err1 != nil || err2 != nil {
 						constant.Warning(fmt.Sprintf("字幕文件重命名出现错误:%v\n", err))
 					}
 				}

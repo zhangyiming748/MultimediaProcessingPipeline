@@ -1,13 +1,18 @@
 package translateShell
 
 import (
+	"Multimedia_Processing_Pipeline/constant"
 	"Multimedia_Processing_Pipeline/util"
 	"encoding/json"
 	"fmt"
 	"log"
+	"net"
 	"os/exec"
 	"strings"
 	"sync"
+	"time"
+
+	translate "github.com/OwO-Network/DeepLX/translate"
 )
 
 type RaspiRep struct {
@@ -18,8 +23,8 @@ type RaspiRep struct {
 	From   string `json:"from"`
 }
 
-func TransByDeeplx(src, proxy string, once *sync.Once, wg *sync.WaitGroup, dst chan string) {
-	rep, fail := Deeplx(src)
+func TransByDeeplx(src string, p *constant.Param, once *sync.Once, wg *sync.WaitGroup, dst chan string) {
+	rep, fail := Deeplx(src, p)
 	if fail != nil {
 		return
 	} else {
@@ -73,8 +78,18 @@ func TransOnce(src, proxy string) (string, error) {
 	}
 	return result, nil
 }
+func Deeplx(src string, p *constant.Param) (dst string, err error) {
+	if checkIPPort(p.GetMysql()) {
+		return LinuxdoDeeplx(src, p)
+	} else {
+		return GithubDeepLx(src)
+	}
+}
 
-func Deeplx(src string) (dst string, err error) {
+/*
+使用linuxdo的deeplx
+*/
+func LinuxdoDeeplx(src string, p *constant.Param) (dst string, err error) {
 	headers := map[string]string{
 		"Content-Type": "application/json",
 	}
@@ -83,9 +98,9 @@ func Deeplx(src string) (dst string, err error) {
 		"source_lang": "auto",
 		"target_lang": "zh",
 	}
-
-	uri := "http://192.168.1.9:3389/api/v1/translate"
-	j, err := util.HttpPostJson(headers, data, uri)
+	prefix := p.GetMysql()
+	host := strings.Join([]string{prefix, "api/v1/translate"}, "/")
+	j, err := util.HttpPostJson(headers, data, host)
 	if err != nil {
 		return "deeplx 请求发生错误", err
 	}
@@ -93,4 +108,26 @@ func Deeplx(src string) (dst string, err error) {
 	var result RaspiRep
 	json.Unmarshal(j, &result)
 	return result.Dst, nil
+}
+
+/*
+使用开源deeplx
+*/
+func GithubDeepLx(src string) (string, error) {
+	if rep, err := translate.TranslateByDeepLX("auto", "zh", src, "html", "", ""); err != nil {
+		return "", err
+	} else {
+		return rep.Data, err
+	}
+}
+
+/*
+ */
+func checkIPPort(ipPort string) bool {
+	conn, err := net.DialTimeout("tcp", ipPort, 5*time.Second)
+	if err != nil {
+		return false
+	}
+	defer conn.Close()
+	return true
 }

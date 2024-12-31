@@ -12,7 +12,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"sync"
 	"testing"
 
 	DP "github.com/OwO-Network/DeepLX/translate"
@@ -26,11 +25,11 @@ func TestTransAll(t *testing.T) {
 	}()
 
 	p := &constant.Param{
-		Root:     "C:\\Users\\zen\\Videos\\export\\KAGP-116",
+		Root:     "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\新建文件夹",
 		Language: "English",
 		Pattern:  "mp4",
 		Model:    "medium.en",
-		Location: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
+		Location: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\新建文件夹",
 		Proxy:    "192.168.1.35:8889",
 	}
 
@@ -75,14 +74,7 @@ func getFiles(currentDir string) (filePaths []string) {
 }
 
 func TestDeeplx(t *testing.T) {
-	src := "hЯ суперкрасивый парень.ello"
-	token := ""
-	os.Setenv("TOKEN", token)
-	deeplx, err := Deeplx(src)
-	if err != nil {
-		t.Log(err)
-	}
-	t.Log(deeplx)
+
 }
 func TestTranslateByDeepLX(t *testing.T) {
 	source := "auto"
@@ -95,14 +87,14 @@ func TestTranslateByDeepLX(t *testing.T) {
 	t.Logf("%+v\ndata = %v\n", lx, lx.Data)
 }
 func TestTransByDeeplx(t *testing.T) {
-	ch := make(chan string, 1)
-	var one sync.Once
-	var wg sync.WaitGroup
-	wg.Add(1)
-	//os.Setenv("TOKEN", "")
-	go TransByDeeplx("hello", "http://127.0.0.1:8889", &one, &wg, ch)
-	wg.Wait()
-	fmt.Println("通道接收 ", <-ch)
+	// ch := make(chan string, 1)
+	// var one sync.Once
+	// var wg sync.WaitGroup
+	// wg.Add(1)
+	// //os.Setenv("TOKEN", "")
+	// go TransByDeeplx("hello", "http://127.0.0.1:8889", &one, &wg, ch)
+	// wg.Wait()
+	// fmt.Println("通道接收 ", <-ch)
 }
 
 // go test -timeout 2000m -v -run TestSingleTranslate

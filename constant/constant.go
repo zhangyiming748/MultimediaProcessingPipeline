@@ -17,6 +17,7 @@ type Param struct {
 	Proxy    string // 翻译所需要的网络环境
 	Merge    bool   //是否合并字幕 false 不合并 true 合并
 	Lines    string // 保存下载url的文档 默认放在root下 文件名为 link.list
+	Mysql    string // 数据库位置
 }
 
 func (p *Param) GetLines() string {
@@ -78,6 +79,13 @@ func (p *Param) GetProxy() string {
 
 func (p *Param) SetProxy(pr string) {
 	p.Proxy = pr
+}
+func (p *Param) SetMysql(s string) {
+	p.Mysql = s
+}
+
+func (p *Param) GetMysql() string {
+	return p.Mysql
 }
 
 type Count struct {
