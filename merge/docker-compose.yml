@@ -13,7 +13,7 @@ services:
               count: all
               capabilities:
                 - gpu
-    image: zhangyiming748/merge
+    image: zhangyiming748/merge:latest
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
