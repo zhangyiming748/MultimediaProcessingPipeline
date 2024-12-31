@@ -1,16 +1,20 @@
 package sql
 
 import (
-	_ "github.com/go-sql-driver/mysql"
+	"Multimedia_Processing_Pipeline/constant"
+	"strings"
 	"time"
+
+	_ "github.com/go-sql-driver/mysql"
 	"xorm.io/xorm"
 )
 
 var engine *xorm.Engine
 
-func SetMysql() {
+func SetMysql(p *constant.Param) {
 	var err error
-	engine, err = xorm.NewEngine("mysql", "root:123456@tcp(192.168.1.9:3306)/Translate?charset=utf8")
+	session := strings.Join([]string{"root:123456@tcp(", p.GetMysql(), ")/Translate?charset=utf8"}, "")
+	engine, err = xorm.NewEngine("mysql", session)
 	if err != nil {
 		panic(err)
 	}

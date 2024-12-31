@@ -6,15 +6,12 @@ import (
 	"Multimedia_Processing_Pipeline/model"
 	"Multimedia_Processing_Pipeline/replace"
 	"Multimedia_Processing_Pipeline/sql"
-	"Multimedia_Processing_Pipeline/util"
 	"fmt"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
-
-	DP "github.com/OwO-Network/DeepLX/translate"
 )
 
 // go test -timeout 2000m -v -run TestTransAll
@@ -25,17 +22,19 @@ func TestTransAll(t *testing.T) {
 	}()
 
 	p := &constant.Param{
-		Root:     "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\新建文件夹",
-		Language: "English",
-		Pattern:  "mp4",
-		Model:    "medium.en",
-		Location: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\新建文件夹",
-		Proxy:    "192.168.1.35:8889",
+		Root:         "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\videos\\2",
+		Language:     "English",
+		Pattern:      "mp4",
+		Model:        "medium.en",
+		Location:     "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\videos\\2",
+		Proxy:        "192.168.1.35:8889",
+		Mysql:        "192.168.1.9:3306",
+		TransService: "192.168.1.9:3389",
 	}
 
 	mylog.SetLog(p)
 	sql.SetLevelDB(p)
-	sql.SetMysql()
+	sql.SetMysql(p)
 	sql.GetMysql().Sync2(model.TranslateHistory{})
 	replace.SetSensitive(p)
 	//util.ExitAfterRun()
@@ -71,44 +70,4 @@ func getFiles(currentDir string) (filePaths []string) {
 		fmt.Println(filePath)
 	}
 	return filePaths
-}
-
-func TestDeeplx(t *testing.T) {
-
-}
-func TestTranslateByDeepLX(t *testing.T) {
-	source := "auto"
-	target := "zh"
-	text := "hello"
-	lx, err := DP.TranslateByDeepLX(source, target, text, "html", "", "")
-	if err != nil {
-		log.Fatalln(err)
-	}
-	t.Logf("%+v\ndata = %v\n", lx, lx.Data)
-}
-func TestTransByDeeplx(t *testing.T) {
-	// ch := make(chan string, 1)
-	// var one sync.Once
-	// var wg sync.WaitGroup
-	// wg.Add(1)
-	// //os.Setenv("TOKEN", "")
-	// go TransByDeeplx("hello", "http://127.0.0.1:8889", &one, &wg, ch)
-	// wg.Wait()
-	// fmt.Println("通道接收 ", <-ch)
-}
-
-// go test -timeout 2000m -v -run TestSingleTranslate
-func TestSingleTranslate(t *testing.T) {
-	p := new(constant.Param)
-	p.SetProxy("http://127.0.0.1:8889")
-	c := new(constant.Count)
-	beforeWords := util.ReadByLine("before.txt")
-	afterWords := []string{}
-	for i, word := range beforeWords {
-		log.Printf("第%d个句子:%s\n", i, word)
-		after := Translate(word, p, c)
-		after = strings.Replace(after, "\n", "", 1)
-		afterWords = append(afterWords, after)
-	}
-	util.WriteByLineOnce("after.txt", afterWords)
 }

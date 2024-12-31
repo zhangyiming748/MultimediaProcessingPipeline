@@ -9,15 +9,16 @@ const (
 )
 
 type Param struct {
-	Root     string // 视频文件位置
-	Language string // 视频文件语言 English German Russian Japanese Korean Spanish French
-	Pattern  string //视频扩展名
-	Model    string //whisper 所使用的模型等级 large
-	Location string //whisper sensitive.txt 模型保存的位置 如果为空保存在视频文件夹
-	Proxy    string // 翻译所需要的网络环境
-	Merge    bool   //是否合并字幕 false 不合并 true 合并
-	Lines    string // 保存下载url的文档 默认放在root下 文件名为 link.list
-	Mysql    string // 数据库位置
+	Root         string // 视频文件位置
+	Language     string // 视频文件语言 English German Russian Japanese Korean Spanish French
+	Pattern      string //视频扩展名
+	Model        string //whisper 所使用的模型等级 large
+	Location     string //whisper sensitive.txt 模型保存的位置 如果为空保存在视频文件夹
+	Proxy        string // 翻译所需要的网络环境
+	Merge        bool   //是否合并字幕 false 不合并 true 合并
+	Lines        string // 保存下载url的文档 默认放在root下 文件名为 link.list
+	Mysql        string // 数据库位置
+	TransService string // 本地翻译服务位置
 }
 
 func (p *Param) GetLines() string {
@@ -86,6 +87,13 @@ func (p *Param) SetMysql(s string) {
 
 func (p *Param) GetMysql() string {
 	return p.Mysql
+}
+func (p *Param) SetTransService(s string) {
+	p.TransService = s
+}
+
+func (p *Param) GetTransService() string {
+	return p.TransService
 }
 
 type Count struct {

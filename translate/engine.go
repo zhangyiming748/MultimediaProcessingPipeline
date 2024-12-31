@@ -79,7 +79,7 @@ func TransOnce(src, proxy string) (string, error) {
 	return result, nil
 }
 func Deeplx(src string, p *constant.Param) (dst string, err error) {
-	if checkIPPort(p.GetMysql()) {
+	if checkIPPort(p.GetTransService()) {
 		return LinuxdoDeeplx(src, p)
 	} else {
 		return GithubDeepLx(src)
@@ -98,7 +98,7 @@ func LinuxdoDeeplx(src string, p *constant.Param) (dst string, err error) {
 		"source_lang": "auto",
 		"target_lang": "zh",
 	}
-	prefix := p.GetMysql()
+	prefix := p.GetTransService()
 	host := strings.Join([]string{prefix, "api/v1/translate"}, "/")
 	j, err := util.HttpPostJson(headers, data, host)
 	if err != nil {
