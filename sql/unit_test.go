@@ -3,8 +3,9 @@ package sql
 import (
 	"Multimedia_Processing_Pipeline/constant"
 	"errors"
-	"github.com/syndtr/goleveldb/leveldb"
 	"testing"
+
+	"github.com/syndtr/goleveldb/leveldb"
 )
 
 // go test -v -run TestCreate
@@ -19,12 +20,12 @@ func TestAddOne(t *testing.T) {
 
 func TestGetLevelDB(t *testing.T) {
 	p := &constant.Param{
-		Root:     "C:\\Users\\zen\\Github\\Multimedia_Processing_Pipeline\\sql",
-		Language: "English",
-		Pattern:  "mp4",
-		Model:    "base",
-		Location: "C:\\Users\\zen\\Github\\Multimedia_Processing_Pipeline\\sql",
-		Proxy:    "192.168.1.20:8889",
+		VideosLocation: "C:\\Users\\zen\\Github\\Multimedia_Processing_Pipeline\\sql",
+		Language:       "English",
+		Pattern:        "mp4",
+		Model:          "base",
+		ToolsLocation:  "C:\\Users\\zen\\Github\\Multimedia_Processing_Pipeline\\sql",
+		Proxy:          "192.168.1.20:8889",
 	}
 	SetLevelDB(p)
 	err := GetLevelDB().Put([]byte("key"), []byte("value"), nil)
@@ -52,12 +53,12 @@ func TestGetLevelDB(t *testing.T) {
 }
 func TestGetALL(t *testing.T) {
 	p := &constant.Param{
-		Root:     "C:\\Users\\zen\\Github\\Multimedia_Processing_Pipeline\\sql",
-		Language: "English",
-		Pattern:  "mp4",
-		Model:    "base",
-		Location: "C:\\Users\\zen\\Github\\Multimedia_Processing_Pipeline\\sql",
-		Proxy:    "192.168.1.20:8889",
+		VideosLocation: "C:\\Users\\zen\\Github\\Multimedia_Processing_Pipeline\\sql",
+		Language:       "English",
+		Pattern:        "mp4",
+		Model:          "base",
+		ToolsLocation:  "C:\\Users\\zen\\Github\\Multimedia_Processing_Pipeline\\sql",
+		Proxy:          "192.168.1.20:8889",
 	}
 	SetLevelDB(p)
 	iter := GetLevelDB().NewIterator(nil, nil)

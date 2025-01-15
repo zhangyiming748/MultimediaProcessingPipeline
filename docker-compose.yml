@@ -1,10 +1,8 @@
 name: wta
 services:
   whisperandtrans:
-    stdin_open: true
-    tty: true
     container_name: wta
     volumes:
-      - C:\Users\zen\Github\MultimediaProcessingPipeline:/app
-      - C:\Users\zen\Github\MultimediaProcessingPipeline\videos:/data # 你的视频所在文件夹
+        - /Users/zen/Github/MultimediaProcessingPipeline:/app
+        - /Users/zen/Movies:/Videos
     image: zhangyiming748/stand:latest # 指定生成的镜像名称和标签

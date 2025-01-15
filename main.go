@@ -41,17 +41,17 @@ func initConfig(p *constant.Param) {
 }
 func main() {
 	p := new(constant.Param)
-	p.Root = "/data"
+	p.VideosLocation = "/data"
 	p.Language = "English"
 	p.Pattern = "mp4"
 	p.Model = "medium.en"
-	p.Location = "/data"
+	p.ToolsLocation = "/data"
 	p.Proxy = "192.168.1.31:8889"
 	p.Merge = false
-	p.Lines = strings.Join([]string{p.GetRoot(), "link.list"}, string(os.PathSeparator))
+	p.Lines = strings.Join([]string{p.GetVideosLocation(), "link.list"}, string(os.PathSeparator))
 	initConfig(p)
 	if root := os.Getenv("root"); root != "" {
-		p.SetRoot(root)
+		p.SetVideosLocation(root)
 	}
 	if language := os.Getenv("language"); language != "" {
 		p.SetLanguage(language)
@@ -66,7 +66,7 @@ func main() {
 		p.SetModel(model)
 	}
 	if location := os.Getenv("location"); location != "" {
-		p.SetLocation(location)
+		p.SetToolsLocation(location)
 	}
 	if proxy := os.Getenv("proxy"); proxy != "" {
 		p.SetProxy(proxy)
@@ -75,7 +75,7 @@ func main() {
 		p.Merge = true
 	}
 	if lines := os.Getenv("lines"); lines != "" {
-		p.SetLines(strings.Join([]string{p.GetRoot(), lines}, string(os.PathSeparator)))
+		p.SetLines(strings.Join([]string{p.GetVideosLocation(), lines}, string(os.PathSeparator)))
 	}
 	c := new(constant.Count)
 	lines := util.ReadByLine(p.GetLines())

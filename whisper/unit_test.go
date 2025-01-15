@@ -16,15 +16,15 @@ import (
 // go test -timeout 2000h -v -run TestWhisper
 func TestWhisper(t *testing.T) {
 	p := &constant.Param{
-		Root:     "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\videos",
-		Language: "English",
-		Pattern:  "mp4",
-		Model:    "large-v3",
-		Location: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
-		Proxy:    "192.168.1.35:8889",
+		VideosLocation: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\videos",
+		Language:       "English",
+		Pattern:        "mp4",
+		Model:          "large-v3",
+		ToolsLocation:  "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
+		Proxy:          "192.168.1.35:8889",
 	}
 	log.SetLog(p)
-	fps := getFiles(p.GetRoot())
+	fps := getFiles(p.GetVideosLocation())
 	cmds := []string{}
 	for _, fp := range fps {
 		if strings.HasSuffix(fp, p.GetPattern()) {
@@ -33,10 +33,10 @@ func TestWhisper(t *testing.T) {
 		}
 	}
 	if runtime.GOOS == "windows" {
-		fp := filepath.Join(p.GetRoot(), "whisper.ps1")
+		fp := filepath.Join(p.GetVideosLocation(), "whisper.ps1")
 		util.WriteByLine(fp, cmds)
 	} else {
-		fp := filepath.Join(p.GetRoot(), "whisper.sh")
+		fp := filepath.Join(p.GetVideosLocation(), "whisper.sh")
 		util.WriteByLine(fp, cmds)
 	}
 }

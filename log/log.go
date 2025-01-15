@@ -2,17 +2,18 @@ package log
 
 import (
 	"Multimedia_Processing_Pipeline/constant"
-	"github.com/zhangyiming748/lumberjack"
 	"io"
 	"log"
 	"os"
 	"strings"
+
+	"github.com/zhangyiming748/lumberjack"
 )
 
 func SetLog(p *constant.Param) {
 	// 创建一个用于写入文件的Logger实例
 	fileLogger := &lumberjack.Logger{
-		Filename:   strings.Join([]string{p.GetRoot(), "MultimediaProcessingPipeline.log"}, string(os.PathSeparator)),
+		Filename:   strings.Join([]string{p.GetVideosLocation(), "MultimediaProcessingPipeline.log"}, string(os.PathSeparator)),
 		MaxSize:    1, // MB
 		MaxBackups: 30,
 		MaxAge:     28, // days

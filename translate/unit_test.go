@@ -22,14 +22,14 @@ func TestTransAll(t *testing.T) {
 	}()
 
 	p := &constant.Param{
-		Root:         "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\videos\\2",
-		Language:     "English",
-		Pattern:      "mp4",
-		Model:        "medium.en",
-		Location:     "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\videos\\2",
-		Proxy:        "192.168.1.35:8889",
-		Mysql:        "192.168.1.9:3306",
-		TransService: "192.168.1.9:3389",
+		VideosLocation: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\videos\\2",
+		Language:       "English",
+		Pattern:        "mp4",
+		Model:          "medium.en",
+		ToolsLocation:  "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\videos\\2",
+		Proxy:          "192.168.1.35:8889",
+		Mysql:          "192.168.1.9:3306",
+		TransService:   "192.168.1.9:3389",
 	}
 
 	mylog.SetLog(p)
@@ -38,7 +38,7 @@ func TestTransAll(t *testing.T) {
 	sql.GetMysql().Sync2(model.TranslateHistory{})
 	replace.SetSensitive(p)
 	//util.ExitAfterRun()
-	fps := getFiles(p.GetRoot())
+	fps := getFiles(p.GetVideosLocation())
 
 	c := new(constant.Count)
 	for _, fp := range fps {

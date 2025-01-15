@@ -2,7 +2,11 @@ package t
 
 import (
 	"Multimedia_Processing_Pipeline/constant"
-	"Multimedia_Processing_Pipeline/log"
+	mylog "Multimedia_Processing_Pipeline/log"
+	"Multimedia_Processing_Pipeline/model"
+	"Multimedia_Processing_Pipeline/replace"
+	"Multimedia_Processing_Pipeline/sql"
+	trans "Multimedia_Processing_Pipeline/translate"
 	"Multimedia_Processing_Pipeline/util"
 	"Multimedia_Processing_Pipeline/whisper"
 	"Multimedia_Processing_Pipeline/ytdlp"
@@ -15,22 +19,33 @@ import (
 )
 
 var p = &constant.Param{
-	Root:     "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\ytdlp",
-	Language: "English",
-	Pattern:  "mp4",
-	Model:    "small",
-	Location: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\ytdlp",
-	Proxy:    "192.168.1.35:8889",
+	VideosLocation: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\ytdlp",
+	Language:       "English",
+	Pattern:        "mp4",
+	Model:          "small",
+	ToolsLocation:  "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\ytdlp",
+	Proxy:          "192.168.1.35:8889",
+	Merge:          false,
+	//Lines:          string // 保存下载url的文档 默认放在root下 文件名为 link.list
+	Mysql:        "192.168.1.9:3306",
+	TransService: "192.168.1.9:3389",
 }
 
-func TestYTdlp(t *testing.T) {
+func init() {
+	mylog.SetLog(p)
+	sql.SetLevelDB(p)
+	sql.SetMysql(p)
+	sql.GetMysql().Sync2(model.TranslateHistory{})
+	replace.SetSensitive(p)
+}
 
+// go test -timeout 2000h -v -run TestYTdlp
+func TestYTdlp(t *testing.T) {
 	file, err := os.OpenFile("fail.list", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
 	if err != nil {
 		return
 	}
-	log.SetLog(p)
-	link := filepath.Join(p.GetLocation(), "link.list")
+	link := filepath.Join(p.GetToolsLocation(), "link.list")
 	uris := util.ReadByLine(link)
 	for _, uri := range uris {
 		if link := ytdlp.DownloadVideo(uri, p); link == "" {
@@ -42,16 +57,8 @@ func TestYTdlp(t *testing.T) {
 
 // go test -timeout 2000h -v -run TestWhisper
 func TestWhisper(t *testing.T) {
-	p := &constant.Param{
-		Root:     "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\videos",
-		Language: "English",
-		Pattern:  "mp4",
-		Model:    "medium.en",
-		Location: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
-		Proxy:    "192.168.1.35:8889",
-	}
-	log.SetLog(p)
-	fps := getFiles(p.GetRoot())
+
+	fps := getFiles(p.GetVideosLocation())
 	cmds := []string{}
 	for _, fp := range fps {
 		if strings.HasSuffix(fp, p.GetPattern()) {
@@ -60,10 +67,10 @@ func TestWhisper(t *testing.T) {
 		}
 	}
 	if runtime.GOOS == "windows" {
-		fp := filepath.Join(p.GetRoot(), "whisper.ps1")
+		fp := filepath.Join(p.GetVideosLocation(), "whisper.ps1")
 		util.WriteByLine(fp, cmds)
 	} else {
-		fp := filepath.Join(p.GetRoot(), "whisper.sh")
+		fp := filepath.Join(p.GetVideosLocation(), "whisper.sh")
 		util.WriteByLine(fp, cmds)
 	}
 }
@@ -92,12 +99,14 @@ func getFiles(currentDir string) (filePaths []string) {
 	return filePaths
 }
 
-// go test -timeout 2000h -v -run TestGetSpecif
-
-func TestGetSpecif(t *testing.T) {
-	hostname, err := os.Hostname()
-	if err != nil {
-		fmt.Println(err)
+// go test -timeout 2000h -v -run TestTransAll
+func TestTransAll(t *testing.T) {
+	//util.ExitAfterRun()
+	fps := getFiles(p.GetVideosLocation())
+	c := new(constant.Count)
+	for _, fp := range fps {
+		if strings.HasSuffix(fp, ".srt") {
+			trans.Trans(fp, p, c)
+		}
 	}
-	t.Log(hostname)
 }

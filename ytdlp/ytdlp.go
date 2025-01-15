@@ -16,10 +16,10 @@ func DownloadVideo(uri string, p *constant.Param) (fp string) {
 			fmt.Println(err)
 		}
 	}()
-	name_cmd := exec.Command("yt-dlp", "--proxy", p.GetProxy(), "-f", "bestvideo[height<=?1080]+bestaudio/best[height<=?1080]/mp4", "--no-playlist", "--paths", p.GetRoot(), "--get-filename", uri)
+	name_cmd := exec.Command("yt-dlp", "--proxy", p.GetProxy(), "-f", "bestvideo[height<=?1080]+bestaudio/best[height<=?1080]/mp4", "--no-playlist", "--paths", p.GetVideosLocation(), "--get-filename", uri)
 	name := util.GetVideoName(name_cmd)
 	log.Printf("当前下载的文件标题:%s", name)
-	download_cmd := exec.Command("yt-dlp", "--proxy", p.GetProxy(), "-f", "bestvideo[height<=?1080]+bestaudio/best[height<=?1080]/mp4", "--no-playlist", "--paths", p.GetRoot(), uri)
+	download_cmd := exec.Command("yt-dlp", "--proxy", p.GetProxy(), "-f", "bestvideo[height<=?1080]+bestaudio/best[height<=?1080]/mp4", "--no-playlist", "--paths", p.GetVideosLocation(), uri)
 	util.ExecCommand4Ytdlp(download_cmd)
 	log.Printf("当前下载成功的文件标题:%s", name)
 	return name

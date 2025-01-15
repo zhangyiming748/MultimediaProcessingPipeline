@@ -4,11 +4,12 @@ import (
 	"Multimedia_Processing_Pipeline/constant"
 	"Multimedia_Processing_Pipeline/sql"
 	"bufio"
-	"github.com/syndtr/goleveldb/leveldb"
 	"io"
 	"log"
 	"os"
 	"strings"
+
+	"github.com/syndtr/goleveldb/leveldb"
 )
 
 var Sensitive = map[string]string{}
@@ -24,8 +25,8 @@ func GetSensitive(str string) string {
 }
 
 func SetSensitive(p *constant.Param) {
-	fp1 := strings.Join([]string{p.GetRoot(), "sensitive.txt"}, string(os.PathSeparator))
-	fp2 := strings.Join([]string{p.GetLocation(), "sensitive.txt"}, string(os.PathSeparator))
+	fp1 := strings.Join([]string{p.GetVideosLocation(), "sensitive.txt"}, string(os.PathSeparator))
+	fp2 := strings.Join([]string{p.GetToolsLocation(), "sensitive.txt"}, string(os.PathSeparator))
 	fp3 := "sensitive.txt"
 	lines := []string{}
 	if IsExist(fp1) {

@@ -1,9 +1,0 @@
-name: mmp
-services:
-    stand:
-        stdin_open: true
-        tty: true
-        container_name: mmp
-        volumes:
-             - C:\Users\zen\Github\MultimediaProcessingPipeline:/data
-        image: zhangyiming748/stand:latest

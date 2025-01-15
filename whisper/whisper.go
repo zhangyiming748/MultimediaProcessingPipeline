@@ -27,13 +27,13 @@ func GetSubtitle(fp string, p *constant.Param, fast bool) string {
 	var cmd *exec.Cmd
 	if hostname, unknown := os.Hostname(); unknown != nil {
 		fmt.Println("未找到计算机名")
-		cmd = exec.Command("whisper", fp, "--model", p.GetModel(), "--model_dir", p.GetLocation(), "--output_format", "srt", "--prepend_punctuations", ",.?", "--language", p.GetLanguage(), "--output_dir", p.GetRoot(), "--verbose", "True")
+		cmd = exec.Command("whisper", fp, "--model", p.GetModel(), "--model_dir", p.GetToolsLocation(), "--output_format", "srt", "--prepend_punctuations", ",.?", "--language", p.GetLanguage(), "--output_dir", p.GetVideosLocation(), "--verbose", "True")
 	} else if hostname == constant.HASEE {
 		fmt.Println("是神舟战神,可以使用cuda加速")
-		cmd = exec.Command("whisper", fp, "--model", p.GetModel(), "--device", "cuda", "--model_dir", p.GetLocation(), "--output_format", "srt", "--prepend_punctuations", ",.?", "--language", p.GetLanguage(), "--output_dir", p.GetRoot(), "--verbose", "True")
+		cmd = exec.Command("whisper", fp, "--model", p.GetModel(), "--device", "cuda", "--model_dir", p.GetToolsLocation(), "--output_format", "srt", "--prepend_punctuations", ",.?", "--language", p.GetLanguage(), "--output_dir", p.GetVideosLocation(), "--verbose", "True")
 	} else {
 		fmt.Println("是其他电脑,使用cpu硬肝")
-		cmd = exec.Command("whisper", fp, "--model", p.GetModel(), "--model_dir", p.GetLocation(), "--output_format", "srt", "--prepend_punctuations", ",.?", "--language", p.GetLanguage(), "--output_dir", p.GetRoot(), "--verbose", "True")
+		cmd = exec.Command("whisper", fp, "--model", p.GetModel(), "--model_dir", p.GetToolsLocation(), "--output_format", "srt", "--prepend_punctuations", ",.?", "--language", p.GetLanguage(), "--output_dir", p.GetVideosLocation(), "--verbose", "True")
 	}
 
 	startTime := time.Now()
