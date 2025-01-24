@@ -6,6 +6,7 @@ import (
 	"Multimedia_Processing_Pipeline/util"
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -15,6 +16,37 @@ import (
 
 	"github.com/zhangyiming748/FastMediaInfo"
 )
+
+var seed = rand.New(rand.NewSource(time.Now().Unix()))
+
+/*
+重命名文件 避免文件名空格对硬编码的影响
+*/
+func renameSrt(src string) (dst string) {
+	r := seed.Intn(2000)
+	path := filepath.Dir(src)
+	base := filepath.Base(src)
+	ext := filepath.Ext(base)
+	purge := strings.Replace(base, ext, "", -1)
+	log.Printf("path: %s\tbase: %s\tpurge: %s\text: %s\n", path, base, purge, ext)
+	//path: C:\Users\zen\Github\MultimediaProcessingPipeline\test	base: Impregnation, No Strings Attached [674e2d97be0f7].srt	purge: Impregnation, No Strings Attached [674e2d97be0f7]	ext: .srt
+	fname := strings.Replace(src, purge, strconv.Itoa(r), 1)
+	err := os.Rename(src, fname)
+	if err != nil {
+		log.Printf("rename %s to %s error: %v\n", src, fname, err)
+	}
+	return fname
+}
+
+func Mp4Inside(mp4, srt string) {
+	baseMp4 := filepath.Base(mp4)
+	baseSrt := filepath.Base(srt)
+	//ffmpeg -i input.mp4 -vf "subtitles=subtitle.srt" output.mp4
+	output := strings.Replace(baseMp4, filepath.Ext(baseMp4), "_subInside.mp4", -1)
+	ff := fmt.Sprintf("ffmpeg -i \"%s\" -vf \"subtitles='%s'\" -c:v h264_nvenc -c:a libmp3lame -ac 1 -map_chapters -1 \"%s\"", baseMp4, baseSrt, output)
+	log.Println(ff)
+
+}
 
 func Mp4WithSrt(file string) {
 	srt := strings.Replace(file, filepath.Ext(file), ".srt", 1)

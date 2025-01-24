@@ -11,6 +11,7 @@ import (
 	"Multimedia_Processing_Pipeline/whisper"
 	"Multimedia_Processing_Pipeline/ytdlp"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -19,12 +20,12 @@ import (
 )
 
 var p = &constant.Param{
-	VideosLocation: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\ytdlp",
+	VideosLocation: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\test",
 	Language:       "English",
 	Pattern:        "mp4",
 	Model:          "small",
-	ToolsLocation:  "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\ytdlp",
-	Proxy:          "192.168.1.35:8889",
+	ToolsLocation:  "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\test",
+	Proxy:          "192.168.1.32:8889",
 	Merge:          false,
 	//Lines:          string // 保存下载url的文档 默认放在root下 文件名为 link.list
 	Mysql:        "192.168.1.9:3306",
@@ -103,6 +104,7 @@ func getFiles(currentDir string) (filePaths []string) {
 func TestTransAll(t *testing.T) {
 	//util.ExitAfterRun()
 	fps := getFiles(p.GetVideosLocation())
+	log.Println(fps)
 	c := new(constant.Count)
 	for _, fp := range fps {
 		if strings.HasSuffix(fp, ".srt") {
