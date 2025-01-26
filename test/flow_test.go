@@ -23,7 +23,7 @@ var p = &constant.Param{
 	VideosLocation: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\test",
 	Language:       "English",
 	Pattern:        "mp4",
-	Model:          "small",
+	Model:          "large-v3",
 	ToolsLocation:  "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\test",
 	Proxy:          "192.168.1.32:8889",
 	Merge:          false,

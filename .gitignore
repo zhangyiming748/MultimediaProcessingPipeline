@@ -25,3 +25,4 @@ whisper.bat
 whisper.sh
 mergeInside.bat
 mergeInside.sh
+*.ps1
