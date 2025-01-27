@@ -31,6 +31,12 @@ const (
 
 func Translate(src string, p *constant.Param, c *constant.Count) string {
 	//trans -brief ja:zh "私の手の動きに合わせて|そう"
+	before := new(model.TranslateHistory)
+	before.Src = src
+	found, _ := before.FindBySrc()
+	if found {
+		return before.Dst
+	}
 	var dst string
 	if src == "" {
 		return dst
@@ -62,6 +68,15 @@ func Translate(src string, p *constant.Param, c *constant.Count) string {
 	}
 	dst = strings.Replace(dst, "\r\n", "", -1)
 	dst = strings.Replace(dst, "\\n", "", -1)
+	after := new(model.TranslateHistory)
+	after.Src = src
+	after.Dst = dst
+	one, err := after.InsertOne()
+	if err != nil {
+		log.Printf("插入失败\n")
+	} else {
+		log.Printf("插入成功%d条\n", one)
+	}
 	return dst
 }
 

@@ -25,7 +25,7 @@ var p = &constant.Param{
 	Pattern:        "mp4",
 	Model:          "large-v3",
 	ToolsLocation:  "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\test",
-	Proxy:          "192.168.1.32:8889",
+	Proxy:          "192.168.1.7:8889",
 	Merge:          false,
 	//Lines:          string // 保存下载url的文档 默认放在root下 文件名为 link.list
 	Mysql:        "192.168.1.9:3306",

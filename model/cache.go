@@ -16,9 +16,14 @@ type TranslateHistory struct {
 	DeletedAt time.Time `xorm:"deleted"`
 }
 
-func (t TranslateHistory) InsertOne() (int64, error) {
+func (t *TranslateHistory) InsertOne() (int64, error) {
 	return sql.GetMysql().InsertOne(t)
 }
-func (t TranslateHistory) InsertAll(histories []TranslateHistory) (int64, error) {
+
+func (t *TranslateHistory) FindBySrc() (bool, error) {
+	return sql.GetMysql().Where("id = ?", t.Src).Get(t)
+}
+
+func (t *TranslateHistory) InsertAll(histories []TranslateHistory) (int64, error) {
 	return sql.GetMysql().Insert(histories)
 }
