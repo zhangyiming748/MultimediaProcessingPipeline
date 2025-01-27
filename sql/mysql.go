@@ -13,7 +13,7 @@ var engine *xorm.Engine
 
 func SetMysql(p *constant.Param) {
 	var err error
-	session := strings.Join([]string{"root:123456@tcp(", p.GetMysql(), ")/Translate?charset=utf8"}, "")
+	session := strings.Join([]string{"root:163453@tcp(", p.GetMysql(), ")/Translate?charset=utf8"}, "")
 	engine, err = xorm.NewEngine("mysql", session)
 	if err != nil {
 		panic(err)

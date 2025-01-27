@@ -15,7 +15,7 @@ func SetLog(p *constant.Param) {
 	fileLogger := &lumberjack.Logger{
 		Filename:   strings.Join([]string{p.GetVideosLocation(), "MultimediaProcessingPipeline.log"}, string(os.PathSeparator)),
 		MaxSize:    1, // MB
-		MaxBackups: 30,
+		MaxBackups: 1,
 		MaxAge:     28, // days
 		LocalTime:  true,
 	}
