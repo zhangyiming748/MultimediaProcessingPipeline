@@ -82,6 +82,19 @@ func TestWhisper(t *testing.T) {
 	}
 }
 
+// go test -timeout 2000h -v -run TestTransAll
+func TestTransAll(t *testing.T) {
+	//util.ExitAfterRun()
+	fps := getFiles(p.GetVideosLocation())
+	log.Println(fps)
+	c := new(constant.Count)
+	for _, fp := range fps {
+		if strings.HasSuffix(fp, ".srt") {
+			trans.Trans(fp, p, c)
+		}
+	}
+}
+
 func getFiles(currentDir string) (filePaths []string) {
 	err := filepath.Walk(currentDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -104,17 +117,4 @@ func getFiles(currentDir string) (filePaths []string) {
 		fmt.Println(filePath)
 	}
 	return filePaths
-}
-
-// go test -timeout 2000h -v -run TestTransAll
-func TestTransAll(t *testing.T) {
-	//util.ExitAfterRun()
-	fps := getFiles(p.GetVideosLocation())
-	log.Println(fps)
-	c := new(constant.Count)
-	for _, fp := range fps {
-		if strings.HasSuffix(fp, ".srt") {
-			trans.Trans(fp, p, c)
-		}
-	}
 }
