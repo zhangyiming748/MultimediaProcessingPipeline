@@ -11,6 +11,8 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"os/exec"
+	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
@@ -170,5 +172,36 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 	err2 := os.Rename(tmpname, srt)
 	if err1 != nil || err2 != nil {
 		constant.Warning(fmt.Sprintf("字幕文件重命名出现错误:%v:%v\n", err1, err2))
+	}
+}
+func TransFile(input string, p *constant.Param) {
+	//translate-shell -i input.txt -o output.txt -t zh-CN
+	output := strings.Replace(input, filepath.Ext(input), "_zhCN.txt", 1)
+	cmd := exec.Command("translate-shell", "-e", "google", "-x", p.GetProxy(), "-i", input, "-o", output, "-t", "zh-CN")
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		log.Printf("连接Stdout产生错误:%v\n", err)
+		return
+	}
+	cmd.Stderr = cmd.Stdout
+	if err = cmd.Start(); err != nil {
+		log.Printf("启动cmd命令产生错误:%v\n", err)
+		return
+	}
+	go func() {
+		for {
+			tmp := make([]byte, 1024)
+			_, err := stdout.Read(tmp)
+			t := string(tmp)
+			t = strings.Replace(t, "\u0000", "", -1)
+			fmt.Print(t)
+			if err != nil {
+				break
+			}
+		}
+	}()
+	if err = cmd.Wait(); err != nil {
+		log.Printf("命令执行中产生错误:%v\n", err)
+		return
 	}
 }
