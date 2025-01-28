@@ -6,7 +6,7 @@ import (
 )
 
 type TranslateHistory struct {
-	Id  int64  `xorm:"comment('主键id') INT(11)"`
+	Id  int64  `xorm:"pk autoincr notnull comment('主键id') INT(11)"`
 	Src string `xorm:"varchar(255) comment(原文)"`
 	Dst string `xorm:"varchar(255) comment(译文)"`
 	//Source_lang string    `xorm:"varchar(255) comment(源语言)"`
@@ -21,7 +21,7 @@ func (t *TranslateHistory) InsertOne() (int64, error) {
 }
 
 func (t *TranslateHistory) FindBySrc() (bool, error) {
-	return sql.GetMysql().Where("id = ?", t.Src).Get(t)
+	return sql.GetMysql().Where("src = ?", t.Src).Get(t)
 }
 
 func (t *TranslateHistory) InsertAll(histories []TranslateHistory) (int64, error) {
