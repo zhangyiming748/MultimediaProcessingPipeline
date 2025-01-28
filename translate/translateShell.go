@@ -35,6 +35,7 @@ func Translate(src string, p *constant.Param, c *constant.Count) string {
 	before.Src = src
 	found, _ := before.FindBySrc()
 	if found {
+		log.Printf("从mysql找到缓存%v\n", before)
 		return before.Dst
 	}
 	var dst string
