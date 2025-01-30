@@ -3,7 +3,6 @@ package main
 import (
 	"Multimedia_Processing_Pipeline/constant"
 	mylog "Multimedia_Processing_Pipeline/log"
-	"Multimedia_Processing_Pipeline/merge"
 	"Multimedia_Processing_Pipeline/replace"
 	"Multimedia_Processing_Pipeline/sql"
 	translateShell "Multimedia_Processing_Pipeline/translate"
@@ -82,9 +81,6 @@ func main() {
 	// 创建一个通道
 	file_ch := make(chan string)
 	wg := new(sync.WaitGroup)
-	if p.GetMerge() {
-		go merge.MergeByChannel(file_ch, wg)
-	}
 	for _, line := range lines {
 		video := ytdlp.DownloadVideo(line, p)
 		log.Printf("下载后的文件名为:%s\n", video)
