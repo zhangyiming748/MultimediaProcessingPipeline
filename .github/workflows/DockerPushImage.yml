@@ -32,4 +32,4 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           platforms: |
             linux/amd64
-            linux/armd64
+            linux/arm64
