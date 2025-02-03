@@ -25,17 +25,12 @@ func GetSubtitle(fp string, p *constant.Param, fast bool) string {
 		log.Println("utf-8环境设置成功")
 	}
 	var cmd *exec.Cmd
-	if hostname, unknown := os.Hostname(); unknown != nil {
-		fmt.Println("未找到计算机名")
-		cmd = exec.Command("whisper", fp, "--model", p.GetModel(), "--model_dir", p.GetToolsLocation(), "--output_format", "all", "--prepend_punctuations", ",.?", "--language", p.GetLanguage(), "--output_dir", p.GetVideosLocation(), "--verbose", "True")
-	} else if hostname == constant.HASEE {
-		fmt.Println("是神舟战神,可以使用cuda加速")
+	if isCUDAAvailable() {
 		cmd = exec.Command("whisper", fp, "--model", p.GetModel(), "--device", "cuda", "--model_dir", p.GetToolsLocation(), "--output_format", "all", "--prepend_punctuations", ",.?", "--language", p.GetLanguage(), "--output_dir", p.GetVideosLocation(), "--verbose", "True")
 	} else {
-		fmt.Println("是其他电脑,使用cpu硬肝")
 		cmd = exec.Command("whisper", fp, "--model", p.GetModel(), "--model_dir", p.GetToolsLocation(), "--output_format", "all", "--prepend_punctuations", ",.?", "--language", p.GetLanguage(), "--output_dir", p.GetVideosLocation(), "--verbose", "True")
 	}
-
+	log.Printf("命令: %s\n", cmd.String())
 	startTime := time.Now()
 	msg := fmt.Sprintf("正在处理的文件:%s", fp)
 
@@ -55,4 +50,16 @@ func GetSubtitle(fp string, p *constant.Param, fast bool) string {
 	totalMinutes := duration.Seconds() / 60
 	log.Printf("文件%v\n总共用时: %.2f 分钟\n", fp, totalMinutes)
 	return fp
+}
+func isCUDAAvailable() bool {
+	// 使用 nvidia-smi 命令检查 CUDA 是否可用
+	cmd := exec.Command("nvidia-smi")
+	output, err := cmd.CombinedOutput()
+
+	// 如果命令执行出错，或者输出中不包含 "NVIDIA-SMI"，则认为 CUDA 不可用
+	if err != nil || !strings.Contains(string(output), "NVIDIA-SMI") {
+		return false
+	}
+
+	return true
 }

@@ -20,12 +20,12 @@ import (
 )
 
 var p = &constant.Param{
-	VideosLocation: "/Users/zen/github/MultimediaProcessingPipeline/test",
+	VideosLocation: "/data/test",
 	Language:       "English",
 	Pattern:        "mp4",
-	Model:          "medium.en",
-	ToolsLocation:  "/Users/zen/github/MultimediaProcessingPipeline/test",
-	Proxy:          "127.0.0.1:10809",
+	Model:          "large-v3",
+	ToolsLocation:  "/data/test",
+	Proxy:          "192.168.1.35:8889",
 	Merge:          false,
 	//Lines:          string // 保存下载url的文档 默认放在root下 文件名为 link.list
 	Mysql:        "192.168.1.9:3306",

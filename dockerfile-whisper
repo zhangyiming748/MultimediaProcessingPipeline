@@ -32,6 +32,9 @@ RUN wget https://go.dev/dl/go1.23.5.linux-amd64.tar.gz && \
     rm go1.23.5.linux-amd64.tar.gz
 ENV PATH="/usr/local/go/bin:${PATH}"
 
+RUN go env -w GO111MODULE=on
+RUN go env -w GOPROXY=https://goproxy.cn,direct
+
 # 替换 pip 源为中科大镜像
 RUN pip3 config set global.index-url https://mirrors.ustc.edu.cn/pypi/simple
 
