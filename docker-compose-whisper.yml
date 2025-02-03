@@ -1,4 +1,4 @@
-name: merge
+name: whisper_with_cuda
 services:
   cuda:
     container_name: cuda
@@ -12,7 +12,7 @@ services:
               count: all
               capabilities:
                 - gpu
-    image: zhangyiming748/whisper_with_cuda
+    image: whisper:cuda
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,video,utility

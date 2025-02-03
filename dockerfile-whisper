@@ -8,24 +8,37 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ENV DEBIAN_FRONTEND=noninteractive
 
 # 备份并替换 apt 源为中科大镜像
-RUN sed -i 's/archive.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list && \
-    sed -i 's/security.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
+RUN sed -i 's/archive.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/ubuntu.sources && \
+    sed -i 's/security.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/ubuntu.sources
 
+# ENV PROXY=http://192.168.1.7:10809/
+# RUN echo "Acquire::http::Proxy \"${PROXY}\";" > /etc/apt/apt.conf.d/10proxy
+COPY install-retry.sh /usr/bin/install-retry.sh
+RUN chmod +x /usr/bin/install-retry.sh
 # 安装必要的软件包
 RUN apt update && \
     apt full-upgrade -y && \
-    apt install -y ffmpeg wget fonts-wqy-microhei fonts-wqy-zenhei fonts-noto-cjk locales python3 python3-pip\
+    /usr/bin/install-retry.sh ffmpeg wget fonts-wqy-microhei fonts-wqy-zenhei fonts-noto-cjk locales python3 python3-pip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN locale-gen en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 ENV LANG=en_US.UTF-8
 
-# 替换 pip 源为中科大镜像
-RUN pip3 install -i https://mirrors.ustc.edu.cn/pypi/web/simple --upgrade pip && \
-    pip3 config set global.index-url https://mirrors.ustc.edu.cn/pypi/web/simple
+# 安装 Go 1.23.5
+WORKDIR /tmp
+RUN wget https://go.dev/dl/go1.23.5.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf go1.23.5.linux-amd64.tar.gz && \
+    rm go1.23.5.linux-amd64.tar.gz
+ENV PATH="/usr/local/go/bin:${PATH}"
 
-RUN pip3 install openai-whisper --break-system-packages
+# 替换 pip 源为中科大镜像
+RUN pip3 config set global.index-url https://mirrors.ustc.edu.cn/pypi/simple
+
+RUN pip3 install --no-cache-dir  openai-whisper --break-system-packages
+
+
+WORKDIR /data
 # 定义入口点
 CMD ["bash"]
 
