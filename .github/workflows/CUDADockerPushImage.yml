@@ -1,18 +1,12 @@
-name: Publish Docker Image
+name: Publish CUDA Docker Image
 
 on:
   push:
     tags:
       - 'v*'
-  workflow_dispatch:
-    inputs:
-      image_version:
-        description: 'Image version (e.g., v1.0.0)'
-        required: false
-        default: ''
 jobs:
   build-and-push:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -27,26 +21,14 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: zhangyiming748/whisper_with_cuda
-      - name: Determine image version
-        id: version
-        run: |
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]] && [[ -n "${{ github.event.inputs.image_version }}" ]]; then
-            echo "version=${{ github.event.inputs.image_version }}" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.ref }}" == refs/tags/* ]]; then
-            echo "version=${{ github.ref_name }}" >> $GITHUB_OUTPUT
-          else
-            echo "version=latest" >> $GITHUB_OUTPUT
-          fi
+          images: zhangyiming748/whisper_whih_cuda
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          file: dockerfile-whisper
           context: .
+          file: dockerfile-whisper
           push: true
-          tags: |
-            zhangyiming748/whisper_with_cuda:${{ steps.version.outputs.version }}
-            zhangyiming748/whisper_with_cuda:latest
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: |
             linux/amd64
