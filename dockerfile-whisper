@@ -1,0 +1,25 @@
+FROM nvidia/cuda:12.6.3-cudnn-devel-ubuntu24.04
+
+# 设置时区为上海
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# 设置全局的 DEBIAN_FRONTEND 为 noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
+
+# 安装必要的软件包
+RUN apt update && \
+    apt full-upgrade -y && \
+    apt install -y ffmpeg wget fonts-wqy-microhei fonts-wqy-zenhei fonts-noto-cjk locales python3 python3-pip\
+    && apt-get clean && rm -rf /var/lib/apt/lists/* \
+
+RUN locale-gen en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
+ENV LANG=en_US.UTF-8
+
+RUN pip3 install openai-whisper --break-system-packages
+# 定义入口点
+CMD ["bash"]
+
+#docker run -dit --name nvidia -v .:/data nvidia/cuda:12.6.3-cudnn-devel-ubuntu24.04 bash
+# docker exec -it nvidia bash

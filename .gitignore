@@ -26,3 +26,9 @@ whisper.sh
 mergeInside.bat
 mergeInside.sh
 *.ps1
+*.txt
+*.vtt
+*.json
+*.tsv
+*.tabby-upload
+
