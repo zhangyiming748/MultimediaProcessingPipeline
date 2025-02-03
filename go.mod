@@ -10,7 +10,6 @@ require (
 	github.com/nalgeon/redka v0.5.3
 	github.com/schollz/progressbar/v3 v3.18.0
 	github.com/syndtr/goleveldb v1.0.0
-	github.com/zhangyiming748/FastMediaInfo v0.0.7
 	github.com/zhangyiming748/lumberjack v0.0.1
 	github.com/zhangyiming748/pretty v0.0.3
 	xorm.io/xorm v1.3.9
@@ -22,9 +21,9 @@ require (
 	github.com/andybalholm/brotli v1.1.1 // indirect
 	github.com/cloudflare/circl v1.5.0 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
-	github.com/goccy/go-json v0.10.4 // indirect
+	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
-	github.com/google/pprof v0.0.0-20250125003558-7fdb3d7e6fa0 // indirect
+	github.com/google/pprof v0.0.0-20250128161936-077ca0a936bf // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/imroc/req/v3 v3.49.1 // indirect
@@ -46,7 +45,7 @@ require (
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 	go.uber.org/mock v0.5.0 // indirect
 	golang.org/x/crypto v0.32.0 // indirect
-	golang.org/x/exp v0.0.0-20250106191152-7588d65b2ba8 // indirect
+	golang.org/x/exp v0.0.0-20250128182459-e0ece0dbea4c // indirect
 	golang.org/x/mod v0.22.0 // indirect
 	golang.org/x/net v0.34.0 // indirect
 	golang.org/x/sync v0.10.0 // indirect
