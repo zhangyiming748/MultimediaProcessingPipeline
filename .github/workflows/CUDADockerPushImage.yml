@@ -1,4 +1,4 @@
-name: Publish Docker Image
+name: Publish CUDA Docker Image
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: zhangyiming748/multimedia_processing_pipeline
+          images: zhangyiming748/whisper_whih_cuda
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
