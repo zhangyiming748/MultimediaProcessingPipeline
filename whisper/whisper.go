@@ -14,6 +14,12 @@ import (
 
 func init() {
 	os.Setenv("PYTHONWARNINGS", "ignore::FutureWarning")
+	// 设置默认时区为 Asia/Shanghai
+	loc, err := time.LoadLocation("Asia/Shanghai")
+	if err != nil {
+		panic(err) // 如果加载时区失败，则直接 panic
+	}
+	time.Local = loc
 }
 
 /*
@@ -26,13 +32,13 @@ func GetSubtitle(fp string, p *constant.Param, fast bool) string {
 	}
 	var cmd *exec.Cmd
 	if isCUDAAvailable() {
-		cmd = exec.Command("whisper", fp, "--model", p.GetModel(), "--device", "cuda", "--model_dir", p.GetToolsLocation(), "--output_format", "all", "--prepend_punctuations", ",.?", "--language", p.GetLanguage(), "--output_dir", p.GetVideosLocation(), "--verbose", "True")
+		cmd = exec.Command("whisper", fp, "--model", p.GetModel(), "--device", "cuda", "--model_dir", p.GetToolsLocation(), "--output_format", "srt", "--prepend_punctuations", ",.?", "--language", p.GetLanguage(), "--output_dir", p.GetVideosLocation(), "--verbose", "True")
 	} else {
-		cmd = exec.Command("whisper", fp, "--model", p.GetModel(), "--model_dir", p.GetToolsLocation(), "--output_format", "all", "--prepend_punctuations", ",.?", "--language", p.GetLanguage(), "--output_dir", p.GetVideosLocation(), "--verbose", "True")
+		cmd = exec.Command("whisper", fp, "--model", p.GetModel(), "--model_dir", p.GetToolsLocation(), "--output_format", "srt", "--prepend_punctuations", ",.?", "--language", p.GetLanguage(), "--output_dir", p.GetVideosLocation(), "--verbose", "True")
 	}
 	log.Printf("命令: %s\n", cmd.String())
 	startTime := time.Now()
-	msg := fmt.Sprintf("正在处理的文件:%s", fp)
+	msg := fmt.Sprintf("%v正在处理的文件:%s", time.Now().Format("2006-01-02 15:04:05"), fp)
 
 	if fast {
 		return cmd.String()
@@ -51,6 +57,7 @@ func GetSubtitle(fp string, p *constant.Param, fast bool) string {
 	log.Printf("文件%v\n总共用时: %.2f 分钟\n", fp, totalMinutes)
 	return fp
 }
+
 func isCUDAAvailable() bool {
 	// 使用 nvidia-smi 命令检查 CUDA 是否可用
 	cmd := exec.Command("nvidia-smi")
