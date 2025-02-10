@@ -8,18 +8,17 @@ import (
 	"Multimedia_Processing_Pipeline/util"
 	"errors"
 	"fmt"
+	"github.com/syndtr/goleveldb/leveldb"
+	"github.com/zhangyiming748/MultiTranslatorUnifier/logic"
+	_ "github.com/zhangyiming748/MultiTranslatorUnifier/logic"
 	"log"
 	"math/rand"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"runtime"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
-
-	"github.com/syndtr/goleveldb/leveldb"
 )
 
 var (
@@ -31,54 +30,20 @@ const (
 
 )
 
-func Translate(src string, p *constant.Param, c *constant.Count) string {
-	//trans -brief ja:zh "私の手の動きに合わせて|そう"
-	before := new(model.TranslateHistory)
-	before.Src = src
-	found, _ := before.FindBySrc()
-	if found {
-		log.Printf("从mysql找到缓存%v\n", before)
-		return before.Dst
-	}
-	var dst string
-	if src == "" {
-		return dst
-	}
-	//fmt.Println("富强|民主|文明|和谐|自由|平等|公正|法治|爱国|敬业|诚信|友善")
-	once := new(sync.Once)
-	wg := new(sync.WaitGroup)
-	defer wg.Wait()
-	ack := make(chan string, 1)
-	wg.Add(1)
-	//go TransByDeeplx(src, p.GetProxy(), once, wg, ack)
-	if runtime.GOOS == "windows" {
-		go TransByDeeplx(src, p, once, wg, ack)
-	} else {
-		go TransByGoogle(src, p.GetProxy(), once, wg, ack)
-		go TransByBing(src, p.GetProxy(), once, wg, ack)
-		go TransByDeeplx(src, p, once, wg, ack)
-	}
-	select {
-	case dst = <-ack:
-		//constant.Info(fmt.Sprintf("收到翻译结果:%v\n", dst))
-	case <-time.After(TIMEOUT * time.Second): // 设置超时时间为5秒
-		fmt.Printf("翻译超时,重试\n此时的src = %v\n", src)
-		Translate(src, p, c)
-	}
-	if dst == "" {
-		fmt.Printf("翻译结果为空,重试\n此时的src = %v\n", src)
-		return src
-	}
-	dst = strings.Replace(dst, "\r\n", "", -1)
-	dst = strings.Replace(dst, "\\n", "", -1)
-	after := new(model.TranslateHistory)
-	after.Src = src
-	after.Dst = dst
-	one, err := after.InsertOne()
-	if err != nil {
-		log.Printf("插入失败\n")
-	} else {
-		log.Printf("插入成功%d条\n", one)
+func Translate(src string, p *constant.Param, c *constant.Count) (dst string) {
+	m := logic.Trans(src, p.GetProxy(), "")
+	for key, value := range m {
+		switch key {
+		case "Google":
+			c.SetGoogle()
+		case "Bing":
+			c.SetBing()
+		case "LinuxDo":
+			c.SetDeeplx()
+		case "Github":
+			c.SetDeeplx()
+		}
+		dst = value
 	}
 	return dst
 }

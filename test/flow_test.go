@@ -20,12 +20,12 @@ import (
 )
 
 var p = &constant.Param{
-	VideosLocation: "/data/test",
+	VideosLocation: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\whisper\\afterWhisper\\checked",
 	Language:       "English",
 	Pattern:        "mp4",
 	Model:          "large-v3",
-	ToolsLocation:  "/data/test",
-	Proxy:          "192.168.1.35:8889",
+	ToolsLocation:  "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\whisper\\afterWhisper\\checked",
+	Proxy:          "http://192.168.1.35:8889",
 	Merge:          false,
 	//Lines:          string // 保存下载url的文档 默认放在root下 文件名为 link.list
 	Mysql:        "192.168.1.9:3306",
