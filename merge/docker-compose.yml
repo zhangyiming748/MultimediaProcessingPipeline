@@ -4,7 +4,7 @@ services:
     container_name: cuda
     volumes:
       - ./:/data
-      - C:\Users\zen\Github\MultimediaProcessingPipeline\test:/videos
+      - C:\Users\zen\Github\MultimediaProcessingPipeline\whisper\afterWhisper\checked:/videos
     deploy:
       resources:
         reservations:
