@@ -1,4 +1,4 @@
-FROM golang:1.22.4-bookworm
+FROM golang:1.24.0-bookworm
 
 # 设置环境变量
 ENV PYTHONWARNINGS="ignore::FutureWarning"
