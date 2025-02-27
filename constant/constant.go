@@ -17,7 +17,10 @@ type Param struct {
 	Proxy          string // 翻译所需要的网络环境
 	Merge          bool   //是否合并字幕 false 不合并 true 合并
 	Lines          string // 保存下载url的文档 默认放在root下 文件名为 link.list
-	Mysql          string // 数据库位置
+	MysqlHost          string // 数据库ip
+	MysqlPort          string // 数据库端口
+	MysqlUser          string // 数据库用户名
+	MysqlPass         string // 数据库密码
 	TransService   string // 本地翻译服务位置
 }
 
@@ -81,13 +84,14 @@ func (p *Param) GetProxy() string {
 func (p *Param) SetProxy(pr string) {
 	p.Proxy = pr
 }
-func (p *Param) SetMysql(s string) {
-	p.Mysql = s
+func (p *Param) SetMysql() {
+	p.MysqlUser = "root"
+	p.MysqlPass= "163453"
+	p.MysqlHost = "192.168.2.8"
+	p.MysqlUser = "3306"
 }
 
-func (p *Param) GetMysql() string {
-	return p.Mysql
-}
+
 func (p *Param) SetTransService(s string) {
 	p.TransService = s
 }

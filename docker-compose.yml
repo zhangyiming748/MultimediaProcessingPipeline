@@ -3,6 +3,6 @@ services:
   whisperandtrans:
     container_name: wta
     volumes:
-        - /Users/zen/Github/MultimediaProcessingPipeline:/app
+        - /Users/zen/github/MultimediaProcessingPipeline:/app
         - /Users/zen/Movies:/Videos
     image: zhangyiming748/stand:latest # 指定生成的镜像名称和标签

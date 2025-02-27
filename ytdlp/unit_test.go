@@ -17,12 +17,12 @@ func init() {
 // go test -timeout 2000h -v -run TestYTdlp
 func TestYTdlp(t *testing.T) {
 	p := &constant.Param{
-		VideosLocation: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\ytdlp",
+		VideosLocation: "/videos",
 		Language:       "English",
 		Pattern:        "mp4",
-		Model:          "small",
-		ToolsLocation:  "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\ytdlp",
-		Proxy:          "192.168.1.35:8889",
+		Model:          "medium.en",
+		ToolsLocation:  "/app",
+		Proxy:          "192.168.2.8:8889",
 	}
 	file, err := os.OpenFile("fail.list", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
 	if err != nil {

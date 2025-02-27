@@ -20,22 +20,22 @@ import (
 )
 
 var p = &constant.Param{
-	VideosLocation: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\whisper\\afterWhisper\\checked",
+	VideosLocation: "/Videos",
 	Language:       "English",
 	Pattern:        "mp4",
-	Model:          "large-v3",
-	ToolsLocation:  "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\whisper\\afterWhisper\\checked",
-	Proxy:          "http://192.168.1.35:8889",
+	Model:          "medium.en",
+	ToolsLocation:  "/app/test",
+	Proxy:          "http://192.168.2.8:8889",
 	Merge:          false,
 	//Lines:          string // 保存下载url的文档 默认放在root下 文件名为 link.list
-	Mysql:        "192.168.1.9:3306",
-	TransService: "192.168.1.9:3389",
+	Mysql:        "192.168.2.8:3306",
+	TransService: "192.168.2.8:3389",
 }
 
 func init() {
 	mylog.SetLog(p)
 	sql.SetLevelDB(p)
-	sql.SetMysql(p)
+	sql.SetMysql()
 	sql.GetMysql().Sync2(model.TranslateHistory{})
 	replace.SetSensitive(p)
 }
@@ -47,6 +47,7 @@ func TestYTdlp(t *testing.T) {
 		return
 	}
 	link := filepath.Join(p.GetToolsLocation(), "link.list")
+	log.Println("开始读文件")
 	uris := util.ReadByLine(link)
 	for _, uri := range uris {
 		if uri == "" {
