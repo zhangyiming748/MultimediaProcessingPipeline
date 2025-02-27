@@ -28,8 +28,11 @@ var p = &constant.Param{
 	Proxy:          "http://192.168.2.8:8889",
 	Merge:          false,
 	//Lines:          string // 保存下载url的文档 默认放在root下 文件名为 link.list
-	Mysql:        "192.168.2.8:3306",
-	TransService: "192.168.2.8:3389",
+	MysqlUser:    "root",
+	MysqlPass:    "163453",
+	MysqlHost:    "192.168.2.5",
+	MysqlPort:    "3306",
+	TransService: "192.168.2.5:8192",
 }
 
 func init() {
