@@ -4,12 +4,9 @@ import (
 	"Multimedia_Processing_Pipeline/constant"
 	"Multimedia_Processing_Pipeline/model"
 	"Multimedia_Processing_Pipeline/replace"
-	"Multimedia_Processing_Pipeline/sql"
 	"Multimedia_Processing_Pipeline/util"
 	"encoding/json"
-	"errors"
 	"fmt"
-	"github.com/syndtr/goleveldb/leveldb"
 	"log"
 	"math/rand"
 	"os"
@@ -106,25 +103,24 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 		src = strings.Replace(src, "\n", "", 1)
 		afterSrc := replace.GetSensitive(src)
 		var dst string
-		if val, err := sql.GetLevelDB().Get([]byte(src), nil); err == nil {
-			dst = string(val)
+		behind := new(model.TranslateHistory)
+		behind.Src = src
+		if has, _ := behind.FindBySrc(); has {
+			dst = behind.Dst
 			fmt.Println("在缓存中找到")
 			c.SetCache()
 		} else {
-			if errors.Is(err, leveldb.ErrNotFound) {
-				fmt.Println("未在缓存中找到")
-			}
+			fmt.Println("未在缓存中找到")
 			dst = Translate(afterSrc, p, c)
 			dst = strings.Replace(dst, "\n", "", -1)
 			randomNumber := util.GetSeed().Intn(401) + 100
 			time.Sleep(time.Duration(randomNumber) * time.Millisecond) // 暂停 100 毫秒
 		}
 		dst = replace.GetSensitive(dst)
-		if err := sql.GetLevelDB().Put([]byte(src), []byte(dst), nil); err != nil {
+		if _, err := behind.InsertOne(); err != nil {
 			fmt.Printf("缓存写入数据库错误:%v\n", err)
 		}
-		log.Printf("翻译之后序号\"%s\"时间\"%s\"正文\"%s\"空行\"%s\"\n", before[i], before[i+1], before[i+2], before[i+3])
-		log.Printf("原文\"%s\"\t译文\"%s\"\n", src, dst)
+		fmt.Printf("翻译之后序号:\"%s\"时间:\"%s\"正文:\"%s\"空行:\"%s\"原文\"%s\"\t译文\"%s\"\n", before[i], before[i+1], before[i+2], before[i+3], src, dst)
 		after.WriteString(src)
 		after.WriteString(dst)
 		after.WriteString(before[i+3])
@@ -144,6 +140,7 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 		constant.Warning(fmt.Sprintf("字幕文件重命名出现错误:%v:%v\n", err1, err2))
 	}
 }
+
 func TransFile(input string, p *constant.Param) {
 	//translate-shell -i input.txt -o output.txt -t zh-CN
 	output := strings.Replace(input, filepath.Ext(input), "_zhCN.txt", 1)

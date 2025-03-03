@@ -2,7 +2,6 @@ package replace
 
 import (
 	"Multimedia_Processing_Pipeline/constant"
-	"Multimedia_Processing_Pipeline/sql"
 	"bufio"
 	"io"
 	"log"
@@ -47,10 +46,7 @@ func SetSensitive(p *constant.Param) {
 		value := strings.Split(line, ":")[1]
 		batch.Put([]byte(key), []byte(value))
 	}
-	err := sql.GetLevelDB().Write(batch, nil)
-	if err != nil {
-		log.Fatalf("敏感词写入数据库失败:%v\n", err)
-	}
+
 	for _, line := range lines {
 		before := strings.Split(line, ":")[0]
 		after := strings.Split(line, ":")[1]

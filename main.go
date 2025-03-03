@@ -34,7 +34,7 @@ func initConfig(p *constant.Param) {
 		log.Fatalln("yt-dlp")
 	}
 	mylog.SetLog(p)
-	sql.SetLevelDB(p)
+	sql.SetMysql(p)
 	//util.ExitAfterRun()
 	replace.SetSensitive(p)
 }
