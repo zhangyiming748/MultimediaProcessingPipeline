@@ -20,27 +20,33 @@ import (
 )
 
 var p = &constant.Param{
-	VideosLocation: "/Videos",
+	VideosLocation: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\test",
 	Language:       "English",
 	Pattern:        "mp4",
 	Model:          "medium.en",
-	ToolsLocation:  "/app/test",
-	Proxy:          "http://192.168.2.8:8889",
+	ToolsLocation:  "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\test",
+	Proxy:          "http://192.168.2.6:8889",
 	Merge:          false,
 	//Lines:          string // 保存下载url的文档 默认放在root下 文件名为 link.list
 	MysqlUser:    "root",
 	MysqlPass:    "163453",
 	MysqlHost:    "192.168.2.5",
 	MysqlPort:    "3306",
-	TransService: "192.168.2.5:8192",
+	TransService: "http://192.168.2.5:8192",
 }
 
 func init() {
 	mylog.SetLog(p)
 	sql.SetLevelDB(p)
-	sql.SetMysql()
+	sql.SetMysql(p)
 	sql.GetMysql().Sync2(model.TranslateHistory{})
+	readKey(p)
 	replace.SetSensitive(p)
+}
+
+func readKey(p *constant.Param) {
+	keys := util.ReadByLine("apikey")
+	p.LinuxDo = keys[0]
 }
 
 // go test -timeout 2000h -v -run TestYTdlp

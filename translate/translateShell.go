@@ -6,11 +6,10 @@ import (
 	"Multimedia_Processing_Pipeline/replace"
 	"Multimedia_Processing_Pipeline/sql"
 	"Multimedia_Processing_Pipeline/util"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/syndtr/goleveldb/leveldb"
-	"github.com/zhangyiming748/MultiTranslatorUnifier/logic"
-	_ "github.com/zhangyiming748/MultiTranslatorUnifier/logic"
 	"log"
 	"math/rand"
 	"os"
@@ -21,6 +20,9 @@ import (
 	"time"
 )
 
+const PREFIX = "https://api.deeplx.org"
+const SUFFIX = "translate"
+
 var (
 	seed = rand.New(rand.NewSource(time.Now().Unix()))
 )
@@ -30,22 +32,23 @@ const (
 
 )
 
-func Translate(src string, p *constant.Param, c *constant.Count) (dst string) {
-	m := logic.Trans(src, p.GetProxy(), "")
-	for key, value := range m {
-		switch key {
-		case "Google":
-			c.SetGoogle()
-		case "Bing":
-			c.SetBing()
-		case "LinuxDo":
-			c.SetDeeplx()
-		case "Github":
-			c.SetDeeplx()
-		}
-		dst = value
+func TransByLinuxdoDeepLX(src, apikey string) (dst string) {
+	//apikey := os.Getenv("LINUXDO")
+	result, err := Req(src, apikey)
+	result = strings.Replace(result, "\\r\\n", "", 1)
+	result = strings.Replace(result, "\n", "", 1)
+	result = strings.Replace(result, "\r\n", "", 1)
+	if result == "" {
+		return
 	}
-	return dst
+	if err != nil {
+		log.Fatalln(err)
+	}
+	log.Printf("linuxdo 版本 deeplx 返回:%+v\n", result)
+	return result
+}
+func Translate(src string, p *constant.Param, c *constant.Count) (dst string) {
+	return TransByLinuxdoDeepLX(src, p.LinuxDo)
 }
 
 func Trans(fp string, p *constant.Param, c *constant.Count) {
@@ -100,6 +103,7 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 		after.WriteString(before[i])
 		after.WriteString(before[i+1])
 		src := before[i+2]
+		src = strings.Replace(src, "\n", "", 1)
 		afterSrc := replace.GetSensitive(src)
 		var dst string
 		if val, err := sql.GetLevelDB().Get([]byte(src), nil); err == nil {
@@ -111,6 +115,7 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 				fmt.Println("未在缓存中找到")
 			}
 			dst = Translate(afterSrc, p, c)
+			dst = strings.Replace(dst, "\n", "", -1)
 			randomNumber := util.GetSeed().Intn(401) + 100
 			time.Sleep(time.Duration(randomNumber) * time.Millisecond) // 暂停 100 毫秒
 		}
@@ -169,4 +174,37 @@ func TransFile(input string, p *constant.Param) {
 		log.Printf("命令执行中产生错误:%v\n", err)
 		return
 	}
+}
+func Req(src, apikey string) (string, error) {
+	headers := map[string]string{
+		"Content-Type": "application/json",
+	}
+	params := map[string]string{
+		"text":        src,
+		"source_lang": "auto",
+		"target_lang": "zh",
+	}
+	host := strings.Join([]string{PREFIX, apikey, SUFFIX}, "/")
+
+	b, err := util.HttpPostJson(headers, params, host)
+	if err != nil {
+		return "", err
+	}
+	log.Printf("%v\n", string(b))
+	var d DeepLXTranslationResult
+	if err := json.Unmarshal(b, &d); err != nil {
+		return "", err
+	}
+	return d.Data, err
+}
+
+type DeepLXTranslationResult struct {
+	Code         int      `json:"code"`
+	ID           int64    `json:"id"`
+	Message      string   `json:"message,omitempty"`
+	Data         string   `json:"data"`         // The primary translated text
+	Alternatives []string `json:"alternatives"` // Other possible translations
+	SourceLang   string   `json:"source_lang"`
+	TargetLang   string   `json:"target_lang"`
+	Method       string   `json:"method"`
 }
