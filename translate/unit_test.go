@@ -4,11 +4,16 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"testing"
 )
 
 // go test -timeout 2000m -v -run TestTransAll
 // docker run -dit --name trans -v /c/Users/zen/Github/MultimediaProcessingPipeline:/app -v /c/Users/zen/Videos/export/sdde:/data zhangyiming748/stand:latest bash
-
+func TestGithub(t *testing.T) {
+	src := "hello world"
+	dst := TransByGithubDeepLX(src)
+	fmt.Println(dst)
+}
 func getFiles(currentDir string) (filePaths []string) {
 	err := filepath.Walk(currentDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {

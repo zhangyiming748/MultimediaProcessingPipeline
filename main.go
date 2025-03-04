@@ -37,6 +37,7 @@ func initConfig(p *constant.Param) {
 	sql.SetMysql(p)
 	//util.ExitAfterRun()
 	replace.SetSensitive(p)
+	log.SetFlags(log.Ltime | log.Lshortfile)
 }
 func main() {
 	p := new(constant.Param)
