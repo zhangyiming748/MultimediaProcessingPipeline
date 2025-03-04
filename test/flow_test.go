@@ -20,11 +20,11 @@ import (
 )
 
 var p = &constant.Param{
-	VideosLocation: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\test",
+	VideosLocation: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\test\\beforeTrans",
 	Language:       "English",
 	Pattern:        "mp4",
 	Model:          "medium.en",
-	ToolsLocation:  "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\test",
+	ToolsLocation:  "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\whisper\\afterWhisper\\checked",
 	Proxy:          "http://192.168.2.6:8889",
 	Merge:          false,
 	//Lines:          string // 保存下载url的文档 默认放在root下 文件名为 link.list
@@ -107,6 +107,17 @@ func TestTransAll(t *testing.T) {
 		if strings.HasSuffix(fp, ".srt") {
 			trans.Trans(fp, p, c)
 		}
+	}
+}
+func TestCache(t *testing.T) {
+	c:=new(model.TranslateHistory)
+	c.Src="hello"
+	has,err:=c.FindBySrc();if err!= nil {
+		t.Fatal(err)
+	}else if has{
+		t.Log(c.Dst)
+	}else{
+		t.Log("not found")
 	}
 }
 

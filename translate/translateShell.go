@@ -38,15 +38,6 @@ func Translate(src string, p *constant.Param, c *constant.Count) (dst string) {
 }
 
 func Trans(fp string, p *constant.Param, c *constant.Count) {
-	var archives []model.TranslateHistory
-	defer func() {
-		all, err := new(model.TranslateHistory).InsertAll(archives)
-		if err != nil {
-			log.Printf("最终插入mysql失败:%v\n", err)
-		}
-		log.Printf("最终插入mysql成功:%v\n", all)
-	}()
-
 	// todo 翻译字幕
 	r := seed.Intn(2000)
 	//中间文件名
@@ -90,13 +81,14 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 		after.WriteString(before[i+1])
 		src := before[i+2]
 		src = strings.Replace(src, "\n", "", 1)
+		src = strings.Replace(src, "\r\n", "", 1)
 		afterSrc := replace.GetSensitive(src)
 		var dst string
 		behind := new(model.TranslateHistory)
 		behind.Src = src
 		if has, _ := behind.FindBySrc(); has {
 			dst = behind.Dst
-			fmt.Println("在缓存中找到")
+			fmt.Printf("在缓存中找到dst = %s\n", dst)
 			c.SetCache()
 		} else {
 			fmt.Println("未在缓存中找到")
@@ -104,22 +96,20 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 			dst = strings.Replace(dst, "\n", "", -1)
 			randomNumber := util.GetSeed().Intn(401) + 100
 			time.Sleep(time.Duration(randomNumber) * time.Millisecond) // 暂停 100 毫秒
+			dst = replace.GetSensitive(dst)
+			behind.Dst = dst
+			if _, err := behind.InsertOne(); err != nil {
+				fmt.Printf("缓存写入数据库错误:%v\n", err)
+			}
 		}
-		dst = replace.GetSensitive(dst)
-		if _, err := behind.InsertOne(); err != nil {
-			fmt.Printf("缓存写入数据库错误:%v\n", err)
-		}
-		fmt.Printf("翻译之后序号:\"%s\"时间:\"%s\"正文:\"%s\"空行:\"%s\"原文\"%s\"\t译文\"%s\"\n", before[i], before[i+1], before[i+2], before[i+3], src, dst)
+
+		fmt.Printf("翻译之后序号:\"%s\"时间:\"%s\"正文:\"%s\"空行:\"%s\"原文:\"%s\"\t译文\"%s\"\n", before[i], before[i+1], before[i+2], before[i+3], src, dst)
 		after.WriteString(src)
+		after.WriteString("\n")
 		after.WriteString(dst)
 		after.WriteString(before[i+3])
 		after.WriteString(before[i+3])
 		after.Sync()
-		archive := model.TranslateHistory{
-			Src: src,
-			Dst: dst,
-		}
-		archives = append(archives, archive)
 	}
 	after.Close()
 	origin := strings.Join([]string{strings.Replace(srt, ".srt", "", 1), "_origin", ".srt"}, "")
