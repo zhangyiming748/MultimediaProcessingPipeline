@@ -39,6 +39,7 @@ func init() {
 	mylog.SetLog(p)
 	sql.SetMysql(p)
 	sql.GetMysql().Sync2(model.TranslateHistory{})
+	sql.GetMysql().Sync2(model.Sensitive{})
 	readKey(p)
 	log.SetFlags(log.Ltime | log.Lshortfile)
 	replace.SetSensitive(p)
