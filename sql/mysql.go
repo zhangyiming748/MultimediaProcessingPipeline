@@ -30,7 +30,7 @@ func SetMysql(p *constant.Param) {
 	}
 
 	// 检查数据库是否存在
-	rows, err := tempEngine.QueryString("SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = 'tdl'")
+	rows, err := tempEngine.QueryString("SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = 'Translate'")
 	if err != nil {
 		log.Printf("查询数据库失败: %v\n", err)
 

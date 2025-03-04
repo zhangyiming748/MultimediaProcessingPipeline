@@ -37,7 +37,6 @@ var p = &constant.Param{
 
 func init() {
 	mylog.SetLog(p)
-	sql.SetLevelDB(p)
 	sql.SetMysql(p)
 	sql.GetMysql().Sync2(model.TranslateHistory{})
 	readKey(p)
@@ -45,6 +44,10 @@ func init() {
 }
 
 func readKey(p *constant.Param) {
+	if _, err := os.Stat("apikey"); os.IsNotExist(err) {
+		log.Println("apikey文件不存在")
+		return
+	}
 	keys := util.ReadByLine("apikey")
 	p.LinuxDo = keys[0]
 }

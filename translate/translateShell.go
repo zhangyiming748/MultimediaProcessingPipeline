@@ -15,6 +15,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/OwO-Network/DeepLX/translate"
 )
 
 const PREFIX = "https://api.deeplx.org"
@@ -44,8 +46,26 @@ func TransByLinuxdoDeepLX(src, apikey string) (dst string) {
 	log.Printf("linuxdo 版本 deeplx 返回:%+v\n", result)
 	return result
 }
+
+func TransByGithubDeepLX(src string) (dst string) {
+	ret, err := translate.TranslateByDeepLX("auto", "zh", src, "", "", "")
+	if err != nil {
+		log.Fatalf("Github版本deeplx翻译报错%v\n", err)
+	}
+	log.Printf("GitHub 版本 deeplx 返回:%+v\n", ret)
+	dst = ret.Data
+	dst = strings.Replace(dst, "\\r\\n", "", 1)
+	dst = strings.Replace(dst, "\n", "", 1)
+	dst = strings.Replace(dst, "\r\n", "", 1)
+	return dst
+}
+
 func Translate(src string, p *constant.Param, c *constant.Count) (dst string) {
-	return TransByLinuxdoDeepLX(src, p.LinuxDo)
+	if p.LinuxDo == "" {
+		return TransByGithubDeepLX(src)
+	} else {
+		return TransByLinuxdoDeepLX(src, p.LinuxDo)
+	}
 }
 
 func Trans(fp string, p *constant.Param, c *constant.Count) {
