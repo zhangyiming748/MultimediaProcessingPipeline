@@ -1,6 +1,7 @@
 package sql
 
 import (
+	"Multimedia_Processing_Pipeline/constant"
 	"fmt"
 	"log"
 	"time"
@@ -11,13 +12,13 @@ import (
 
 var engine *xorm.Engine
 
-func SetMysql() {
+func SetMysql(p *constant.Param) {
 
 	var err error
-	user := "root"
-	password := "163453"
-	host := "192.168.2.8"
-	port := "3306"
+	user := p.MysqlUser
+	password := p.MysqlPass
+	host := p.MysqlHost
+	port := p.MysqlPort
 
 	// 先连接到 MySQL 服务器（不指定数据库）
 	rootDSN := fmt.Sprintf("%s:%s@tcp(%s:%s)/?charset=utf8", user, password, host, port)
@@ -29,7 +30,7 @@ func SetMysql() {
 	}
 
 	// 检查数据库是否存在
-	rows, err := tempEngine.QueryString("SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = 'tdl'")
+	rows, err := tempEngine.QueryString("SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = 'Translate'")
 	if err != nil {
 		log.Printf("查询数据库失败: %v\n", err)
 

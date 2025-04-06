@@ -4,13 +4,9 @@ import (
 	"Multimedia_Processing_Pipeline/constant"
 	"Multimedia_Processing_Pipeline/model"
 	"Multimedia_Processing_Pipeline/replace"
-	"Multimedia_Processing_Pipeline/sql"
 	"Multimedia_Processing_Pipeline/util"
-	"errors"
+	"encoding/json"
 	"fmt"
-	"github.com/syndtr/goleveldb/leveldb"
-	"github.com/zhangyiming748/MultiTranslatorUnifier/logic"
-	_ "github.com/zhangyiming748/MultiTranslatorUnifier/logic"
 	"log"
 	"math/rand"
 	"os"
@@ -20,6 +16,9 @@ import (
 	"strings"
 	"time"
 )
+
+const PREFIX = "https://api.deeplx.org"
+const SUFFIX = "translate"
 
 var (
 	seed = rand.New(rand.NewSource(time.Now().Unix()))
@@ -31,33 +30,14 @@ const (
 )
 
 func Translate(src string, p *constant.Param, c *constant.Count) (dst string) {
-	m := logic.Trans(src, p.GetProxy(), "")
-	for key, value := range m {
-		switch key {
-		case "Google":
-			c.SetGoogle()
-		case "Bing":
-			c.SetBing()
-		case "LinuxDo":
-			c.SetDeeplx()
-		case "Github":
-			c.SetDeeplx()
-		}
-		dst = value
+	if p.LinuxDo == "" {
+		return TransByGithubDeepLX(src)
+	} else {
+		return TransByLinuxdoDeepLX(src, p.LinuxDo)
 	}
-	return dst
 }
 
 func Trans(fp string, p *constant.Param, c *constant.Count) {
-	var archives []model.TranslateHistory
-	defer func() {
-		all, err := new(model.TranslateHistory).InsertAll(archives)
-		if err != nil {
-			log.Printf("最终插入mysql失败:%v\n", err)
-		}
-		log.Printf("最终插入mysql成功:%v\n", all)
-	}()
-
 	// todo 翻译字幕
 	r := seed.Intn(2000)
 	//中间文件名
@@ -100,36 +80,36 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 		after.WriteString(before[i])
 		after.WriteString(before[i+1])
 		src := before[i+2]
+		src = strings.Replace(src, "\n", "", 1)
+		src = strings.Replace(src, "\r\n", "", 1)
 		afterSrc := replace.GetSensitive(src)
 		var dst string
-		if val, err := sql.GetLevelDB().Get([]byte(src), nil); err == nil {
-			dst = string(val)
-			fmt.Println("在缓存中找到")
+		behind := new(model.TranslateHistory)
+		behind.Src = src
+		if has, _ := behind.FindBySrc(); has {
+			dst = behind.Dst
+			fmt.Printf("在缓存中找到dst = %s\n", dst)
 			c.SetCache()
 		} else {
-			if errors.Is(err, leveldb.ErrNotFound) {
-				fmt.Println("未在缓存中找到")
-			}
+			fmt.Println("未在缓存中找到")
 			dst = Translate(afterSrc, p, c)
+			dst = strings.Replace(dst, "\n", "", -1)
 			randomNumber := util.GetSeed().Intn(401) + 100
 			time.Sleep(time.Duration(randomNumber) * time.Millisecond) // 暂停 100 毫秒
+			dst = replace.GetSensitive(dst)
+			behind.Dst = dst
+			if _, err := behind.InsertOne(); err != nil {
+				fmt.Printf("缓存写入数据库错误:%v\n", err)
+			}
 		}
-		dst = replace.GetSensitive(dst)
-		if err := sql.GetLevelDB().Put([]byte(src), []byte(dst), nil); err != nil {
-			fmt.Printf("缓存写入数据库错误:%v\n", err)
-		}
-		log.Printf("翻译之后序号\"%s\"时间\"%s\"正文\"%s\"空行\"%s\"\n", before[i], before[i+1], before[i+2], before[i+3])
-		log.Printf("原文\"%s\"\t译文\"%s\"\n", src, dst)
+
+		fmt.Printf("翻译之后序号:\"%s\"时间:\"%s\"正文:\"%s\"空行:\"%s\"原文:\"%s\"\t译文\"%s\"\n", before[i], before[i+1], before[i+2], before[i+3], src, dst)
 		after.WriteString(src)
+		after.WriteString("\n")
 		after.WriteString(dst)
 		after.WriteString(before[i+3])
 		after.WriteString(before[i+3])
 		after.Sync()
-		archive := model.TranslateHistory{
-			Src: src,
-			Dst: dst,
-		}
-		archives = append(archives, archive)
 	}
 	after.Close()
 	origin := strings.Join([]string{strings.Replace(srt, ".srt", "", 1), "_origin", ".srt"}, "")
@@ -139,6 +119,7 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 		constant.Warning(fmt.Sprintf("字幕文件重命名出现错误:%v:%v\n", err1, err2))
 	}
 }
+
 func TransFile(input string, p *constant.Param) {
 	//translate-shell -i input.txt -o output.txt -t zh-CN
 	output := strings.Replace(input, filepath.Ext(input), "_zhCN.txt", 1)
@@ -169,4 +150,37 @@ func TransFile(input string, p *constant.Param) {
 		log.Printf("命令执行中产生错误:%v\n", err)
 		return
 	}
+}
+func Req(src, apikey string) (string, error) {
+	headers := map[string]string{
+		"Content-Type": "application/json",
+	}
+	params := map[string]string{
+		"text":        src,
+		"source_lang": "auto",
+		"target_lang": "zh",
+	}
+	host := strings.Join([]string{PREFIX, apikey, SUFFIX}, "/")
+
+	b, err := util.HttpPostJson(headers, params, host)
+	if err != nil {
+		return "", err
+	}
+	log.Printf("%v\n", string(b))
+	var d DeepLXTranslationResult
+	if err := json.Unmarshal(b, &d); err != nil {
+		return "", err
+	}
+	return d.Data, err
+}
+
+type DeepLXTranslationResult struct {
+	Code         int      `json:"code"`
+	ID           int64    `json:"id"`
+	Message      string   `json:"message,omitempty"`
+	Data         string   `json:"data"`         // The primary translated text
+	Alternatives []string `json:"alternatives"` // Other possible translations
+	SourceLang   string   `json:"source_lang"`
+	TargetLang   string   `json:"target_lang"`
+	Method       string   `json:"method"`
 }

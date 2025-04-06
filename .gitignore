@@ -32,3 +32,4 @@ mergeInside.sh
 *.tsv
 *.tabby-upload
 /.venv/
+apikey

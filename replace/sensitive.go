@@ -2,14 +2,12 @@ package replace
 
 import (
 	"Multimedia_Processing_Pipeline/constant"
-	"Multimedia_Processing_Pipeline/sql"
+	"Multimedia_Processing_Pipeline/model"
 	"bufio"
 	"io"
 	"log"
 	"os"
 	"strings"
-
-	"github.com/syndtr/goleveldb/leveldb"
 )
 
 var Sensitive = map[string]string{}
@@ -31,37 +29,34 @@ func SetSensitive(p *constant.Param) {
 	lines := []string{}
 	if IsExist(fp1) {
 		log.Printf("从视频目录%v中加载敏感词\n", fp1)
-		lines = readByLine(fp1)
+		lines = append(lines, fp1)
 	} else if IsExist(fp2) {
 		log.Printf("从程序目录%v中加载敏感词\n", fp2)
-		lines = readByLine(fp2)
+		lines = append(lines, fp2)
 	} else if IsExist(fp3) {
 		log.Printf("从程序目录%v中加载敏感词\n", fp3)
-		lines = readByLine(fp3)
+		lines = append(lines, fp3)
 	} else {
 		log.Println("没有找到敏感词文件")
 	}
-	batch := new(leveldb.Batch)
 	for _, line := range lines {
 		key := strings.Split(line, ":")[0]
 		value := strings.Split(line, ":")[1]
-		batch.Put([]byte(key), []byte(value))
+		s := new(model.Sensitive)
+		s.Before = key
+		s.After = value
+		if found, err := s.FindBySrc(); !found || err != nil {
+			one, err := s.InsertOne()
+			if err != nil {
+				return
+			} else {
+				log.Printf("插入敏感词%v:%v成功:%v\n", key, value, one)
+			}
+		}
 	}
-	err := sql.GetLevelDB().Write(batch, nil)
-	if err != nil {
-		log.Fatalf("敏感词写入数据库失败:%v\n", err)
-	}
-	for _, line := range lines {
-		before := strings.Split(line, ":")[0]
-		after := strings.Split(line, ":")[1]
-		log.Printf("写入敏感词 : before - %v\tafter - %v\n", before, after)
-		Sensitive[before] = after
-		//err := sql.GetLevelDB().Put([]byte(before), []byte(after), nil)
-		//if err != nil {
-		//	log.Printf("敏感词:%v - %v写入数据库失败:%v\n", before, after, err)
-		//} else {
-		//	log.Printf("敏感词:%v - %v写入数据库成功\n", before, after)
-		//}
+	m := new(model.Sensitive).GetAll()
+	for _, v := range m {
+		Sensitive[v.Before] = v.After
 	}
 }
 
