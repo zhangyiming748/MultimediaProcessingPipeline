@@ -16,12 +16,12 @@ import (
 // go test -timeout 2000h -v -run TestWhisper
 func TestWhisper(t *testing.T) {
 	p := &constant.Param{
-		VideosLocation: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\videos",
+		VideosLocation: "/Videos/後天以後",
 		Language:       "English",
 		Pattern:        "mp4",
-		Model:          "large-v3",
-		ToolsLocation:  "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
-		Proxy:          "192.168.1.35:8889",
+		Model:          "medium",
+		ToolsLocation:  "/app",
+		Proxy:          "192.168.2.111:8889",
 	}
 	log.SetLog(p)
 	fps := getFiles(p.GetVideosLocation())
