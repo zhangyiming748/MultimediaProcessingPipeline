@@ -30,11 +30,11 @@ func ExecCommand(c *exec.Cmd, msg string) (e error) {
 	}
 	for {
 		tmp := make([]byte, 1024)
-		_, err := stdout.Read(tmp)
+		_, readErr := stdout.Read(tmp)
 		t := string(tmp)
 		t = strings.Replace(t, "\u0000", "", -1)
 		pretty.P(fmt.Sprintf("\r%v\n%v", t, msg))
-		if err != nil {
+		if readErr != nil {
 			break
 		}
 	}
@@ -62,11 +62,11 @@ func ExecCommand4Ytdlp(c *exec.Cmd) {
 	}
 	for {
 		tmp := make([]byte, 1024)
-		_, err := stdout.Read(tmp)
+		_, ReadErr := stdout.Read(tmp)
 		t := string(tmp)
 		t = strings.Replace(t, "\u0000", "", -1)
 		fmt.Print(t)
-		if err != nil {
+		if ReadErr != nil {
 			break
 		}
 	}
@@ -110,12 +110,12 @@ func ExecCommandWithBar(c *exec.Cmd, totalFrame string) (e error) {
 	}
 	for {
 		tmp := make([]byte, 1024)
-		_, err := stdout.Read(tmp)
+		_, readErr := stdout.Read(tmp)
 		t := string(tmp)
 		if frame, none := GetFrameNum(t); none == nil {
 			bar.Set(frame)
 		}
-		if err != nil {
+		if readErr != nil {
 			break
 		}
 	}
