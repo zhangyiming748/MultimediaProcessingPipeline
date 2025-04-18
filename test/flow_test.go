@@ -20,11 +20,11 @@ import (
 )
 
 var p = &constant.Param{
-	VideosLocation: "D:\\pikpak\\D站资源\\FINAL FUCK 7\\subtitle",
+	VideosLocation: "/app/sources",
 	Language:       "Japanese",
 	Pattern:        "mp4",
 	Model:          "large-v3",
-	ToolsLocation:  "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
+	ToolsLocation:  "/app",
 	Proxy:          "http://192.168.2.10:8889",
 	Merge:          false,
 	//Lines:          string // 保存下载url的文档 默认放在root下 文件名为 link.list
@@ -177,7 +177,9 @@ func getFiles(currentDir string) (filePaths []string) {
 		}
 		// 检查是否是文件
 		if !info.IsDir() {
-			filePaths = append(filePaths, path) // 将文件的绝对路径添加到切片
+			if !strings.HasPrefix(info.Name(), ".") {
+				filePaths = append(filePaths, path) // 将文件的绝对路径添加到切片
+			}
 		}
 		return nil
 	})

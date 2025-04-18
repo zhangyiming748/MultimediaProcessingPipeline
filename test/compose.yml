@@ -1,0 +1,8 @@
+services:
+  multimedia-processing-pipeline:
+    image: zhangyiming748/stand:latest 
+    container_name: mpp
+    privileged: true
+    volumes:
+      - /Users/zen/Github/MultimediaProcessingPipeline:/app
+      - /Volumes/Kingshar/MultimediaProcessingPipeline/sources:/data# 替换成主人的用户 ID 和组 ID
