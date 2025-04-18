@@ -10,8 +10,6 @@ import (
 	"log"
 	"math/rand"
 	"os"
-	"os/exec"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -30,11 +28,7 @@ const (
 )
 
 func Translate(src string, p *constant.Param, c *constant.Count) (dst string) {
-	if p.LinuxDo == "" {
-		return TransByGithubDeepLX(src)
-	} else {
 		return TransByLinuxdoDeepLX(src, p.LinuxDo)
-	}
 }
 
 func Trans(fp string, p *constant.Param, c *constant.Count) {
@@ -120,37 +114,6 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 	}
 }
 
-func TransFile(input string, p *constant.Param) {
-	//translate-shell -i input.txt -o output.txt -t zh-CN
-	output := strings.Replace(input, filepath.Ext(input), "_zhCN.txt", 1)
-	cmd := exec.Command("translate-shell", "-e", "google", "-x", p.GetProxy(), "-i", input, "-o", output, "-t", "zh-CN")
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		log.Printf("连接Stdout产生错误:%v\n", err)
-		return
-	}
-	cmd.Stderr = cmd.Stdout
-	if err = cmd.Start(); err != nil {
-		log.Printf("启动cmd命令产生错误:%v\n", err)
-		return
-	}
-	go func() {
-		for {
-			tmp := make([]byte, 1024)
-			_, err := stdout.Read(tmp)
-			t := string(tmp)
-			t = strings.Replace(t, "\u0000", "", -1)
-			fmt.Print(t)
-			if err != nil {
-				break
-			}
-		}
-	}()
-	if err = cmd.Wait(); err != nil {
-		log.Printf("命令执行中产生错误:%v\n", err)
-		return
-	}
-}
 func Req(src, apikey string) (string, error) {
 	headers := map[string]string{
 		"Content-Type": "application/json",
@@ -168,8 +131,8 @@ func Req(src, apikey string) (string, error) {
 	}
 	log.Printf("%v\n", string(b))
 	var d DeepLXTranslationResult
-	if err := json.Unmarshal(b, &d); err != nil {
-		return "", err
+	if UnmarshalErr := json.Unmarshal(b, &d); UnmarshalErr != nil {
+		return "", UnmarshalErr
 	}
 	return d.Data, err
 }

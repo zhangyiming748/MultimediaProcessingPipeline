@@ -20,12 +20,12 @@ import (
 )
 
 var p = &constant.Param{
-	VideosLocation: "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\test\\beforeTrans",
-	Language:       "English",
+	VideosLocation: "D:\\pikpak\\D站资源\\FINAL FUCK 7\\subtitle",
+	Language:       "Japanese",
 	Pattern:        "mp4",
-	Model:          "medium.en",
-	ToolsLocation:  "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline\\whisper\\afterWhisper\\checked",
-	Proxy:          "http://192.168.2.6:8889",
+	Model:          "large-v3",
+	ToolsLocation:  "C:\\Users\\zen\\Github\\MultimediaProcessingPipeline",
+	Proxy:          "http://192.168.2.10:8889",
 	Merge:          false,
 	//Lines:          string // 保存下载url的文档 默认放在root下 文件名为 link.list
 	MysqlUser:    "root",
@@ -36,13 +36,23 @@ var p = &constant.Param{
 }
 
 func init() {
-	mylog.SetLog(p)
-	sql.SetMysql(p)
-	sql.GetMysql().Sync2(model.TranslateHistory{})
-	sql.GetMysql().Sync2(model.Sensitive{})
-	readKey(p)
-	log.SetFlags(log.Ltime | log.Lshortfile)
-	replace.SetSensitive(p)
+    // 初始化全局变量 p
+    mylog.SetLog(p)
+    sql.SetMysql(p)
+    sql.GetMysql().Sync2(model.TranslateHistory{})
+    sql.GetMysql().Sync2(model.Sensitive{})
+    
+    // 优先从环境变量获取 apikey
+    if apikey := os.Getenv("DeepLX"); apikey != "" {
+        p.LinuxDo = apikey
+        log.Printf("从环境变量获取到 DeepLX: %v", p.LinuxDo)
+    } else {
+        // 如果环境变量不存在，则尝试从文件读取
+        readKey(p)
+    }
+    
+    log.SetFlags(log.Ltime | log.Lshortfile)
+    replace.SetSensitive(p)
 }
 
 func readKey(p *constant.Param) {
@@ -122,15 +132,42 @@ func TestCache(t *testing.T) {
 }
 
 // go test -timeout 2000h -v -run TestTransFileAndArchive
-func TestTransFileAndArchive(t *testing.T) {
-	//util.ExitAfterRun()
-	fps := getFiles(p.GetVideosLocation())
-	log.Println(fps)
-	for _, fp := range fps {
-		if strings.HasSuffix(fp, ".txt") {
-			trans.TransFile(fp, p)
-		}
+
+// go test -v -run TestGetEnv
+func TestGetEnv(t *testing.T) {
+    // 打印所有环境变量
+    t.Log("=== 开始打印所有环境变量 ===")
+    envs := os.Environ()
+    t.Logf("总共有 %d 个环境变量", len(envs))
+    for _, env := range envs {
+        parts := strings.SplitN(env, "=", 2)
+        if len(parts) == 2 {
+            t.Logf("变量名: %s\n值: %s", parts[0], parts[1])
+        }
+    }
+    t.Log("=== 环境变量打印完成 ===")
+    path := os.Getenv("DeepLX")
+    if path == "" {
+        t.Error("无法获取 DeepLX 环境变量")
+    }else{
+		t.Log(path)
 	}
+    
+    // 测试获取自定义环境变量
+    testKey := "TEST_ENV_VAR"
+    testValue := "test_value"
+    os.Setenv(testKey, testValue)
+    
+    value := os.Getenv(testKey)
+    if value != testValue {
+        t.Errorf("期望获取的环境变量值为 %s，实际获取到的是 %s", testValue, value)
+    }
+    
+    // 测试获取不存在的环境变量
+    nonExistValue := os.Getenv("NON_EXIST_ENV_VAR")
+    if nonExistValue != "" {
+        t.Error("获取不存在的环境变量应该返回空字符串")
+    }
 }
 
 func getFiles(currentDir string) (filePaths []string) {
