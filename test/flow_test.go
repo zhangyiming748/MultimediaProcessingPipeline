@@ -20,7 +20,7 @@ import (
 )
 
 var p = &constant.Param{
-	VideosLocation: "/Users/zen/github/MultimediaProcessingPipeline/Zoey Holloway",
+	VideosLocation: "/Users/zen/github/MultimediaProcessingPipeline/Zoey Holloway/test",
 	Language:       "English",
 	Pattern:        "mp4",
 	Model:          "large-v3",

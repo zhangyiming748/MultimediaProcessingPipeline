@@ -2,7 +2,6 @@ package translateShell
 
 import (
 	"Multimedia_Processing_Pipeline/constant"
-	"Multimedia_Processing_Pipeline/model"
 	"Multimedia_Processing_Pipeline/replace"
 	"Multimedia_Processing_Pipeline/util"
 	"encoding/json"
@@ -25,7 +24,7 @@ const (
 )
 
 func Translate(src string, p *constant.Param, c *constant.Count) (dst string) {
-	return TransOnLocal(src, p.GetProxy())
+	return TransByServer(src)
 }
 
 func Trans(fp string, p *constant.Param, c *constant.Count) {
@@ -75,24 +74,12 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 		src = strings.Replace(src, "\r\n", "", 1)
 		afterSrc := replace.GetSensitive(src)
 		var dst string
-		behind := new(model.TranslateHistory)
-		behind.Src = src
-		if has, _ := behind.FindBySrc(); has {
-			dst = behind.Dst
-			fmt.Printf("在缓存中找到dst = %s\n", dst)
-			c.SetCache()
-		} else {
-			fmt.Println("未在缓存中找到")
-			dst = Translate(afterSrc, p, c)
-			dst = strings.Replace(dst, "\n", "", -1)
-			randomNumber := util.GetSeed().Intn(401) + 100
-			time.Sleep(time.Duration(randomNumber) * time.Millisecond) // 暂停 100 毫秒
-			dst = replace.GetSensitive(dst)
-			behind.Dst = dst
-			if _, err := behind.InsertOne(); err != nil {
-				fmt.Printf("缓存写入数据库错误:%v\n", err)
-			}
-		}
+
+		dst = Translate(afterSrc, p, c)
+		dst = strings.Replace(dst, "\n", "", -1)
+		randomNumber := util.GetSeed().Intn(401) + 100
+		time.Sleep(time.Duration(randomNumber) * time.Millisecond) // 暂停 100 毫秒
+		dst = replace.GetSensitive(dst)
 
 		fmt.Printf("翻译之后序号:\"%s\"时间:\"%s\"正文:\"%s\"空行:\"%s\"原文:\"%s\"\t译文\"%s\"\n", before[i], before[i+1], before[i+2], before[i+3], src, dst)
 		after.WriteString(src)
