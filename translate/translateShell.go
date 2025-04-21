@@ -15,9 +15,6 @@ import (
 	"time"
 )
 
-const PREFIX = "https://api.deeplx.org"
-const SUFFIX = "translate"
-
 var (
 	seed = rand.New(rand.NewSource(time.Now().Unix()))
 )
@@ -28,7 +25,7 @@ const (
 )
 
 func Translate(src string, p *constant.Param, c *constant.Count) (dst string) {
-		return TransByLinuxdoDeepLX(src, p.LinuxDo)
+	return TransOnLocal(src, p.GetProxy())
 }
 
 func Trans(fp string, p *constant.Param, c *constant.Count) {
@@ -114,36 +111,30 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 	}
 }
 
-func Req(src, apikey string) (string, error) {
+func Req(src string) (string, error) {
+	log.Printf("开始翻译:%s\n", src)
 	headers := map[string]string{
 		"Content-Type": "application/json",
 	}
 	params := map[string]string{
-		"text":        src,
-		"source_lang": "auto",
-		"target_lang": "zh",
+		"src": src,
 	}
-	host := strings.Join([]string{PREFIX, apikey, SUFFIX}, "/")
+	host := "http://192.168.2.10:8192/api/v1/translate"
 
 	b, err := util.HttpPostJson(headers, params, host)
 	if err != nil {
 		return "", err
 	}
 	log.Printf("%v\n", string(b))
-	var d DeepLXTranslationResult
-	if UnmarshalErr := json.Unmarshal(b, &d); UnmarshalErr != nil {
+	var r Res
+	if UnmarshalErr := json.Unmarshal(b, &r); UnmarshalErr != nil {
 		return "", UnmarshalErr
 	}
-	return d.Data, err
+	return r.Dst, err
 }
 
-type DeepLXTranslationResult struct {
-	Code         int      `json:"code"`
-	ID           int64    `json:"id"`
-	Message      string   `json:"message,omitempty"`
-	Data         string   `json:"data"`         // The primary translated text
-	Alternatives []string `json:"alternatives"` // Other possible translations
-	SourceLang   string   `json:"source_lang"`
-	TargetLang   string   `json:"target_lang"`
-	Method       string   `json:"method"`
+type Res struct {
+	Src  string `json:"src"`
+	Dst  string `json:"dst"`
+	From string `json:"from"`
 }

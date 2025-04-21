@@ -20,39 +20,39 @@ import (
 )
 
 var p = &constant.Param{
-	VideosLocation: "/app/sources",
-	Language:       "Japanese",
+	VideosLocation: "/Users/zen/github/MultimediaProcessingPipeline/Zoey Holloway",
+	Language:       "English",
 	Pattern:        "mp4",
 	Model:          "large-v3",
-	ToolsLocation:  "/app",
+	ToolsLocation:  "/Users/zen/github/MultimediaProcessingPipeline",
 	Proxy:          "http://192.168.2.10:8889",
 	Merge:          false,
 	//Lines:          string // 保存下载url的文档 默认放在root下 文件名为 link.list
 	MysqlUser:    "root",
 	MysqlPass:    "163453",
-	MysqlHost:    "192.168.2.5",
+	MysqlHost:    "192.168.2.10",
 	MysqlPort:    "3306",
-	TransService: "http://192.168.2.5:8192",
+	TransService: "http://192.168.2.10:8192",
 }
 
 func init() {
-    // 初始化全局变量 p
-    mylog.SetLog(p)
-    sql.SetMysql(p)
-    sql.GetMysql().Sync2(model.TranslateHistory{})
-    sql.GetMysql().Sync2(model.Sensitive{})
-    
-    // 优先从环境变量获取 apikey
-    if apikey := os.Getenv("DeepLX"); apikey != "" {
-        p.LinuxDo = apikey
-        log.Printf("从环境变量获取到 DeepLX: %v", p.LinuxDo)
-    } else {
-        // 如果环境变量不存在，则尝试从文件读取
-        readKey(p)
-    }
-    
-    log.SetFlags(log.Ltime | log.Lshortfile)
-    replace.SetSensitive(p)
+	// 初始化全局变量 p
+	mylog.SetLog(p)
+	sql.SetMysql(p)
+	sql.GetMysql().Sync2(model.TranslateHistory{})
+	sql.GetMysql().Sync2(model.Sensitive{})
+
+	// 优先从环境变量获取 apikey
+	if apikey := os.Getenv("DeepLX"); apikey != "" {
+		p.LinuxDo = apikey
+		log.Printf("从环境变量获取到 DeepLX: %v", p.LinuxDo)
+	} else {
+		// 如果环境变量不存在，则尝试从文件读取
+		readKey(p)
+	}
+
+	log.SetFlags(log.Ltime | log.Lshortfile)
+	replace.SetSensitive(p)
 }
 
 func readKey(p *constant.Param) {
@@ -110,23 +110,40 @@ func TestWhisper(t *testing.T) {
 // go test -timeout 2000h -v -run TestTransAll
 func TestTransAll(t *testing.T) {
 	//util.ExitAfterRun()
-	fps := getFiles(p.GetVideosLocation())
-	log.Println(fps)
+	// 检查目录是否存在
+	if _, err := os.Stat(p.VideosLocation); os.IsNotExist(err) {
+		t.Fatal("目录不存在:", err)
+	}
+
+	fps := getFiles(p.VideosLocation)
+	log.Printf("找到 %d 个文件", len(fps))
+	if len(fps) == 0 {
+		t.Fatal("未找到任何文件")
+	}
+
 	c := new(constant.Count)
+	srtCount := 0
 	for _, fp := range fps {
 		if strings.HasSuffix(fp, ".srt") {
+			log.Printf("处理文件: %s", fp)
+			srtCount++
 			trans.Trans(fp, p, c)
+
 		}
+	}
+	if srtCount == 0 {
+		t.Fatal("未找到任何.srt文件")
 	}
 }
 func TestCache(t *testing.T) {
-	c:=new(model.TranslateHistory)
-	c.Src="hello"
-	has,err:=c.FindBySrc();if err!= nil {
+	c := new(model.TranslateHistory)
+	c.Src = "hello"
+	has, err := c.FindBySrc()
+	if err != nil {
 		t.Fatal(err)
-	}else if has{
+	} else if has {
 		t.Log(c.Dst)
-	}else{
+	} else {
 		t.Log("not found")
 	}
 }
@@ -135,39 +152,39 @@ func TestCache(t *testing.T) {
 
 // go test -v -run TestGetEnv
 func TestGetEnv(t *testing.T) {
-    // 打印所有环境变量
-    t.Log("=== 开始打印所有环境变量 ===")
-    envs := os.Environ()
-    t.Logf("总共有 %d 个环境变量", len(envs))
-    for _, env := range envs {
-        parts := strings.SplitN(env, "=", 2)
-        if len(parts) == 2 {
-            t.Logf("变量名: %s\n值: %s", parts[0], parts[1])
-        }
-    }
-    t.Log("=== 环境变量打印完成 ===")
-    path := os.Getenv("DeepLX")
-    if path == "" {
-        t.Error("无法获取 DeepLX 环境变量")
-    }else{
+	// 打印所有环境变量
+	t.Log("=== 开始打印所有环境变量 ===")
+	envs := os.Environ()
+	t.Logf("总共有 %d 个环境变量", len(envs))
+	for _, env := range envs {
+		parts := strings.SplitN(env, "=", 2)
+		if len(parts) == 2 {
+			t.Logf("变量名: %s\n值: %s", parts[0], parts[1])
+		}
+	}
+	t.Log("=== 环境变量打印完成 ===")
+	path := os.Getenv("DeepLX")
+	if path == "" {
+		t.Error("无法获取 DeepLX 环境变量")
+	} else {
 		t.Log(path)
 	}
-    
-    // 测试获取自定义环境变量
-    testKey := "TEST_ENV_VAR"
-    testValue := "test_value"
-    os.Setenv(testKey, testValue)
-    
-    value := os.Getenv(testKey)
-    if value != testValue {
-        t.Errorf("期望获取的环境变量值为 %s，实际获取到的是 %s", testValue, value)
-    }
-    
-    // 测试获取不存在的环境变量
-    nonExistValue := os.Getenv("NON_EXIST_ENV_VAR")
-    if nonExistValue != "" {
-        t.Error("获取不存在的环境变量应该返回空字符串")
-    }
+
+	// 测试获取自定义环境变量
+	testKey := "TEST_ENV_VAR"
+	testValue := "test_value"
+	os.Setenv(testKey, testValue)
+
+	value := os.Getenv(testKey)
+	if value != testValue {
+		t.Errorf("期望获取的环境变量值为 %s，实际获取到的是 %s", testValue, value)
+	}
+
+	// 测试获取不存在的环境变量
+	nonExistValue := os.Getenv("NON_EXIST_ENV_VAR")
+	if nonExistValue != "" {
+		t.Error("获取不存在的环境变量应该返回空字符串")
+	}
 }
 
 func getFiles(currentDir string) (filePaths []string) {
