@@ -28,7 +28,7 @@ func TestWhisper(t *testing.T) {
 	cmds := []string{}
 	for _, fp := range fps {
 		if strings.HasSuffix(fp, p.GetPattern()) {
-			cmd := GetSubtitle(fp, p, false)
+			cmd := GetSubtitle(fp, p.GetModel(), p.GetToolsLocation(), p.GetLanguage(), p.GetVideosLocation())
 			cmds = append(cmds, cmd)
 		}
 	}

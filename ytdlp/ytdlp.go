@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os/exec"
-	"regexp"
-	"strings"
 )
 
 func DownloadVideo(uri, proxy,location string) (fp string) {
@@ -15,49 +13,12 @@ func DownloadVideo(uri, proxy,location string) (fp string) {
 			fmt.Println(err)
 		}
 	}()
-	name_cmd := exec.Command("yt-dlp", "--proxy", proxy, "-f", "bestvideo[height<=?1080]+bestaudio/best[height<=?1080]/mp4", "--no-playlist", "--paths", p.GetVideosLocation(), "--get-filename", uri)
+	name_cmd := exec.Command("yt-dlp", "--proxy", proxy, "-f", "bestvideo[height<=?1080]+bestaudio/best[height<=?1080]/mp4", "--no-playlist", "--paths", location, "--get-filename", uri)
 	name := util.GetVideoName(name_cmd)
 	log.Printf("当前下载的文件标题:%s", name)
-	download_cmd := exec.Command("yt-dlp", "--proxy",proxy, "-f", "bestvideo[height<=?1080]+bestaudio/best[height<=?1080]/mp4", "--no-playlist", "--paths", p.GetVideosLocation(), uri)
+	download_cmd := exec.Command("yt-dlp", "--proxy",proxy, "-f", "bestvideo[height<=?1080]+bestaudio/best[height<=?1080]/mp4", "--no-playlist", "--paths", location, uri)
 	util.ExecCommand4Ytdlp(download_cmd)
 	log.Printf("当前下载成功的文件标题:%s", name)
 	return name
 }
 
-/*
-替换中文方括号
-*/
-func replaceChineseRoundBrackets(input string) string {
-	//input := "这是一个测试字符串【包含中文括号内容】，请忽略这部分内容。"
-	re := regexp.MustCompile(`【[^】]*?】`)
-	result := re.ReplaceAllString(input, "")
-	return result
-}
-
-/*
-替换英文圆括号
-*/
-func replaceEnglishRoundBrackets(input string) string {
-	//input := "这是一个测试字符串(包含英文括号内容)，请忽略这部分内容。"
-	re := regexp.MustCompile(`\([^\)]*?\)`)
-	result := re.ReplaceAllString(input, "")
-	return result
-}
-
-/*
-替换中文圆括号
-*/
-func replaceChineseParentheses(input string) string {
-	//input := "这是一个测试字符串(包含英文括号内容)，请忽略这部分内容。"
-	re := regexp.MustCompile(`（[^\)]*?）`)
-	result := re.ReplaceAllString(input, "")
-	return result
-}
-
-/*
-替换扩展名前面的空格
-*/
-func removeSpaceBeforeExtension(input string) string {
-	output := strings.Replace(input, " .", ".", 1)
-	return output
-}

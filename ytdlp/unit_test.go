@@ -32,7 +32,7 @@ func TestYTdlp(t *testing.T) {
 	link := filepath.Join(p.GetVideosLocation(), "link.list")
 	uris := util.ReadByLine(link)
 	for _, uri := range uris {
-		if link := DownloadVideo(uri, p); link == "" {
+		if link := DownloadVideo(uri, p.Proxy,p.VideosLocation); link == "" {
 			file.WriteString(fmt.Sprintln(uri))
 		}
 	}

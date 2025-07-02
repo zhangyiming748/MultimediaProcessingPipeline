@@ -83,10 +83,10 @@ func main() {
 	file_ch := make(chan string)
 	wg := new(sync.WaitGroup)
 	for _, line := range lines {
-		video := ytdlp.DownloadVideo(line, p)
+		video := ytdlp.DownloadVideo(line, p.GetProxy(), p.GetVideosLocation())
 		log.Printf("下载后的文件名为:%s\n", video)
 		video = strings.Replace(video, "\n", "", 1)
-		whisper.GetSubtitle(video, p, false)
+		whisper.GetSubtitle(video, p.GetModel(), p.GetToolsLocation(), p.GetLanguage(), p.GetVideosLocation())
 		color.Red("开始翻译")
 		translateShell.Trans(video, p, c)
 		if p.GetMerge() {

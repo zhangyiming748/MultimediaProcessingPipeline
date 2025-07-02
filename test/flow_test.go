@@ -80,7 +80,7 @@ func TestYTdlp(t *testing.T) {
 		if strings.HasPrefix(uri, "#") {
 			continue
 		}
-		if link := ytdlp.DownloadVideo(uri, p); link == "" {
+		if link := ytdlp.DownloadVideo(uri, p.GetProxy(),p.GetVideosLocation()); link == "" {
 			file.WriteString(fmt.Sprintln(uri))
 		}
 	}
@@ -94,7 +94,7 @@ func TestWhisper(t *testing.T) {
 	cmds := []string{}
 	for _, fp := range fps {
 		if strings.HasSuffix(fp, p.GetPattern()) {
-			cmd := whisper.GetSubtitle(fp, p, false)
+			cmd := whisper.GetSubtitle(fp, p.GetModel(), p.GetToolsLocation(), p.GetLanguage(), p.GetVideosLocation())
 			cmds = append(cmds, cmd)
 		}
 	}
