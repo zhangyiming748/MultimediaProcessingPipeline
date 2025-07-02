@@ -89,7 +89,6 @@ func TestYTdlp(t *testing.T) {
 
 // go test -timeout 2000h -v -run TestWhisper
 func TestWhisper(t *testing.T) {
-
 	fps := getFiles(p.GetVideosLocation())
 	cmds := []string{}
 	for _, fp := range fps {

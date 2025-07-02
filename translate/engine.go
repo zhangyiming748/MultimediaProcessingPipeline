@@ -4,6 +4,8 @@ import (
 	"log"
 	"os/exec"
 	"strings"
+	"encoding/json"
+	"Multimedia_Processing_Pipeline/util"
 )
 
 func TransOnLocal(src, proxy string) (dst string) {
@@ -24,16 +26,39 @@ func TransOnLocal(src, proxy string) (dst string) {
 	return result
 }
 
-func TransByServer(src string) (dst string) {
-	result, err := Req(src)
+func TransByServer(src, apikey string) (dst string) {
+	headers := map[string]string{
+		"Content-Type": "application/json",
+	}
+	params := map[string]string{
+		"text":        src,
+		"source_lang": "auto",
+		"target_lang": "zh",
+	}
+	host := strings.Join([]string{PREFIX, apikey, SUFFIX}, "/")
+
+	b, err := util.HttpPostJson(headers, params, host)
 	if err != nil {
-		TransByServer(src)
+		return ""
 	}
-	result = strings.Replace(result, "\\r\\n", "", 1)
-	result = strings.Replace(result, "\n", "", 1)
-	result = strings.Replace(result, "\r\n", "", 1)
-	if result == "" {
-		return
+
+	var d DeepLXTranslationResult
+	if e := json.Unmarshal(b, &d); e != nil {
+		return ""
 	}
-	return result
+	log.Printf("%+v\n", d)
+	return d.Data
+}
+const PREFIX = "https://api.deeplx.org"
+const SUFFIX = "translate"
+
+type DeepLXTranslationResult struct {
+	Code         int      `json:"code"`
+	ID           int64    `json:"id"`
+	Message      string   `json:"message,omitempty"`
+	Data         string   `json:"data"`         // The primary translated text
+	Alternatives []string `json:"alternatives"` // Other possible translations
+	SourceLang   string   `json:"source_lang"`
+	TargetLang   string   `json:"target_lang"`
+	Method       string   `json:"method"`
 }

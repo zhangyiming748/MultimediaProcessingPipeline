@@ -4,7 +4,6 @@ import (
 	"Multimedia_Processing_Pipeline/constant"
 	"Multimedia_Processing_Pipeline/replace"
 	"Multimedia_Processing_Pipeline/util"
-	"encoding/json"
 	"fmt"
 	"log"
 	"math/rand"
@@ -24,7 +23,7 @@ const (
 )
 
 func Translate(src string, p *constant.Param, c *constant.Count) (dst string) {
-	return TransByServer(src)
+	return TransByServer(src, p.GetProxy())
 }
 
 func Trans(fp string, p *constant.Param, c *constant.Count) {
@@ -98,30 +97,4 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 	}
 }
 
-func Req(src string) (string, error) {
-	log.Printf("开始翻译:%s\n", src)
-	headers := map[string]string{
-		"Content-Type": "application/json",
-	}
-	params := map[string]string{
-		"src": src,
-	}
-	host := "http://192.168.2.10:8192/api/v1/translate"
 
-	b, err := util.HttpPostJson(headers, params, host)
-	if err != nil {
-		return "", err
-	}
-	log.Printf("%v\n", string(b))
-	var r Res
-	if UnmarshalErr := json.Unmarshal(b, &r); UnmarshalErr != nil {
-		return "", UnmarshalErr
-	}
-	return r.Dst, err
-}
-
-type Res struct {
-	Src  string `json:"src"`
-	Dst  string `json:"dst"`
-	From string `json:"from"`
-}
