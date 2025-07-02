@@ -1,7 +1,6 @@
 package ytdlp
 
 import (
-	"Multimedia_Processing_Pipeline/constant"
 	"Multimedia_Processing_Pipeline/util"
 	"fmt"
 	"log"
@@ -10,16 +9,16 @@ import (
 	"strings"
 )
 
-func DownloadVideo(uri string, p *constant.Param) (fp string) {
+func DownloadVideo(uri, proxy,location string) (fp string) {
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Println(err)
 		}
 	}()
-	name_cmd := exec.Command("yt-dlp", "--proxy", p.GetProxy(), "-f", "bestvideo[height<=?1080]+bestaudio/best[height<=?1080]/mp4", "--no-playlist", "--paths", p.GetVideosLocation(), "--get-filename", uri)
+	name_cmd := exec.Command("yt-dlp", "--proxy", proxy, "-f", "bestvideo[height<=?1080]+bestaudio/best[height<=?1080]/mp4", "--no-playlist", "--paths", p.GetVideosLocation(), "--get-filename", uri)
 	name := util.GetVideoName(name_cmd)
 	log.Printf("当前下载的文件标题:%s", name)
-	download_cmd := exec.Command("yt-dlp", "--proxy", p.GetProxy(), "-f", "bestvideo[height<=?1080]+bestaudio/best[height<=?1080]/mp4", "--no-playlist", "--paths", p.GetVideosLocation(), uri)
+	download_cmd := exec.Command("yt-dlp", "--proxy",proxy, "-f", "bestvideo[height<=?1080]+bestaudio/best[height<=?1080]/mp4", "--no-playlist", "--paths", p.GetVideosLocation(), uri)
 	util.ExecCommand4Ytdlp(download_cmd)
 	log.Printf("当前下载成功的文件标题:%s", name)
 	return name
