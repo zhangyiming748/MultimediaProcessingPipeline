@@ -1,7 +1,6 @@
 package sql
 
 import (
-	"Multimedia_Processing_Pipeline/constant"
 	"fmt"
 	"log"
 	"time"
@@ -12,14 +11,14 @@ import (
 
 var engine *xorm.Engine
 
-func SetMysql(p *constant.Param) {
+func SetMysql(user, password, host, port, dbname string) {
 
 	var err error
-	user := p.MysqlUser
-	password := p.MysqlPass
-	host := p.MysqlHost
-	port := p.MysqlPort
-
+	//user := p.MysqlUser
+	//password := p.MysqlPass
+	//host := p.MysqlHost
+	//port := p.MysqlPort
+	//dbname:="Translate"
 	// 先连接到 MySQL 服务器（不指定数据库）
 	rootDSN := fmt.Sprintf("%s:%s@tcp(%s:%s)/?charset=utf8", user, password, host, port)
 	tempEngine, err := xorm.NewEngine("mysql", rootDSN)
@@ -51,7 +50,7 @@ func SetMysql(p *constant.Param) {
 	tempEngine.Close()
 
 	// 连接到 tdl 数据库
-	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/Translate?charset=utf8mb4", user, password, host, port)
+	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4", user, password, host, port, dbname)
 	engine, err = xorm.NewEngine("mysql", dataSourceName)
 	if err != nil {
 		log.Printf("连接tdl数据库失败: %v\n", err)

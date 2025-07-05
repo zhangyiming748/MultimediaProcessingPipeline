@@ -2,6 +2,8 @@ package stepbystep
 
 import (
 	l "Multimedia_Processing_Pipeline/log"
+	"Multimedia_Processing_Pipeline/model"
+	"Multimedia_Processing_Pipeline/sql"
 	"Multimedia_Processing_Pipeline/translate"
 	"log"
 	"testing"
@@ -9,6 +11,20 @@ import (
 
 func init() {
 	l.SetLog()
+	user := "root"
+	password := "163453"
+	host := "192.168.2.10"
+	port := "3306"
+	dbname := "Translate"
+	sql.SetMysql(user, password, host, port, dbname)
+	e1 := sql.GetMysql().Sync2(model.TranslateHistory{})
+	if e1 != nil {
+		log.Fatalf("数据库表更新失败%v有可能是数据库未正常连接\n", e1)
+	}
+	e2 := sql.GetMysql().Sync2(model.YtdlpHistory{})
+	if e2 != nil {
+		log.Fatalf("数据库表更新失败%v有可能是数据库未正常连接\n", e2)
+	}
 }
 
 // go test -v -timeout 10h -run TestDownloadAll
@@ -18,7 +34,23 @@ func TestDownloadAll(t *testing.T) {
 	location := "/app/stepByStep"
 	links := ReadLinkToSlice(file)
 	for _, link := range links {
-		RunYtdlp(link, proxy, location)
+		y := new(model.YtdlpHistory)
+		y.Url = link
+		if found, err := y.FindByUrl(); found {
+			log.Printf("文件已经被下载过了,来源:%v\n", y.From)
+		} else if err != nil {
+			log.Printf("查询数据库的时候发生错误:%v\n", err)
+		} else {
+			log.Printf("开始下载:%v\n", link)
+			name := RunYtdlp(link, proxy, location)
+			y.Title = name
+			one, err := y.InsertOne()
+			if err != nil {
+				log.Printf("新条目写入数据库发生错误:%v\n", err)
+			} else {
+				log.Printf("%v新条目写入数据库\n", one)
+			}
+		}
 	}
 }
 
