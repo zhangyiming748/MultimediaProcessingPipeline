@@ -2,6 +2,7 @@ package translate
 
 import (
 	"Multimedia_Processing_Pipeline/constant"
+	"Multimedia_Processing_Pipeline/model"
 	"Multimedia_Processing_Pipeline/replace"
 	"Multimedia_Processing_Pipeline/util"
 	"fmt"
@@ -23,7 +24,20 @@ const (
 )
 
 func Translate(src string) (dst string) {
-	return TransByServer(src)
+	t := new(model.TranslateHistory)
+	t.Src = src
+	if found, _ := t.FindBySrc(); found {
+		return t.Dst
+	} else {
+		t.Dst = TransByServer(src)
+		one, err := t.InsertOne()
+		if err != nil {
+			log.Printf("Translate InsertOne error: %v\n", err)
+		} else {
+			log.Printf("Translate InsertOne %v\n", one)
+		}
+		return t.Dst
+	}
 }
 
 func Trans(fp string) {
