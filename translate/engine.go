@@ -1,4 +1,4 @@
-package translateShell
+package translate
 
 import (
 	"Multimedia_Processing_Pipeline/util"

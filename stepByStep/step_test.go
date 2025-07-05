@@ -1,10 +1,15 @@
 package stepbystep
 
 import (
-	translateShell "Multimedia_Processing_Pipeline/translate"
+	l "Multimedia_Processing_Pipeline/log"
+	"Multimedia_Processing_Pipeline/translate"
 	"log"
 	"testing"
 )
+
+func init() {
+	l.SetLog()
+}
 
 // go test -v -timeout 10h -run TestDownloadAll
 func TestDownloadAll(t *testing.T) {
@@ -41,6 +46,6 @@ func TestTranslateAll(t *testing.T) {
 		log.Fatalln(err)
 	}
 	for _, srt := range files {
-		translateShell.Trans(srt)
+		translate.Trans(srt)
 	}
 }
