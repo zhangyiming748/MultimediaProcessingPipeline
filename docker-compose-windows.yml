@@ -1,0 +1,7 @@
+name: wta
+services:
+  whisperandtrans:
+    container_name: wta
+    volumes:
+        - ./:/app
+    image: zhangyiming748/stand:latest # 指定生成的镜像名称和标签
