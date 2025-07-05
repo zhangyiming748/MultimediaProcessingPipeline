@@ -40,8 +40,8 @@ func TestWhisperAll(t *testing.T) {
 
 // go test -v -timeout 10h -run TestTranslateAll
 func TestTranslateAll(t *testing.T) {
-	root := "/app/stepByStep/links.txt"
-	files, err := FindVideoFiles(root)
+	root := "/app/stepByStep"
+	files, err := FindSubtitleFiles(root)
 	if err != nil {
 		log.Fatalln(err)
 	}

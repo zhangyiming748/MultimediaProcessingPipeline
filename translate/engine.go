@@ -41,13 +41,12 @@ func TransByServer(src string) (dst string) {
 	if err != nil {
 		return ""
 	}
-	log.Println(b)
-
+	//log.Println(b)
 	var d DeepLXTranslationResult
 	if e := json.Unmarshal(b, &d); e != nil {
 		return ""
 	}
-	log.Printf("%+v\n", d)
+	//log.Printf("%+v\n", d)
 	return d.Data
 }
 

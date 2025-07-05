@@ -19,5 +19,5 @@ func SetLog() {
 	fileLogger.Rotate()
 	consoleLogger := log.New(os.Stdout, "CONSOLE: ", log.LstdFlags)
 	log.SetOutput(io.MultiWriter(fileLogger, consoleLogger.Writer()))
-	log.SetFlags(3 | 16)
+	log.SetFlags(2 | 16)
 }
