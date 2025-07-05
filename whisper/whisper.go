@@ -24,28 +24,26 @@ func init() {
 /*
 生成字幕后返回字幕的绝对路径
 */
-func GetSubtitle(fp ,model_name,model_path ,video_language,video_directory string) string {
+func GetSubtitle(fp, model_name, model_path, video_language, video_directory string) string {
 	err := os.Setenv("PYTHONIOENCODING", "utf-8")
 	if err == nil {
 		log.Println("utf-8环境设置成功")
 	}
 	var cmd *exec.Cmd
 	if isCUDAAvailable() {
-		cmd = exec.Command("whisper", fp, "--model",model_name , "--device", "cuda", "--model_dir", model_path, "--output_format", "srt", "--prepend_punctuations", ",.?", "--language", video_language, "--output_dir", video_directory, "--verbose", "True")
+		cmd = exec.Command("whisper", fp, "--model", model_name, "--device", "cuda", "--model_dir", model_path, "--output_format", "srt", "--prepend_punctuations", ",.?", "--language", video_language, "--output_dir", video_directory, "--verbose", "True")
 	} else {
-		cmd = exec.Command("whisper", fp, "--model", model_name , "--model_dir", model_path, "--output_format", "srt", "--prepend_punctuations", ",.?", "--language", video_language, "--output_dir", video_directory, "--verbose", "True")
+		cmd = exec.Command("whisper", fp, "--model", model_name, "--model_dir", model_path, "--output_format", "srt", "--prepend_punctuations", ",.?", "--language", video_language, "--output_dir", video_directory, "--verbose", "True")
 	}
 	log.Printf("命令: %s\n", cmd.String())
 	startTime := time.Now()
 	msg := fmt.Sprintf("%v正在处理的文件:%s", time.Now().Format("2006-01-02 15:04:05"), fp)
 
-	
-		err = util.ExecCommand(cmd, msg)
-		if err != nil {
-			log.Printf("当前字幕生成错误\t命令原文:%v\t错误原文:%v\n", cmd.String(), err.Error())
-		}
-		fp = strings.Replace(fp, filepath.Ext(fp), ".srt", 1)
-	
+	err = util.ExecCommand(cmd, msg)
+	if err != nil {
+		log.Printf("当前字幕生成错误\t命令原文:%v\t错误原文:%v\n", cmd.String(), err.Error())
+	}
+	fp = strings.Replace(fp, filepath.Ext(fp), ".srt", 1)
 
 	//replace.RemoveTrailingNewlines(fp)
 	endTime := time.Now()

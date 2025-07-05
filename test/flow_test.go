@@ -80,7 +80,7 @@ func TestYTdlp(t *testing.T) {
 		if strings.HasPrefix(uri, "#") {
 			continue
 		}
-		if link := ytdlp.DownloadVideo(uri, p.GetProxy(),p.GetVideosLocation()); link == "" {
+		if link := ytdlp.DownloadVideo(uri, p.GetProxy(), p.GetVideosLocation()); link == "" {
 			file.WriteString(fmt.Sprintln(uri))
 		}
 	}
@@ -119,14 +119,12 @@ func TestTransAll(t *testing.T) {
 	if len(fps) == 0 {
 		t.Fatal("未找到任何文件")
 	}
-
-	c := new(constant.Count)
 	srtCount := 0
 	for _, fp := range fps {
 		if strings.HasSuffix(fp, ".srt") {
 			log.Printf("处理文件: %s", fp)
 			srtCount++
-			trans.Trans(fp, p, c)
+			trans.Trans(fp)
 
 		}
 	}

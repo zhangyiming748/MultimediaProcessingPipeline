@@ -77,7 +77,6 @@ func main() {
 	if lines := os.Getenv("lines"); lines != "" {
 		p.SetLines(strings.Join([]string{p.GetVideosLocation(), lines}, string(os.PathSeparator)))
 	}
-	c := new(constant.Count)
 	lines := util.ReadByLine(p.GetLines())
 	// 创建一个通道
 	file_ch := make(chan string)
@@ -88,7 +87,7 @@ func main() {
 		video = strings.Replace(video, "\n", "", 1)
 		whisper.GetSubtitle(video, p.GetModel(), p.GetToolsLocation(), p.GetLanguage(), p.GetVideosLocation())
 		color.Red("开始翻译")
-		translateShell.Trans(video, p, c)
+		translateShell.Trans(video)
 		if p.GetMerge() {
 			wg.Add(1)
 			file_ch <- video

@@ -5,7 +5,8 @@ import (
 )
 
 const (
-	HASEE = "DESKTOP-VGFTVD8"
+	HASEE  = "DESKTOP-VGFTVD8"
+	APIKEY = "DrkwqR4tE3DRyOseVibFah62BJXmcIryt4I9rTtzXTs"
 )
 
 type Param struct {

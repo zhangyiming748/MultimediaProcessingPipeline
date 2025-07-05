@@ -1,11 +1,11 @@
 package translateShell
 
 import (
+	"Multimedia_Processing_Pipeline/util"
+	"encoding/json"
 	"log"
 	"os/exec"
 	"strings"
-	"encoding/json"
-	"Multimedia_Processing_Pipeline/util"
 )
 
 func TransOnLocal(src, proxy string) (dst string) {
@@ -26,7 +26,7 @@ func TransOnLocal(src, proxy string) (dst string) {
 	return result
 }
 
-func TransByServer(src, apikey string) (dst string) {
+func TransByServer(src string) (dst string) {
 	headers := map[string]string{
 		"Content-Type": "application/json",
 	}
@@ -35,12 +35,13 @@ func TransByServer(src, apikey string) (dst string) {
 		"source_lang": "auto",
 		"target_lang": "zh",
 	}
-	host := strings.Join([]string{PREFIX, apikey, SUFFIX}, "/")
-
+	host := "https://api.deeplx.org/DrkwqR4tE3DRyOseVibFah62BJXmcIryt4I9rTtzXTs/translate"
+	log.Println(host)
 	b, err := util.HttpPostJson(headers, params, host)
 	if err != nil {
 		return ""
 	}
+	log.Println(b)
 
 	var d DeepLXTranslationResult
 	if e := json.Unmarshal(b, &d); e != nil {
@@ -49,6 +50,7 @@ func TransByServer(src, apikey string) (dst string) {
 	log.Printf("%+v\n", d)
 	return d.Data
 }
+
 const PREFIX = "https://api.deeplx.org"
 const SUFFIX = "translate"
 

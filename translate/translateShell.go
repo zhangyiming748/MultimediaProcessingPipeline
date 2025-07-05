@@ -22,11 +22,11 @@ const (
 
 )
 
-func Translate(src string, p *constant.Param, c *constant.Count) (dst string) {
-	return TransByServer(src, p.GetProxy())
+func Translate(src string) (dst string) {
+	return TransByServer(src)
 }
 
-func Trans(fp string, p *constant.Param, c *constant.Count) {
+func Trans(fp string) {
 	// todo 翻译字幕
 	r := seed.Intn(2000)
 	//中间文件名
@@ -34,8 +34,8 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 	//log.Printf("trans接受到的fp=%s\n", fp)
 	//log.Printf("此时的p=%+v\n", p)
 
-	srt := strings.Replace(fp, p.GetPattern(), "srt", 1)
-	log.Printf("%v根据文件名:%s\t替换的字幕名:%s\n", p.GetPattern(), fp, srt)
+	srt := strings.Replace(fp, "mp4", "srt", 1)
+	log.Printf("%v根据文件名:%s\t替换的字幕名:%s\n", fp, fp, srt)
 	//log.Fatalf("%v根据文件名:%s\t替换的字幕名:%s\n", p.GetPattern(), fp, srt)
 	tmpname := strings.Join([]string{strings.Replace(srt, ".srt", "", 1), strconv.Itoa(r), ".srt"}, "")
 	before := util.ReadInSlice(srt)
@@ -74,7 +74,7 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 		afterSrc := replace.GetSensitive(src)
 		var dst string
 
-		dst = Translate(afterSrc, p, c)
+		dst = Translate(afterSrc)
 		dst = strings.Replace(dst, "\n", "", -1)
 		randomNumber := util.GetSeed().Intn(401) + 100
 		time.Sleep(time.Duration(randomNumber) * time.Millisecond) // 暂停 100 毫秒
@@ -96,5 +96,3 @@ func Trans(fp string, p *constant.Param, c *constant.Count) {
 		constant.Warning(fmt.Sprintf("字幕文件重命名出现错误:%v:%v\n", err1, err2))
 	}
 }
-
-
