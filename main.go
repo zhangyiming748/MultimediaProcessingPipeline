@@ -5,9 +5,9 @@ import (
 	mylog "Multimedia_Processing_Pipeline/log"
 	"Multimedia_Processing_Pipeline/replace"
 	"Multimedia_Processing_Pipeline/sql"
+	stepbystep "Multimedia_Processing_Pipeline/stepByStep"
 	translateShell "Multimedia_Processing_Pipeline/translate"
 	"Multimedia_Processing_Pipeline/util"
-	"Multimedia_Processing_Pipeline/whisper"
 	"Multimedia_Processing_Pipeline/ytdlp"
 	"log"
 	"os"
@@ -85,7 +85,7 @@ func main() {
 		video := ytdlp.DownloadVideo(line, p.GetProxy(), p.GetVideosLocation())
 		log.Printf("下载后的文件名为:%s\n", video)
 		video = strings.Replace(video, "\n", "", 1)
-		whisper.GetSubtitle(video, p.GetModel(), p.GetToolsLocation(), p.GetLanguage(), p.GetVideosLocation())
+		stepbystep.GetSubtitle(video, p.GetModel(), p.GetToolsLocation(), p.GetLanguage(), p.GetVideosLocation())
 		color.Red("开始翻译")
 		translateShell.Trans(video)
 		if p.GetMerge() {

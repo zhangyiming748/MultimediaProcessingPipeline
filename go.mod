@@ -5,6 +5,7 @@ go 1.24.2
 require (
 	github.com/fatih/color v1.18.0
 	github.com/go-sql-driver/mysql v1.9.0
+	github.com/h2non/filetype v1.1.3
 	github.com/schollz/progressbar/v3 v3.18.0
 	github.com/zhangyiming748/lumberjack v0.0.1
 	github.com/zhangyiming748/pretty v0.0.3
