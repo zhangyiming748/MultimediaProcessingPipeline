@@ -28,7 +28,7 @@ func TestYTdlp(t *testing.T) {
 	if err != nil {
 		return
 	}
-	log.SetLog(p)
+	log.SetLog()
 	link := filepath.Join(p.GetVideosLocation(), "link.list")
 	uris := util.ReadByLine(link)
 	for _, uri := range uris {

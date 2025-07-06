@@ -33,8 +33,8 @@ func initConfig(p *constant.Param) {
 	if !util.IsExistCmd("yt-dlp") {
 		log.Fatalln("yt-dlp")
 	}
-	mylog.SetLog(p)
-	sql.SetMysql(p)
+	mylog.SetLog()
+	sql.SetMysql("root", "163453", "192.168.2.10", "3306", "Translate")
 	//util.ExitAfterRun()
 	replace.SetSensitive(p)
 	log.SetFlags(log.Ltime | log.Lshortfile)
