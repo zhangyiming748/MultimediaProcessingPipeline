@@ -1,4 +1,4 @@
-FROM golang:1.24.0-bookworm
+FROM golang:latest
 
 # 设置环境变量
 ENV PYTHONWARNINGS="ignore::FutureWarning"
@@ -33,8 +33,7 @@ WORKDIR /app
 COPY . .
 
 # 配置 Go 环境
-RUN go env -w GO111MODULE=on && \
-    go mod vendor
+RUN go env -w GO111MODULE=on && go env -w GOPROXY=https://goproxy.cn,direct
 
 # 启动程序
 ENTRYPOINT ["go", "run", "main.go"]
