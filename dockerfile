@@ -11,7 +11,6 @@ COPY debian.sources /etc/apt/sources.list.d/
 
 # 更新软件并安装依赖
 RUN apt update
-RUN apt search pip3
 RUN apt install -y --no-install-recommends python3
 RUN apt install -y --no-install-recommends python3-pip
 RUN apt install -y --no-install-recommends translate-shell
@@ -30,11 +29,11 @@ RUN rm -rf /var/lib/apt/lists/*
 RUN pip install --no-cache-dir --break-system-packages openai-whisper yt-dlp
 
 # 复制 Go 程序
-WORKDIR /app
-COPY . .
+#WORKDIR /app
+#COPY . .
 
 # 配置 Go 环境
 RUN go env -w GO111MODULE=on && go env -w GOPROXY=https://goproxy.cn,direct
 
 # 启动程序
-ENTRYPOINT ["go", "run", "main.go"]
+CMD ["bash"]
