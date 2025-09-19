@@ -10,20 +10,19 @@ LABEL authors="zen"
 COPY debian.sources /etc/apt/sources.list.d/
 
 # 更新软件并安装依赖
-RUN apt update && \
-    apt install -y --no-install-recommends \
-        python3 \
-        python3-pip \
-        translate-shell \
-        ffmpeg \
-        ca-certificates \
-        bsdmainutils \
-        sqlite3 \
-        gawk \
-        locales \
-        libfribidi-bin \
-        dos2unix && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt update
+RUN apt install -y --no-install-recommends python3
+RUN apt install -y --no-install-recommends python3-pip
+RUN apt install -y --no-install-recommends translate-shell
+RUN apt install -y --no-install-recommends ffmpeg
+RUN apt install -y --no-install-recommends ca-certificates
+RUN apt install -y --no-install-recommends bsdmainutils
+RUN apt install -y --no-install-recommends sqlite3
+RUN apt install -y --no-install-recommends gawk
+RUN apt install -y --no-install-recommends locales
+RUN apt install -y --no-install-recommends libfribidi-bin
+RUN apt install -y --no-install-recommends dos2unix
+RUN rm -rf /var/lib/apt/lists/*
 
 # 安装 openai-whisper 和 yt-dlp
 RUN pip install --no-cache-dir openai-whisper yt-dlp

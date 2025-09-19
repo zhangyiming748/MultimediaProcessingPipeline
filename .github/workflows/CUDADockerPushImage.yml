@@ -2,8 +2,9 @@ name: Publish CUDA Docker Image
 
 on:
   push:
-    tags:
-      - 'v*'
+    # tags:
+    #   - 'v*'
+    branches: [main]
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
