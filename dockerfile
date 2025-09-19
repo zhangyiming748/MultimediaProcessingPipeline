@@ -11,6 +11,7 @@ COPY debian.sources /etc/apt/sources.list.d/
 
 # 更新软件并安装依赖
 RUN apt update
+RUN apt search pip3
 RUN apt install -y --no-install-recommends python3
 RUN apt install -y --no-install-recommends python3-pip
 RUN apt install -y --no-install-recommends translate-shell
@@ -22,6 +23,7 @@ RUN apt install -y --no-install-recommends gawk
 RUN apt install -y --no-install-recommends locales
 RUN apt install -y --no-install-recommends libfribidi-bin
 RUN apt install -y --no-install-recommends dos2unix
+RUN apt full-upgrade -y
 RUN rm -rf /var/lib/apt/lists/*
 
 # 安装 openai-whisper 和 yt-dlp
