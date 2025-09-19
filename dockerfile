@@ -27,7 +27,7 @@ RUN apt full-upgrade -y
 RUN rm -rf /var/lib/apt/lists/*
 
 # 安装 openai-whisper 和 yt-dlp
-RUN pip install --no-cache-dir openai-whisper yt-dlp
+RUN pip install --no-cache-dir --break-system-packages openai-whisper yt-dlp
 
 # 复制 Go 程序
 WORKDIR /app
