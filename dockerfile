@@ -1,5 +1,5 @@
 FROM golang:latest
-
+# docker run -it --rm --name latest golang:latest
 # 设置环境变量
 ENV PYTHONWARNINGS="ignore::FutureWarning"
 
