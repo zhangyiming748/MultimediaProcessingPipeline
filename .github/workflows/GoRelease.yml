@@ -6,7 +6,7 @@ on:
   push:
     # run only against tags
     tags:
-      - "v*"
+      - "vgo*"
 
 permissions:
   contents: write
